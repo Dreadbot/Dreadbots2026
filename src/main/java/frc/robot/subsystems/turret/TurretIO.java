@@ -7,7 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 public interface TurretIO {
     @AutoLog
     public static class TurretIOInputs {
-         //The Volts
+        //Volts
         public double pivotAppliedVolts = 0.0;
 
         //Current
