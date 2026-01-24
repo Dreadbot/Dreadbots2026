@@ -16,19 +16,17 @@ package frc.robot.subsystems.drive;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.util.misc.SparkUtil.*;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
@@ -37,7 +35,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import org.littletonrobotics.junction.Logger;
+
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -130,6 +128,8 @@ public class ModuleIOSpark implements ModuleIO {
         .pidf(
             driveKp, 0.0,
             driveKd, 0.0);
+                
+    
     driveConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -146,9 +146,6 @@ public class ModuleIOSpark implements ModuleIO {
             driveSpark.configure(
                 driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
     tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
-
-    // var canCoderConfig = new CANcoderConfiguration();
-    // canCoderConfig.MagnetSensor.withMagnetOffset(zeroRotation.getRotations());
     // Configure turn motor
     var turnConfig = new SparkMaxConfig();
     turnConfig
@@ -251,8 +248,7 @@ public class ModuleIOSpark implements ModuleIO {
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
     double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
-    Logger.recordOutput("Modules/Module" + Integer.toString(moduleID) + "/FeedForward" , ffVolts);
-    driveController.setReference(
+    driveController.setSetpoint(
         velocityRadPerSec,
         ControlType.kVelocity,
         ClosedLoopSlot.kSlot0,
@@ -264,6 +260,6 @@ public class ModuleIOSpark implements ModuleIO {
     double setpoint =
         MathUtil.inputModulus(
             rotation.plus(zeroRotation).getRadians(), turnPIDMinInput, turnPIDMaxInput);
-    turnController.setReference(setpoint, ControlType.kPosition);
+    turnController.setSetpoint(setpoint, ControlType.kPosition);
   }
 }

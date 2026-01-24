@@ -202,20 +202,7 @@ public class RobotContainer {
             () -> -primaryController.getLeftX(),
             () -> -primaryController.getRightX()));
 
-    // Lock to 0° when A button is held
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> new Rotation2d()));
-
-    // Switch to X pattern when X button is pressed
-    // controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when B button is pressed
+    
     primaryController
       .start()
         .onTrue(Commands.runOnce(
@@ -234,55 +221,7 @@ public class RobotContainer {
           drive)
       .ignoringDisable(true));
 
-    /* 
-     * Keybinds for the secondary controller
-     * Focuses on the coral pieces
-     * Elevator / Wrist / Endeffector
-     */
-    //toggles properly
-    // primaryController.x().onTrue(climb.lock());
-    // primaryController.y().onTrue(climb.climbSequence(primaryController));
-    // primaryController
-    //   .a()
-    //     .whileTrue(DriveCommands.fullAutoAlignCommand(drive, vision, primaryController));
-    // primaryController
-    //   .a()
-    //     .onTrue(climb.init());
-    //Home
-    // secondaryController.a().onTrue(superstructure.requestSuperstructureState(SuperstructureState.STOW));
-
-    //L1 - L4
-    // secondaryController.povUp().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4));
-    // secondaryController.povLeft().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L3));
-    // secondaryController.povRight().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L2));
-    // secondaryController.povDown().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L1));
-
-    //Pluck algae / Barge
-    // secondaryController.x().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L2).alongWith(endEffector.startAlgaeIntake()));
-    // secondaryController.y().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PLUCK_L3).alongWith(endEffector.startAlgaeIntake()));
-    // secondaryController.b().onTrue(superstructure.requestSuperstructureState(SuperstructureState.L4).andThen(Commands.waitUntil(superstructure::isFinished)).andThen(superstructure.requestSuperstructureState(SuperstructureState.BARGE)));
-
-    //intake sequence
-    // secondaryController.leftTrigger().onTrue(superstructure.requestSuperstructureState(SuperstructureState.PICKUP)
-    //     .alongWith(endEffector.intake().until(endEffector::hasCoral)));
     
-    //intake / outtake
-    // secondaryController.leftBumper().whileTrue(endEffector.intake());
-    // secondaryController.rightBumper().whileTrue(endEffector.outtake());
-
-    //Reset elevator / wrist
-    // secondaryController.start().onTrue(elevator.requestZero());
-    // secondaryController.back().onTrue(wrist.setAtZero());
-
-    // secondaryController.rightTrigger().onTrue(elevator.riseTo(Units.inchesToMeters(60)));
-
-    // elevator.setJoystickSupplier(() -> -secondaryController.getLeftY());
-    // wrist.setJoystickOverride(() -> -secondaryController.getRightY());
-
-
-    //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-    primaryController.rightTrigger().whileTrue(slapdownAlgae.intakeSequence());
-    primaryController.leftTrigger().whileTrue(slapdownAlgae.outtakeSequence());
   }
 
   /**
