@@ -1,4 +1,5 @@
 package frc.robot.subsystems.flywheel;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface FlywheelIO {
@@ -10,5 +11,6 @@ public interface FlywheelIO {
     }
 
     public default void updateInputs(FlywheelIOInputs inputs) {}
+
     public default void setVoltage(double volts) {}
 }

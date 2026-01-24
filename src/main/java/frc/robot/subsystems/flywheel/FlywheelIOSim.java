@@ -9,17 +9,17 @@ import edu.wpi.first.math.util.Units;
 
 public class FlywheelIOSim implements FlywheelIO {
 
-    private static final LinearSystem<N1, N1, N1> flywheelPlant =
+    private static final LinearSystem<N1, N1, N1> flywheelPlant = 
         LinearSystemId.createFlywheelSystem(
-            DCMotor.getNEO(1),
+            DCMotor.getNeoVortex(2),
             0.001,
             1.0
         );
 
-    private final FlywheelSim sim =
+    private final FlywheelSim sim = 
         new FlywheelSim(
             flywheelPlant,
-            DCMotor.getNEO(1),
+            DCMotor.getNeoVortex(2),
             0.0
         );
 
@@ -35,8 +35,7 @@ public class FlywheelIOSim implements FlywheelIO {
         sim.setInputVoltage(appliedVolts);
         sim.update(0.02);
 
-        inputs.velocityRPM =
-            Units.radiansPerSecondToRotationsPerMinute(sim.getAngularVelocityRadPerSec());
+        inputs.velocityRPM = Units.radiansPerSecondToRotationsPerMinute(sim.getAngularVelocityRadPerSec());
 
         inputs.appliedVolts = appliedVolts;
     }
