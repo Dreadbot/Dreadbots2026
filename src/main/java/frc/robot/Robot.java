@@ -17,6 +17,10 @@ import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodIO;
 import frc.robot.subsystems.hood.HoodIOSim;
 
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+
 /**
  * The methods in this class are called automatically corresponding to each
  * mode, as described in
@@ -32,6 +36,7 @@ public class Robot extends TimedRobot {
 
   private Flywheel flywheel;
   private Hood hood;
+  private Indexer indexer;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -47,6 +52,8 @@ public class Robot extends TimedRobot {
     if (RobotBase.isSimulation()) {
       flywheel = new Flywheel(new FlywheelIOSim());
       hood = new Hood(new HoodIOSim());
+
+      indexer = new Indexer(new IndexerIOSim());
     } else {
       // Real hardware versions later
       flywheel = new Flywheel(new FlywheelIO() {
