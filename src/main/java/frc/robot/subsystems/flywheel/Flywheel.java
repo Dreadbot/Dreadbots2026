@@ -1,5 +1,6 @@
 package frc.robot.subsystems.flywheel;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Flywheel extends SubsystemBase {
@@ -21,5 +22,19 @@ public class Flywheel extends SubsystemBase {
 
   public double getRPM() {
     return inputs.velocityRPM;
+  }
+
+  public Command start() {
+    return startEnd(
+        () -> runAtVoltage(6.0), // Example voltage
+        () -> runAtVoltage(0.0)
+    );
+  }
+
+  public Command stop() {
+    return startEnd(
+        () -> runAtVoltage(0.0),
+        () -> {}
+    );
   }
 }
