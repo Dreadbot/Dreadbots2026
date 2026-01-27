@@ -48,6 +48,8 @@ import frc.robot.Constants.Mode;
 import frc.robot.util.misc.ChassisAcceleration;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -198,6 +200,7 @@ public class Drive extends SubsystemBase {
     Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
     Logger.recordOutput("SwerveChassisSpeeds/Setpoints", discreteSpeeds);
     Logger.recordOutput("SwerveStates/Acceleration", accelerationStates);
+    Logger.recordOutput("Logger/FrontLeftWheelRot",modules[0].getPositionMeters());
     // Send setpoints to modules
     for (int i = 0; i < 4; i++) {
       // Get module force for use in feedforward calculations
@@ -245,6 +248,10 @@ public class Drive extends SubsystemBase {
     return Commands.runOnce(() -> {
       runVelocity(new ChassisSpeeds(0, 0, 0));
     });
+  }
+
+  public boolean nearPose(Pose2d pose) {
+    return getPose().getTranslation().getDistance(pose.getTranslation()) < 0.1 && getPose().getRotation().minus(pose.getRotation()).getDegrees() < 2;
   }
 
   /** Runs the drive in a straight line with the specified drive output. */
