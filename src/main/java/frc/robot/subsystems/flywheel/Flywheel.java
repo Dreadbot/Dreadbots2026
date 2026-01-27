@@ -26,14 +26,14 @@ public class Flywheel extends SubsystemBase {
 
   public Command start() {
     return startEnd(
-        () -> runAtVoltage(6.0), // Example voltage
-        () -> runAtVoltage(0.0)
+        () -> io.setVoltage(6.0), // Example voltage
+        () -> io.setVoltage(0.0)
     );
   }
 
   public Command stop() {
     return startEnd(
-        () -> runAtVoltage(0.0),
+        () -> io.setVoltage(0.0),
         () -> {}
     );
   }

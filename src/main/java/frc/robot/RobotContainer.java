@@ -71,8 +71,8 @@ public class RobotContainer {
         //                 new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
         //                 drive).ignoringDisable(true));
 
-        primaryController.x().onTrue(flywheel.start());
-        primaryController.y().onTrue(flywheel.stop());
+        primaryController.x().whileTrue(flywheel.start());
+        primaryController.y().whileTrue(flywheel.stop());
         }
 
     public void autonomousInit() {
