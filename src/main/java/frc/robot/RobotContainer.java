@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -67,6 +68,10 @@ public class RobotContainer {
         //                 new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
         //                 drive).ignoringDisable(true));
         }
+
+    public Command getAutonomousCommand() {
+        return null; //choreoAutoChooser.selectedCommand();
+    }
 
     public void autonomousInit() {
 
