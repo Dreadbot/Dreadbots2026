@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 
 public class VisionUtil {
-    public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
+    public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
     /**
      * 
      * @param tagId ID of tag
@@ -28,30 +28,28 @@ public class VisionUtil {
     }
 
     /**
-     * Returns whether the ID is not a reef ID
+     * Returns whether the an AprilTag is on the HUB based on its ID
      * @param id ID of tag
-     * @return Indicates whether ID is not reef ID or is
+     * @return True if the tag is on the HUB
      */
 
-    public static boolean isNotReefId(int id) {
-        return id == 1
-        || id == 2
+    public static boolean isHubId(int id) {
+        return
+           id == 2
         || id == 3
         || id == 4
         || id == 5
-        || id == 12
-        || id == 13
-        || id == 14
-        || id == 15
-        || id == 16;
-    }
-    /**
-     * Finds global pose given the world axes offset and ID of the tag
-     * @param offset World axes offset
-     * @param tagId ID of tag
-     * 
-     */
-    public static Pose2d calculatePoseFromTagOffset(Pose2d offset, int tagId) {
-        return new Pose2d(getApriltagPose(tagId).toPose2d().getTranslation().minus(offset.getTranslation()), offset.getRotation());
+        || id == 8
+        || id == 9
+        || id == 10
+        || id == 11
+        || id == 18
+        || id == 19
+        || id == 20
+        || id == 21
+        || id == 24
+        || id == 25
+        || id == 26
+        || id == 27;
     }
 }
