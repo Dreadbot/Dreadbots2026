@@ -1,8 +1,7 @@
 plugins {
     id "java"
-    id "edu.wpi.first.GradleRIO" version "2026.1.1"
-    id "com.peterabeles.gversion" version "1.10"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.peterabeles.gversion" version "1.10"
 }
 
 java {
@@ -170,4 +169,3 @@ task(eventDeploy) {
     }
 }
 createVersionFile.dependsOn(eventDeploy)
-
