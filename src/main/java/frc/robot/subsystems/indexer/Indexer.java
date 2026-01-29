@@ -1,5 +1,7 @@
 package frc.robot.subsystems.indexer;
 
+import frc.robot.Constants.IndexerConstants;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
