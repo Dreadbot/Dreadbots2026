@@ -14,8 +14,6 @@ public class FlywheelIOSparkFlex implements FlywheelIO {
     private final SparkFlex motor1;
     private final SparkFlex motor2;
 
-    private double appliedVolts = 0.0;
-
     public FlywheelIOSparkFlex() {
         motor1 = new SparkFlex(FlywheelConstants.MOTOR_ID_1, MotorType.kBrushless);
         SparkFlexConfig config1 = new SparkFlexConfig();
@@ -31,13 +29,12 @@ public class FlywheelIOSparkFlex implements FlywheelIO {
 
     @Override
     public void setVoltage(double volts) {
-        appliedVolts = volts;
         motor1.setVoltage(volts);
     }
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
-        inputs.velocityRPM = motor1.getEncoder().getVelocity();
-        inputs.appliedVolts = appliedVolts;
+        inputs.appliedVolts = motor1.getAppliedOutput() * motor1.getBusVoltage();
+        inputs.RPM = motor1.getEncoder().getVelocity();
     }
 }

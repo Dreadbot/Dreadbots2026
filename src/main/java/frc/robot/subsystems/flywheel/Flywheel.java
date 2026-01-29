@@ -1,11 +1,16 @@
 package frc.robot.subsystems.flywheel;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import frc.robot.Constants.FlywheelConstants;
+
 public class Flywheel extends SubsystemBase {
+  
+  private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
   private final FlywheelIO io;
-  private final FlywheelIO.FlywheelIOInputs inputs = new FlywheelIO.FlywheelIOInputs();
 
   public Flywheel(FlywheelIO io) {
     this.io = io;
@@ -14,6 +19,7 @@ public class Flywheel extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("Flywheel", inputs);
   }
 
   public void runAtVoltage(double volts) {
@@ -21,12 +27,12 @@ public class Flywheel extends SubsystemBase {
   }
 
   public double getRPM() {
-    return inputs.velocityRPM;
+    return inputs.RPM;
   }
 
   public Command start() {
     return startEnd(
-        () -> io.setVoltage(6.0), // Example voltage
+        () -> io.setVoltage(FlywheelConstants.SHOOT_VOLTAGE),
         () -> io.setVoltage(0.0)
     );
   }
