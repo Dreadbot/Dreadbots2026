@@ -16,7 +16,7 @@ public class IndexerIOSparkFlex implements IndexerIO {
         this.motor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
         config.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    motor.configure(config, ResetMode.kResetSafe, PersistMode.kPersist);
     }
 
     public void updateInputs(IndexerIOInputs inputs) {
