@@ -17,7 +17,7 @@ public interface TurretIO {
         public double pivotRotationDegrees = 0.0;
         
         //RPM
-        public double intakeRPM = 0.0;
+        public double piviotRPM = 0.0;
         public double absolutePosition = 0.0;
 
         //Temp
@@ -27,10 +27,4 @@ public interface TurretIO {
     public default void updateInputs(TurretIOInputs inputs) {};
 
     public default void runPivotVoltage(double volts) {}
-
-    public default void runIntakeVoltage(double volts) {}
-
-    public default void setIdleMode(IdleMode pivotIdleMode, IdleMode intakeIdleMode) {};
-
-    public default void stopMotors() {};
 }

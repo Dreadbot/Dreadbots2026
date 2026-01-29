@@ -1,70 +1,37 @@
-// package frc.robot.subsystems.turret;
-// public class TurretIOSim implements TurretIO {
+package frc.robot.subsystems.turret;
+
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+
+public class TurretIOSim implements TurretIO {
     
-//         private final SingleJointedArmSim singleJointedArmSim;
-//         private double volts;
+    private SingleJointedArmSim turret;
 
-//(?)         private double pivotVolts;
-//(?)         private double intakeVolts;
+    public TurretIOSim() {
+        this.turret = new SingleJointedArmSim(DCMotor.getNEO(1), 
+        50.0, 
+        SingleJointedArmSim.estimateMOI(0.15, Units.lbsToKilograms(10)), 
+        0.15, 
+        Units.degreesToRadians(-90), 
+        Units.degreesToRadians(90), 
+        true,
+        Units.degreesToRadians(0)
+        );
+    }
 
+    @Override
+    public void updateInputs(TurretIOInputs inputs) {
+        turret.update(0.02);
+        inputs.pivotAppliedVolts = 0.0;
+        inputs.piviotRPM = (turret.getVelocityRadPerSec());
+        inputs.pivotCurrentAmps = turret.getCurrentDrawAmps();
+        inputs.pivotRotationDegrees = Units.radiansToDegrees(turret.getAngleRads());
+    }
 
-//         public SlapdownAlgaeIOSIM() {
-//             this.turret = new SingleJointedArmSim(DCMotor.getNeo550(1),
-//                 TurretConstants.GEARING,
-//                 TurretConstants.TURRET_MASS,
-//                 TurretConstants.MIN_ANGLE,
-//                 TurretConstants.MAX_ANGlE,
-//                 true,
-//                 TurretConstants.STARTING_HEIGHT
-//             );
-//             this.volts = 0.0;
-//         }
-
-//     @Override
-//     public void updateInputs(TurretIOInputs inputs) {
-//         pivotMotor.update(0.02);
-//         intakeMotor.update(0.02);
-
-//         inputs.pivotAppliedVolts = pivotVolts;
-
-//         inputs.pivotCurrentAmps = pivotMotor.getCurrentDrawAmps();
-
-//         inputs.pivotRotationDegrees = Units.radiansToDegrees(turret.getAngleRads());
-
-//         inputs.intakeRPM = intakeMotor.getAngularVelocityRPM();
-//         inputs.absolutePosition = pivotMotor.getAbsolutePosition
-
-//     }
-
-//     @Override
-//     public void runPivotVoltage(double voltage){
-//         pivotMotor.setInputVoltage(volts);
-//         this.volts = volts;
-//     }
-// }
-
-//     @Override
-//     public void runIntakeVoltage(double voltage) {
-//         intakeMotor.setInputVoltage(volts);
-//         this.volts = volts;
-//     }
-
-//     @Override
-//     public void setIdleMode(IdleMode pivotIdleMode, IdleMode intakeIdleMode) {
-//         SparkMaxConfig pivotConfig = new SparkMaxConfig();
-//         pivotConfig.idleMode(pivotIdleMode);
-//         SparkMaxConfig intakeConfig = new SparkMaxConfig();
-//         intakeConfig.idleMode(intakeIdleMode)
-//         intakeMotor.configure(intakeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-//         pivotMotor.configure(pivotConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-//     }
-
-//     @Override
-//     public void stopMotors() {
-//         intakeMotor.setVoltage();
-//         intakeMotor.stopMotor();
-//         pivotMotor.setVoltage();
-//         pivotMotor.stopMotor();
-//     }
-//
+    @Override
+    public void runPivotVoltage(double volts){
+        turret.setInputVoltage(volts);
+    }
+}
 

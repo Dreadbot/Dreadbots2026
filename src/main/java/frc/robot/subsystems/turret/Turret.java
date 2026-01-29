@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Turret extends SubsystemBase {
-    //private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
+    private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private TurretIO io;
     private final PIDController pid = new PIDController(0.0, 0.0, 0);
     private final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.00, 0.00);
@@ -28,27 +28,27 @@ public class Turret extends SubsystemBase {
         this.io = io;
         this.joystickOverride = () -> 0.0;
         this.voltage = 0;
-        //io.updateInputs(inputs);
-        // goal = new TrapezoidProfile.State(inputs.rotationDegrees, 0);
-        // setpoint = goal;
+        io.updateInputs(inputs);
+        goal = new TrapezoidProfile.State(inputs.piviotRotationDegrees, 0);
+        setpoint = goal;
     }
 
     @Override
     public void periodic() {
-        //io.updateInputs(inputs);
-        //Logger.processInputs("Wrist", inputs);
+        io.updateInputs(inputs);
+        Logger.processInputs("Wrist", inputs);
 
-        // if (DriverStation.isDisabled()) {
-        //     setpoint = new TrapezoidProfile.State(inputs.rotationDegrees, 0);
-        //     goal = setpoint;
-        // }
+         if (DriverStation.isDisabled()) {
+             setpoint = new TrapezoidProfile.State(inputs.piviotRotationDegrees, 0);
+             goal = setpoint;
+         }
 
-        // Logger.recordOutput("Turret/SetpointPosition", setpoint.position);
-        // Logger.recordOutput("Turret/GoalPosition", goal.position);
-        // Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
-        // setpoint = profile.calculate(0.02, setpoint, goal);
-        // voltage = pid.calculate(inputs.rotationDegrees, setpoint.position)
-        // + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity);
+         Logger.recordOutput("Turret/SetpointPosition", setpoint.position);
+         Logger.recordOutput("Turret/GoalPosition", goal.position);
+         Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
+         setpoint = profile.calculate(0.02, setpoint, goal);
+         voltage = pid.calculate(inputs.piviotRotationDegrees, setpoint.position)
+         + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity);
 
     }   
     
@@ -66,11 +66,11 @@ public class Turret extends SubsystemBase {
             } );
     }
 
-    // public double getAngle() {
-    //     return inputs.rotationDegrees;
-    // }
+     public double getAngle() {
+         return inputs.piviotRotationDegrees;
+     }
 
-    // public boolean atSetpoint() {
-    //     return MathUtil.isNear(goal.position, inputs.rotationDegrees, 0.0);
-    // }
+     public boolean atSetpoint() {
+         return MathUtil.isNear(goal.position, inputs.piviotRotationDegrees, 0.0);
+     }
 }
