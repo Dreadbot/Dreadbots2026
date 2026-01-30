@@ -125,9 +125,9 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pidf(
-            driveKp, 0.0,
-            driveKd, 0.0);
+        .pid(driveKp,
+            0.0,
+            driveKd);
                 
     
     driveConfig
@@ -185,7 +185,6 @@ public class ModuleIOSpark implements ModuleIO {
          () -> 
             turnEncoder.setPosition(Units.rotationsToRadians(canCoder.getAbsolutePosition().getValueAsDouble()))
         );
-
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue =

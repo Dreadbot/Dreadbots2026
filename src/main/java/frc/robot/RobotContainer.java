@@ -99,7 +99,7 @@ public class RobotContainer {
         drive::getPose);
    
       //Boot up camera server
-      CameraServer.startAutomaticCapture(0);
+      //CameraServer.startAutomaticCapture(0);
       break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -206,7 +206,7 @@ public class RobotContainer {
             drive,
             () -> -primaryController.getLeftY(),
             () -> -primaryController.getLeftX(),
-            () -> -primaryController.getRightX()));
+            () -> primaryController.getRightX()));
 
     
     primaryController
