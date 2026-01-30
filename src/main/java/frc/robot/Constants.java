@@ -41,4 +41,9 @@ public class Constants {
         public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0);
 
     }
+    public static final class UnderglowConstants {
+        public static final int LED_COUNT = 0;
+        public static final int PWM_PORT = 0;
+        public static final double BLINK_FREQUENCY = 0.1;
+    }
 }

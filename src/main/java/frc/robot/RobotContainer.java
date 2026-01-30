@@ -1,29 +1,38 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+
 import java.util.List;
 
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.commands.DriveCommands;
-import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.util.vision.VisionUtil;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.subsystems.underglow.Underglow;
+import frc.robot.subsystems.underglow.UnderglowIO;
+import frc.robot.subsystems.underglow.UnderglowIOAddressableLED;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
-
-import frc.robot.subsystems.flywheel.*;
+import frc.robot.util.vision.VisionUtil;
 
 public class RobotContainer {
 
@@ -33,10 +42,11 @@ public class RobotContainer {
     private final Vision vision;
     private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
+    private final Underglow underglow;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
-                case REAL: 
+            case REAL: 
 
                 drive = 
                 new Drive(
@@ -47,24 +57,26 @@ public class RobotContainer {
                     new ModuleIOSpark(3));
                 // turret = new Turret(new TurretIOSparkMax());
                 cameras = List.of(
-            new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontRightCameraName), 
-            0),
-            new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontLeftCameraName),
-            1),
-            new VisionCamera(
-            new VisionIOCamera(VisionConstants.backCameraName),
-            2));
-        vision = new Vision(
-            cameras,
-            drive::addVisionMeasurement,
-            drive::getPose);
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.frontRightCameraName), 
+                        0),
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.frontLeftCameraName),
+                        1),
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.backCameraName),
+                        2));
+                vision = new Vision(
+                    cameras,
+                    drive::addVisionMeasurement,
+                    drive::getPose);
                 CameraServer.startAutomaticCapture(0);
 
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                break;
-                case SIM:
+                underglow = new Underglow(new UnderglowIOAddressableLED());
+            break;
+            
+            case SIM:
 
                 drive = 
                 new Drive(
@@ -73,26 +85,27 @@ public class RobotContainer {
                     new ModuleIOSim(),
                     new ModuleIOSim(),
                     new ModuleIOSim());
-                    cameras = List.of(
-            new VisionCamera(
-                new VisionIOCamera(VisionConstants.frontRightCameraName), 
-                0),
-            new VisionCamera(
-                new VisionIOCamera(VisionConstants.frontLeftCameraName),
-                1),
-            new VisionCamera(
-                new VisionIOCamera(VisionConstants.backCameraName),
-                2));
-            vision = new Vision(
-            cameras,
-            drive::addVisionMeasurement,
-            drive::getPose);
+                cameras = List.of(
+                new VisionCamera(
+                    new VisionIOCamera(VisionConstants.frontRightCameraName), 
+                    0),
+                new VisionCamera(
+                    new VisionIOCamera(VisionConstants.frontLeftCameraName),
+                    1),
+                new VisionCamera(
+                    new VisionIOCamera(VisionConstants.backCameraName),
+                    2));
+                vision = new Vision(
+                    cameras,
+                    drive::addVisionMeasurement,
+                    drive::getPose);
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
+                underglow = new Underglow(new UnderglowIO() {});
                 break;
 
-                default:
+            default:
 
                 drive = 
                     new Drive(
@@ -102,44 +115,51 @@ public class RobotContainer {
                         new ModuleIO() {}, 
                         new ModuleIO() {});
 
-                        cameras = List.of(
-            new VisionCamera(
-                new VisionIO() {},
-                0),
-            new VisionCamera(
-                new VisionIO() {},
-                1),
-            new VisionCamera(
-                new VisionIO() {},
-                2));
-            vision = new Vision(
-            cameras,
-            drive::addVisionMeasurement,
-            drive::getPose);
+                cameras = List.of(
+                    new VisionCamera(
+                        new VisionIO() {},
+                        0),
+                    new VisionCamera(
+                        new VisionIO() {},
+                        1),
+                    new VisionCamera(
+                        new VisionIO() {},
+                        2));
+                vision = new Vision(
+                    cameras,
+                    drive::addVisionMeasurement,
+                    drive::getPose);
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
+                underglow = new Underglow(new UnderglowIO() {});
                 break;
             }
             configureButtonBindings();
         }
 
-private void configureButtonBindings() {
+    private void configureButtonBindings() {
+        
         VisionUtil.getApriltagPose(1);
-         drive.setDefaultCommand(
-              DriveCommands.joystickDrive(
-                  drive, 
-                      () -> -primaryController.getLeftY(),
-                      () -> -primaryController.getLeftX(),
-                      () -> -primaryController.getRightX()));
+        drive.setDefaultCommand(
+            DriveCommands.joystickDrive(
+                drive, 
+                    () -> -primaryController.getLeftY(),
+                    () -> -primaryController.getLeftX(),
+                    () -> -primaryController.getRightX()));
 
-          primaryController.start().onTrue(
-              Commands.runOnce(
-                  () -> drive.setPose(
-                          new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
-                          drive).ignoringDisable(true));
-         }
-         public Command getAutonomousCommand() {
+        primaryController.start().onTrue(
+            Commands.runOnce(
+                () -> drive.setPose(
+                        new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
+                        drive).ignoringDisable(true));
+        disabled().onTrue(
+            new InstantCommand(() -> {
+                underglow.setToPattern(LEDPattern.solid(underglow.getAllianceColor())
+                .breathe(Seconds.of(1)));})
+                .ignoringDisable(true));
+    }
+    public Command getAutonomousCommand() {
         return null; //choreoAutoChooser.selectedCommand();
     }
 
@@ -149,5 +169,9 @@ private void configureButtonBindings() {
 
     public void teleopInit() {
 
+    }
+
+    private static Trigger disabled() {
+        return new Trigger(DriverStation::isDisabled);
     }
 }
