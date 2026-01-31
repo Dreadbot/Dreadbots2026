@@ -6,7 +6,7 @@ public interface FlywheelIO {
 
     @AutoLog
     public static class FlywheelIOInputs {
-        public double velocityRPM = 0.0;
+        public double RPM = 0.0;
         public double appliedVolts = 0.0;
     }
 
