@@ -30,24 +30,10 @@ public class AutoCommands {
 
 
 
-    public Command WheelRadiCalibration() {
-        return Commands.sequence(
-            factory.resetOdometry("WheelRadiCalibration"),
-            factory.trajectoryCmd("WheelRadiCalibration")
-        );
-    }
-
     public Command StraightLine(){
         return Commands.sequence(
             factory.resetOdometry("StraightLine"),
             factory.trajectoryCmd("StraightLine")
-        );
-    }
-
-    public Command StraightLineBack(){
-        return Commands.sequence(
-            factory.resetOdometry("StraightLineBack"),
-            factory.trajectoryCmd("StraightLineBack")
         );
     }
 }
