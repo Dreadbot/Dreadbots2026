@@ -350,13 +350,24 @@ public class Drive extends SubsystemBase {
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
+  public Pose2d lerp(Pose2d currentPose, Pose2d visionPose, double weight){
+    double newX = currentPose.getX() + (visionPose.getX() - currentPose.getX()) * weight;
+    double newY = currentPose.getY() + (visionPose.getY() - currentPose.getY()) * weight;
+    Pose2d newPose = new Pose2d(newX, newY, currentPose.getRotation());
+
+    return newPose;
+
+  }
+
+
+
   /** Adds a new timestamped vision measurement. */
   public void addVisionMeasurement(
       Pose2d visionRobotPoseMeters,
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
-        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+        lerp(poseEstimator.getEstimatedPosition(), visionRobotPoseMeters, .04), timestampSeconds, visionMeasurementStdDevs);
   }
 
   /** Returns the maximum linear speed in meters per sec. */
