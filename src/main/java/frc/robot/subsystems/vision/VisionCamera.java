@@ -35,14 +35,16 @@ public class VisionCamera {
 			switch (index) {
 				case 0 -> frontRightCameraLinearStdDevs;
 				case 1 -> frontLeftCameraLinearStdDevs;
-				case 2 -> backCameraLinearStdDevs;
+				case 2 -> backLeftCameraLinearStdDevs;
+				case 3 -> backRightCameraLinearStdDevs;
 				default -> 1_000_000;
 			};
 		this.angularStdDev =
 			switch (index) {
 				case 0 -> frontRightCameraAngularStdDevs;
 				case 1 -> frontLeftCameraAngularStdDevs;
-				case 2 -> backCameraAngularStdDevs;
+				case 2 -> backLeftCameraAngularStdDevs;
+				case 3 -> backRightCameraAngularStdDevs;
 				default -> 1_000_000;
 			};
     }
@@ -52,6 +54,7 @@ public class VisionCamera {
         Logger.processInputs("VisionCam" + Integer.toString(index), inputs);
 
         ArrayList<Pose3d> tagPoses = new ArrayList<>();
+		ArrayList<Pose2d> acceptedPoses = new ArrayList<>();
 		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
 
 		for(VisionDetection detection : inputs.detections) {
@@ -59,42 +62,39 @@ public class VisionCamera {
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
 			boolean shouldRejectTag =
-				detection.id() == 14 
-				|| detection.id() == 15 
-				|| detection.id() == 4 
-				|| detection.id() == 5
-				|| detection.id() == 12
-				|| detection.id() == 13
-				|| detection.id() == 1
-				|| detection.id() == 2
-				|| tagDist > 5.0
+				tagDist > 5.0
 				|| detection.pose().getX() < 0.0
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
 				|| detection.pose().getY() < 0.0
-				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
-				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
+				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth();
+				//|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
 
-			if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) { // If we are auto aligning, or this cam is the back cam, reject every non barge tags 
-				shouldRejectTag = shouldRejectTag || VisionUtil.isNotReefId(detection.id());
-			}
+			// if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) {
+			// 	shouldRejectTag = shouldRejectTag || !VisionUtil.isHubId(detection.id());
+			// }
 			
-			if (shouldRejectTag) {
-				rejectedPoses.add(detection.pose());
-				continue;
-			}
+			// if (shouldRejectTag) {
+			// 	rejectedPoses.add(detection.pose());
+			// 	continue;
+			// }
 			double stdDevFactor = Math.pow(tagDist, 2.0);
 
+			acceptedPoses.add(detection.pose());
 			tagPoses.add(tagPose);
 
 			// std dev scaling goes here
-			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/VisionPose" , detection.pose());
-			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/tagPoseLen", tagPoses.size());
-			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/PoseTimestamp", (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET));
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/Pose" , detection.pose());
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/TagID", detection.id());
+			Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/Timestamp", (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET));
 
-			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET), VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
+			consumer.accept(
+				detection.pose(), 
+				(detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET), 
+				VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
 		}
 		Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
-		Logger.recordOutput("Vision/Cam" + Integer.toString(index)  + "/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
+		Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/Accepted", acceptedPoses.toArray(new Pose2d[acceptedPoses.size()]));
+		Logger.recordOutput("Vision/Cam" + Integer.toString(index)  + "/Rejected", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
     }
 
 	@FunctionalInterface

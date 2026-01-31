@@ -82,21 +82,24 @@ public class RobotContainer {
     //   wrist = new Wrist(new WristIOSparkMax());
       cameras = List.of(
         new VisionCamera(
-          new VisionIOCamera(VisionConstants.frontRightCameraName), 
+          new VisionIOCamera(VisionConstants.frontLeftCameraTable), 
           0),
         new VisionCamera(
-          new VisionIOCamera(VisionConstants.frontLeftCameraName),
+          new VisionIOCamera(VisionConstants.frontRightCameraTable),
           1),
         new VisionCamera(
-          new VisionIOCamera(VisionConstants.backCameraName),
-          2));
+          new VisionIOCamera(VisionConstants.backLeftCameraTable),
+          2),
+        new VisionCamera(
+          new VisionIOCamera(VisionConstants.backRightCameraTable),
+          3));
       vision = new Vision(
         cameras,
         drive::addVisionMeasurement,
         drive::getPose);
    
       //Boot up camera server
-      CameraServer.startAutomaticCapture(0);
+      //CameraServer.startAutomaticCapture(0);
       break;
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
@@ -110,14 +113,17 @@ public class RobotContainer {
         
         cameras = List.of(
           new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontRightCameraName), 
+            new VisionIOCamera(VisionConstants.frontLeftCameraTable), 
             0),
           new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontLeftCameraName),
+            new VisionIOCamera(VisionConstants.frontRightCameraTable),
             1),
           new VisionCamera(
-            new VisionIOCamera(VisionConstants.backCameraName),
-            2));
+            new VisionIOCamera(VisionConstants.backLeftCameraTable),
+            2),
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.backRightCameraTable),
+            3));
         vision = new Vision(
           cameras,
           drive::addVisionMeasurement,
