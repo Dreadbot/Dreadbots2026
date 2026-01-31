@@ -69,14 +69,14 @@ public class VisionCamera {
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth();
 				//|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
 
-			if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) {
-				shouldRejectTag = shouldRejectTag || !VisionUtil.isHubId(detection.id());
-			}
+			// if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) {
+			// 	shouldRejectTag = shouldRejectTag || !VisionUtil.isHubId(detection.id());
+			// }
 			
-			if (shouldRejectTag) {
-				rejectedPoses.add(detection.pose());
-				continue;
-			}
+			// if (shouldRejectTag) {
+			// 	rejectedPoses.add(detection.pose());
+			// 	continue;
+			// }
 			double stdDevFactor = Math.pow(tagDist, 2.0);
 
 			acceptedPoses.add(detection.pose());

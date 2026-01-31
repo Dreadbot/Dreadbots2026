@@ -206,7 +206,7 @@ public class RobotContainer {
             drive,
             () -> -primaryController.getLeftY(),
             () -> -primaryController.getLeftX(),
-            () -> primaryController.getRightX()));
+            () -> -primaryController.getRightX()));
 
     
     primaryController

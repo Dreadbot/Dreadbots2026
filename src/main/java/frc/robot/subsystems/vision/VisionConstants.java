@@ -6,10 +6,10 @@ public final class VisionConstants {
     public static final String backLeftCameraTable = "Cam2";
     public static final String backRightCameraTable = "Cam3";
 
-    public static final double frontLeftCameraLinearStdDevs = 0.005;
-    public static final double frontRightCameraLinearStdDevs = 0.005;
-    public static final double backLeftCameraLinearStdDevs = 0.005;
-    public static final double backRightCameraLinearStdDevs = 0.005;
+    public static final double frontLeftCameraLinearStdDevs = 0.05;
+    public static final double frontRightCameraLinearStdDevs = 0.05;
+    public static final double backLeftCameraLinearStdDevs = 0.05;
+    public static final double backRightCameraLinearStdDevs = 0.05;
 
     public static final double frontLeftCameraAngularStdDevs = 100_000;
     public static final double frontRightCameraAngularStdDevs = 100_000;
