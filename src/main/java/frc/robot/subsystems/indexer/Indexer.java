@@ -1,5 +1,5 @@
 package frc.robot.subsystems.indexer;
-
+// imports necessary libraries and files
 import frc.robot.Constants.IndexerConstants;
 
 import org.littletonrobotics.junction.Logger;
@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Indexer extends SubsystemBase {
-   
+    // sets up private variables
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIO io;
     private boolean isIntaking = false;
     private boolean hasGamepiece = false;
 
-
+    // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
         this.io = io;
     }
@@ -28,7 +28,7 @@ public class Indexer extends SubsystemBase {
         Logger.processInputs("Indexer", inputs);
     }
 
-
+    // runs the intake command
     public Command intake() {
         return startEnd(
             () -> io.runVoltage(IndexerConstants.INTAKE_VOLTAGE),
