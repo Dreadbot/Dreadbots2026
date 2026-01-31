@@ -13,15 +13,11 @@ import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
 
 import frc.robot.Constants.ClimbConstants;
 
-//Redone Code from 2024/2025 Slapdown Algae I wrote to get voltage from a motor needs work so commented out for now -Landon
-
-// I think issue is that the Sparkflex Motor has not been defined nad named yet 
 public class ClimbIOSparkFlex implements ClimbIO {
     private SparkFlex screwMotor;
-        
-        
-        public void ClimbIOSparkFlex() {
-            this.screwMotor = new SparkFlex(ClimbConstants.MOTOR_ID, MotorType.kBrushless);
+
+    public ClimbIOSparkFlex() {
+        screwMotor = new SparkFlex(ClimbConstants.MOTOR_ID, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
         config.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
         screwMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -37,21 +33,3 @@ public class ClimbIOSparkFlex implements ClimbIO {
         screwMotor.setVoltage(volts);
     }
 }
-
-//  public ClimbIOSim() {
-        
-//          ScrewMotorVolts = 0.0;
-
-//     private double ScrewMotorVolts;
- 
-//     @Override
-//     public void updateInputs(ClimbIOInputs inputs) {
-      
-
-//         inputs.screwMotorAppliedVolts = ScrewMotorVolts;
-        
-       
-//         inputs.screwMotorCurrentAmps = ScrewMotor.getCurrentDrawAmps();
-
-//        }  
-//     }

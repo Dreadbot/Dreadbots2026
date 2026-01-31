@@ -24,6 +24,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
 
 import frc.robot.subsystems.flywheel.*;
+import frc.robot.subsystems.climb.*;
 
 public class RobotContainer {
 
@@ -33,39 +34,74 @@ public class RobotContainer {
     private final Vision vision;
     private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
+    private final Climb climb;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
                 case REAL: 
 
-                drive = 
+                // drive = 
+                // new Drive(
+                //     new GyroIONavX(),
+                //     new ModuleIOSpark(0),
+                //     new ModuleIOSpark(1),
+                //     new ModuleIOSpark(2),
+                //     new ModuleIOSpark(3));
+
+
+                     drive = 
                 new Drive(
-                    new GyroIONavX(),
-                    new ModuleIOSpark(0),
-                    new ModuleIOSpark(1),
-                    new ModuleIOSpark(2),
-                    new ModuleIOSpark(3));
+                    new GyroIO() {},
+                    new ModuleIOSim(),
+                    new ModuleIOSim(),
+                    new ModuleIOSim(),
+                    new ModuleIOSim());
+
                 // turret = new Turret(new TurretIOSparkMax());
-                cameras = List.of(
+        //         cameras = List.of(
+        //     new VisionCamera(
+        //     new VisionIOCamera(VisionConstants.frontRightCameraName), 
+        //     0),
+        //     new VisionCamera(
+        //     new VisionIOCamera(VisionConstants.frontLeftCameraName),
+        //     1),
+        //     new VisionCamera(
+        //     new VisionIOCamera(VisionConstants.backCameraName),
+        //     2));
+        // vision = new Vision(
+        //     cameras,
+        //     drive::addVisionMeasurement,
+        //     drive::getPose);
+                // CameraServer.startAutomaticCapture(0);
+
+       cameras = List.of(
             new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontRightCameraName), 
-            0),
+                new VisionIOCamera(VisionConstants.frontRightCameraName), 
+                0),
             new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontLeftCameraName),
-            1),
+                new VisionIOCamera(VisionConstants.frontLeftCameraName),
+                1),
             new VisionCamera(
-            new VisionIOCamera(VisionConstants.backCameraName),
-            2));
-        vision = new Vision(
+                new VisionIOCamera(VisionConstants.backCameraName),
+                2));
+            vision = new Vision(
             cameras,
             drive::addVisionMeasurement,
             drive::getPose);
-                CameraServer.startAutomaticCapture(0);
 
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
+
+                 flywheel = new Flywheel(new FlywheelIOSim());
+                //flywheel = new Flywheel(new FlywheelIOSparkFlex());
+                climb = new Climb(new ClimbIOSparkFlex());
                 break;
-                case SIM:
 
+
+
+
+
+
+                case SIM:
+                
                 drive = 
                 new Drive(
                     new GyroIO() {},
@@ -90,7 +126,11 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
+               
+
+                climb = new Climb(new ClimbIOSim());
                 break;
+
 
                 default:
 
@@ -117,6 +157,7 @@ public class RobotContainer {
             drive::addVisionMeasurement,
             drive::getPose);
 
+                climb = new Climb(new ClimbIO() {});
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
                 break;
@@ -124,6 +165,15 @@ public class RobotContainer {
             configureButtonBindings();
         }
 
+
+
+
+
+
+
+
+
+//This Configures the Button's bindings for the controller with the system for the robot
 private void configureButtonBindings() {
         VisionUtil.getApriltagPose(1);
          drive.setDefaultCommand(
@@ -138,6 +188,14 @@ private void configureButtonBindings() {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
+
+
+
+        // //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
+        primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
+        primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
+
+
          }
          public Command getAutonomousCommand() {
         return null; //choreoAutoChooser.selectedCommand();
