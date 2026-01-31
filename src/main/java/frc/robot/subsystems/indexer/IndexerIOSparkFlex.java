@@ -10,22 +10,29 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import frc.robot.Constants.IndexerConstants;
 
 public class IndexerIOSparkFlex implements IndexerIO {
-    private final SparkFlex motor;
-    // initializes motor
+    private final SparkFlex indexerMotor;
+    private final SparkFlex kickerMotor;
+    // initializes indexerMotor and kickerMotor
     public IndexerIOSparkFlex() {
-        this.motor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
+        this.indexerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
+        this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID + 1, MotorType.kBrushless); // change the MOTOR_ID + 1 to the actual ID of the kicker motor
         SparkFlexConfig config = new SparkFlexConfig();
         config.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
-    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        indexerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        kickerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     // updates the inputs
-    public void updateInputs(IndexerIOInputs inputs) {
-        inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
-        inputs.currentAmps = motor.getOutputCurrent();
-        inputs.RPM = motor.getEncoder().getVelocity();
+    public void updateInputs(IndexerIOInputs indexerInputs, IndexerIOInputs kickerInputs) {
+        indexerInputs.appliedVolts = indexerMotor.getAppliedOutput() * indexerMotor.getBusVoltage();
+        indexerInputs.currentAmps = indexerMotor.getOutputCurrent();
+        indexerInputs.RPM = indexerMotor.getEncoder().getVelocity();
+        kickerInputs.appliedVolts = kickerMotor.getAppliedOutput() * kickerMotor.getBusVoltage();
+        kickerInputs.currentAmps = kickerMotor.getOutputCurrent();
+        kickerInputs.RPM = kickerMotor.getEncoder().getVelocity();
     }
-    // runs voltage for the motor
-    public void runVoltage(double volts) {
-        motor.setVoltage(volts);
+    // runs voltage for the indexerMotor and kickerMotor
+    public void runVoltage(double indexerVolts, double kickerVolts) {
+        indexerMotor.setVoltage(indexerVolts);
+        kickerMotor.setVoltage(kickerVolts);
     }
 }
