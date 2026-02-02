@@ -5,6 +5,7 @@ import java.util.List;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +17,10 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretIO;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.turret.TurretIOSparkMax;
 import frc.robot.util.vision.VisionUtil;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
@@ -30,6 +35,7 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private final List<VisionCamera> cameras;
+    private final Turret turret;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -42,7 +48,7 @@ public class RobotContainer {
                  new ModuleIOSpark(1),
                  new ModuleIOSpark(2),
                  new ModuleIOSpark(3));
-            // turret = new Turret(new TurretIOSparkMax());
+            turret = new Turret(new TurretIOSparkMax());
             cameras = List.of(
         new VisionCamera(
           new VisionIOCamera(VisionConstants.frontRightCameraName), 
@@ -83,7 +89,7 @@ public class RobotContainer {
           drive::addVisionMeasurement,
           drive::getPose);
          
-            // turret = new Turret(new TurretIOSim());
+            turret = new Turret(new TurretIOSim());
             break;
 
             default:
@@ -110,7 +116,7 @@ public class RobotContainer {
           cameras,
           drive::addVisionMeasurement,
           drive::getPose);
-            // turret = new Turret(new TurretIO() {});
+            turret = new Turret(new TurretIO() {});
             break;
         }
         
@@ -131,6 +137,7 @@ public class RobotContainer {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
+          secondaryController.leftTrigger().onTrue(turret.setAngleDegrees(TurretConstants.TEST_ANGLE));
          }
 
     public Command getAutonomousCommand() {

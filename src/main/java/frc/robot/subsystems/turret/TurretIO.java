@@ -2,8 +2,6 @@ package frc.robot.subsystems.turret;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 public interface TurretIO {
     @AutoLog
     public static class TurretIOInputs {
@@ -17,7 +15,7 @@ public interface TurretIO {
         public double pivotRotationDegrees = 0.0;
         
         //RPM
-        public double piviotRPM = 0.0;
+        public double pivotRPM = 0.0;
         public double absolutePosition = 0.0;
 
         //Temp

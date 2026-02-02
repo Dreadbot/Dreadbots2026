@@ -29,4 +29,14 @@ public class Constants {
     public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0);
 
   }
+
+  public static class TurretConstants {
+    public static final int TURRET_DUTY_CYCLE_ENCODER = 1;
+    public static final double TURRET_ENCODER_OFFSET = 26.9;
+    public static final double TURRET_MAX_ANGLE = 360;
+    public static final double TURRET_JOYSTICK_SLEW_VALUE = 3;
+    public static final double TURRET_EXPECTED_ZERO = 0;
+    public static final double GEAR_REDUCTION = 1.0 / 150.0;
+    public static final double TEST_ANGLE = 90;
+  }
 }

@@ -15,9 +15,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Turret extends SubsystemBase {
     private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private TurretIO io;
-    private final PIDController pid = new PIDController(0.0, 0.0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.00, 0.00);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
+    private final PIDController pid = new PIDController(0.1, 0, 0);
+    private final ArmFeedforward feedforward = new ArmFeedforward(0.26, 0.15, 0.03);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 840));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     public DoubleSupplier joystickOverride;
@@ -29,17 +29,17 @@ public class Turret extends SubsystemBase {
         this.joystickOverride = () -> 0.0;
         this.voltage = 0;
         io.updateInputs(inputs);
-        goal = new TrapezoidProfile.State(inputs.piviotRotationDegrees, 0);
+        goal = new TrapezoidProfile.State(inputs.pivotRotationDegrees, 0);
         setpoint = goal;
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Wrist", inputs);
+        Logger.processInputs("Turret", inputs);
 
          if (DriverStation.isDisabled()) {
-             setpoint = new TrapezoidProfile.State(inputs.piviotRotationDegrees, 0);
+             setpoint = new TrapezoidProfile.State(inputs.pivotRotationDegrees, 0);
              goal = setpoint;
          }
 
@@ -47,9 +47,9 @@ public class Turret extends SubsystemBase {
          Logger.recordOutput("Turret/GoalPosition", goal.position);
          Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
          setpoint = profile.calculate(0.02, setpoint, goal);
-         voltage = pid.calculate(inputs.piviotRotationDegrees, setpoint.position)
+         voltage = pid.calculate(inputs.pivotRotationDegrees, setpoint.position)
          + feedforward.calculate(Units.degreesToRadians(setpoint.position) ,setpoint.velocity);
-
+         io.runPivotVoltage(voltage);
     }   
     
     public Command setAngleDegrees(double angle) {
@@ -67,10 +67,10 @@ public class Turret extends SubsystemBase {
     }
 
      public double getAngle() {
-         return inputs.piviotRotationDegrees;
+         return inputs.pivotRotationDegrees;
      }
 
      public boolean atSetpoint() {
-         return MathUtil.isNear(goal.position, inputs.piviotRotationDegrees, 0.0);
+         return MathUtil.isNear(goal.position, inputs.pivotRotationDegrees, 0.0);
      }
 }

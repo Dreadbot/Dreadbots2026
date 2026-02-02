@@ -1,26 +1,44 @@
-//package frc.robot.subsystems.turret;
+package frc.robot.subsystems.turret;
 
-//public class TurretIOSparkMax implements TurretIO {
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import frc.robot.Constants.TurretConstants;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+
+public class TurretIOSparkMax implements TurretIO {
     
-//    private final SparkBase intakeMotor;
-//    private final SparkBase pivotMotor;
-//    private final DutyCycleEncoder absoluteEncoder;
+    private final SparkMax turretMotor;
+    private DutyCycleEncoder absoluteEncoder;
+    private double volts = 0.0;
 
-//    public TurretIOSparkMax() {
-//        public TurretIOSparkMax() {
-//         this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER), 0, 0); //Update code with the 0 and max angle
-//         absoluteEncoder.setAssumedFrequency(TurretConstants.ENCODER_FREQUENCY);
-//         this.intakeMotor = new SparkMax(TurretConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
-//         this.pivotMotor = new SparkMax(TurretConstants.PIVOT_MOTOR_ID, MotorType.kBrushless);
-//         SparkMaxConfig intakeConfig = new SparkMaxConfig();
-//         SparkMaxConfig pivotConfig = new SparkMaxConfig();
-//         
-//         intakeConfig
-//             .idleMode(IdleMode.kBrake);
-//         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameter);
-//         pivotConfig
-//             .idleMode(IdleMode.kBrake);
-//         intakeMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameter);
-//         }
-//    }
-//}
+   public TurretIOSparkMax() {
+       this.turretMotor = new SparkMax(14, MotorType.kBrushless);
+       this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
+       TurretConstants.TURRET_MAX_ANGLE, TurretConstants.TURRET_EXPECTED_ZERO);
+       this.volts = 0.0;
+       absoluteEncoder.setInverted(true);
+       absoluteEncoder.setAssumedFrequency(975.6);
+       SparkMaxConfig config = new SparkMaxConfig();
+       config.idleMode(IdleMode.kBrake);
+       turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }    
+       
+    @Override   
+    public void updateInputs(TurretIOInputs inputs) {
+        inputs.pivotAppliedVolts = turretMotor.getAppliedOutput() * turretMotor.getBusVoltage();
+        inputs.pivotCurrentAmps = turretMotor.getOutputCurrent();
+        inputs.pivotRotationDegrees = (absoluteEncoder.get() - TurretConstants.TURRET_ENCODER_OFFSET);
+    }
+
+
+    @Override
+    public void runPivotVoltage(double volts){
+        turretMotor.setVoltage(volts);
+        this.volts = volts;
+    }
+}

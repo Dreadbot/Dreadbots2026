@@ -24,7 +24,7 @@ public class TurretIOSim implements TurretIO {
     public void updateInputs(TurretIOInputs inputs) {
         turret.update(0.02);
         inputs.pivotAppliedVolts = 0.0;
-        inputs.piviotRPM = (turret.getVelocityRadPerSec());
+        inputs.pivotRPM = (turret.getVelocityRadPerSec());
         inputs.pivotCurrentAmps = turret.getCurrentDrawAmps();
         inputs.pivotRotationDegrees = Units.radiansToDegrees(turret.getAngleRads());
     }
