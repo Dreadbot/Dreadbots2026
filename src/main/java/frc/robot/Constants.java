@@ -22,8 +22,8 @@ public class Constants {
     }
 
     public static class FlywheelConstants {
-        public static final double SHOOT_VOLTAGE = 3.0;
-        public static final int MOTOR_ID_1 = 13;
+        public static final double SHOOT_VOLTAGE = 1.0;
+        public static final int MOTOR_ID_1 = 1;
         public static final int MOTOR_ID_2 = 14;
     }
 

@@ -44,27 +44,27 @@ public class RobotContainer {
             case REAL:
 
                 drive = new Drive(
-                        new GyroIONavX(),
-                        new ModuleIOSpark(0),
-                        new ModuleIOSpark(1),
-                        new ModuleIOSpark(2),
-                        new ModuleIOSpark(3));
+                    new GyroIONavX(),
+                    new ModuleIOSpark(0),
+                    new ModuleIOSpark(1),
+                    new ModuleIOSpark(2),
+                    new ModuleIOSpark(3));
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 // turret = new Turret(new TurretIOSparkMax());
                 cameras = List.of(
-                        new VisionCamera(
-                                new VisionIOCamera(VisionConstants.frontRightCameraName),
-                                0),
-                        new VisionCamera(
-                                new VisionIOCamera(VisionConstants.frontLeftCameraName),
-                                1),
-                        new VisionCamera(
-                                new VisionIOCamera(VisionConstants.backCameraName),
-                                2));
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.frontRightCameraName),
+                        0),
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.frontLeftCameraName),
+                        1),
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.backCameraName),
+                        2));
                 vision = new Vision(
-                        cameras,
-                        drive::addVisionMeasurement,
-                        drive::getPose);
+                    cameras,
+                    drive::addVisionMeasurement,
+                    drive::getPose);
                 CameraServer.startAutomaticCapture(0);
 
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
@@ -72,27 +72,27 @@ public class RobotContainer {
             case SIM:
 
                 drive = new Drive(
-                        new GyroIO() {
-                        },
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim(),
-                        new ModuleIOSim());
+                    new GyroIO() {
+                    },
+                    new ModuleIOSim(),
+                    new ModuleIOSim(),
+                    new ModuleIOSim(),
+                    new ModuleIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 cameras = List.of(
-                        new VisionCamera(
-                                new VisionIOCamera(VisionConstants.frontRightCameraName),
-                                0),
-                        new VisionCamera(
-                                new VisionIOCamera(VisionConstants.frontLeftCameraName),
-                                1),
-                        new VisionCamera(
-                                new VisionIOCamera(VisionConstants.backCameraName),
-                                2));
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.frontRightCameraName),
+                        0),
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.frontLeftCameraName),
+                        1),
+                    new VisionCamera(
+                        new VisionIOCamera(VisionConstants.backCameraName),
+                        2));
                 vision = new Vision(
-                        cameras,
-                        drive::addVisionMeasurement,
-                        drive::getPose);
+                    cameras,
+                    drive::addVisionMeasurement,
+                    drive::getPose);
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
@@ -101,35 +101,35 @@ public class RobotContainer {
             default:
 
                 drive = new Drive(
-                        new GyroIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        });
+                    new GyroIO() {
+                    },
+                    new ModuleIO() {
+                    },
+                    new ModuleIO() {
+                    },
+                    new ModuleIO() {
+                    },
+                    new ModuleIO() {
+                    });
                 indexer = new Indexer(new IndexerIO() {
                 });
                 cameras = List.of(
-                        new VisionCamera(
-                                new VisionIO() {
-                                },
-                                0),
-                        new VisionCamera(
-                                new VisionIO() {
-                                },
-                                1),
-                        new VisionCamera(
-                                new VisionIO() {
-                                },
-                                2));
+                    new VisionCamera(
+                        new VisionIO() {
+                        },
+                        0),
+                    new VisionCamera(
+                        new VisionIO() {
+                        },
+                        1),
+                    new VisionCamera(
+                        new VisionIO() {
+                        },
+                        2));
                 vision = new Vision(
-                        cameras,
-                        drive::addVisionMeasurement,
-                        drive::getPose);
+                    cameras,
+                    drive::addVisionMeasurement,
+                    drive::getPose);
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
@@ -141,18 +141,19 @@ public class RobotContainer {
     private void configureButtonBindings() {
         VisionUtil.getApriltagPose(1);
         drive.setDefaultCommand(
-                DriveCommands.joystickDrive(
-                        drive,
-                        () -> -primaryController.getLeftY(),
-                        () -> -primaryController.getLeftX(),
-                        () -> -primaryController.getRightX()));
+            DriveCommands.joystickDrive(
+                drive,
+                () -> -primaryController.getLeftY(),
+                () -> -primaryController.getLeftX(),
+                () -> -primaryController.getRightX()));
 
         primaryController.start().onTrue(
-                Commands.runOnce(
-                        () -> drive.setPose(
-                                new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
-                        drive).ignoringDisable(true));
+            Commands.runOnce(
+                () -> drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
+                drive).ignoringDisable(true));
         secondaryController.leftTrigger().onTrue(indexer.intake());
+        //primaryController.x().whileTrue(flywheel.start());
+        //primaryController.y().whileTrue(flywheel.stop());
     }
 
     public Command getAutonomousCommand() {

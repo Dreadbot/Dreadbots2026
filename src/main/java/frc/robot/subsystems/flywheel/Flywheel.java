@@ -9,56 +9,56 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.FlywheelConstants;
 
 public class Flywheel extends SubsystemBase {
-  
-  private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
-  private final FlywheelIO io;
 
-  private final PIDController pid = new PIDController(10, 0, 0);
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
+    private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+    private final FlywheelIO io;
 
-  private double goalRPM = 0.0;
+    private final PIDController pid = new PIDController(0.01, 0, 0);
+    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
 
-  public Flywheel(FlywheelIO io) {
-    this.io = io;
-  }
+    private double goalRPM = 0.0;
 
-  @Override
-  public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Flywheel", inputs);
+    public Flywheel(FlywheelIO io) {
+        this.io = io;
+    }
 
-    double pidValue = pid.calculate(inputs.RPM, goalRPM);
-    double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
-    io.setVoltage(pidValue + feedforwardValue);
-    Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
-    Logger.recordOutput("Flywheel/PIDValue", pidValue);
-    Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
-    Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
-  }
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Flywheel", inputs);
 
-  public void runAtVoltage(double volts) {
-    io.setVoltage(volts);
-  }
+        double pidValue = pid.calculate(inputs.RPM, goalRPM);
+        double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
+        // io.setVoltage(pidValue + 0);
+        // Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
+        // Logger.recordOutput("Flywheel/PIDValue", pidValue);
+        // Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
+        // Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
+    }
 
-  public double getRPM() {
-    return inputs.RPM;
-  }
+    public void runAtVoltage(double volts) {
+        io.setVoltage(volts);
+    }
 
-  public Command start() {
-    return startEnd(
-        () -> io.setVoltage(FlywheelConstants.SHOOT_VOLTAGE),
-        () -> io.setVoltage(0.0)
-    );
-  }
+    public double getRPM() {
+        return inputs.RPM;
+    }
 
-  public Command stop() {
-    return startEnd(
-        () -> io.setVoltage(0.0),
-        () -> {}
-    );
-  }
+    public Command start() {
+        return startEnd(
+            () -> io.setVoltage(FlywheelConstants.SHOOT_VOLTAGE),
+            () -> io.setVoltage(0.0)
+        );
+    }
 
-  public Command setSpeed(double rpm) {
-    return runOnce(() -> goalRPM = rpm);
-  }
+    public Command stop() {
+        return startEnd(
+            () -> io.setVoltage(0.0),
+            () -> {}
+        );
+    }
+
+    public Command setSpeed(double rpm) {
+        return runOnce(() -> goalRPM = rpm);
+    }
 }
