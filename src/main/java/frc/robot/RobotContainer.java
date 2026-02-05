@@ -152,8 +152,10 @@ public class RobotContainer {
                 () -> drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                 drive).ignoringDisable(true));
         secondaryController.leftTrigger().onTrue(indexer.intake());
-        //primaryController.x().whileTrue(flywheel.start());
-        //primaryController.y().whileTrue(flywheel.stop());
+        // primaryController.a().onTrue(flywheel.setRPM(400));
+        // primaryController.b().onTrue(flywheel.setRPM(0));
+        // primaryController.y().onTrue(flywheel.changeRPM(100));
+        // primaryController.x().onTrue(flywheel.changeRPM(-100));
     }
 
     public Command getAutonomousCommand() {

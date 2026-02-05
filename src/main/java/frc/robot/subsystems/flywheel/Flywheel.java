@@ -13,7 +13,7 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
     private final FlywheelIO io;
 
-    private final PIDController pid = new PIDController(0.01, 0, 0);
+    private final PIDController pid = new PIDController(0.0002, 0, 0);
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
 
     private double goalRPM = 0.0;
@@ -29,36 +29,42 @@ public class Flywheel extends SubsystemBase {
 
         double pidValue = pid.calculate(inputs.RPM, goalRPM);
         double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
-        // io.setVoltage(pidValue + 0);
-        // Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
-        // Logger.recordOutput("Flywheel/PIDValue", pidValue);
-        // Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
-        // Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
+        io.setVoltage(pidValue + (goalRPM / 525));
+        // io.setRPM(goalRPM);
+        Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
+        Logger.recordOutput("Flywheel/PIDValue", pidValue);
+        Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
+        Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
     }
 
-    public void runAtVoltage(double volts) {
-        io.setVoltage(volts);
-    }
+    //public void runAtVoltage(double volts) {
+    //    io.setVoltage(volts);
+    //}
 
     public double getRPM() {
         return inputs.RPM;
     }
 
-    public Command start() {
-        return startEnd(
-            () -> io.setVoltage(FlywheelConstants.SHOOT_VOLTAGE),
-            () -> io.setVoltage(0.0)
-        );
-    }
+    // public Command start() {
+    //     return startEnd(
+    //         () -> {} //io.setVoltage(FlywheelConstants.SHOOT_VOLTAGE),
+    //         () -> {}//io.setVoltage(0.0)
+    //     );
+    // }
 
-    public Command stop() {
-        return startEnd(
-            () -> io.setVoltage(0.0),
-            () -> {}
-        );
-    }
+    // public Command stop() {
+    //     return startEnd(
+    //         () -> io.setVoltage(0.0),
+    //         () -> {}
+    //     );
+    // }
 
-    public Command setSpeed(double rpm) {
+    public Command setRPM(double rpm) {
+        System.out.println("GoalRPM:" + rpm);
         return runOnce(() -> goalRPM = rpm);
+    }
+
+    public Command changeRPM(double rpm) {
+        return runOnce(() -> goalRPM += rpm);
     }
 }
