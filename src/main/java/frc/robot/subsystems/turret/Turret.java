@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -16,7 +17,7 @@ public class Turret extends SubsystemBase {
     private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private TurretIO io;
     private final PIDController pid = new PIDController(0.1, 0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.26, 0.15, 0.03);
+    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.0);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 840));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();

@@ -27,6 +27,7 @@ import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
+import frc.robot.subsystems.vision.VisionIOSim;
 
 public class RobotContainer {
 
@@ -68,26 +69,26 @@ public class RobotContainer {
             case SIM:
 
             drive = 
-             new Drive(
-                 new GyroIO() {},
-                 new ModuleIOSim(),
-                 new ModuleIOSim(),
-                 new ModuleIOSim(),
-                 new ModuleIOSim());
-                cameras = List.of(
-          new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontRightCameraName), 
-            0),
-          new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontLeftCameraName),
-            1),
-          new VisionCamera(
-            new VisionIOCamera(VisionConstants.backCameraName),
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+            cameras = List.of(
+              new VisionCamera(
+                new VisionIOSim(drive::getPose), 
+                0),
+              new VisionCamera(
+                new VisionIOSim(drive::getPose), 
+                1),
+              new VisionCamera(
+                new VisionIOSim(drive::getPose), 
             2));
-        vision = new Vision(
-          cameras,
-          drive::addVisionMeasurement,
-          drive::getPose);
+                vision = new Vision(
+                  cameras,
+                  drive::addVisionMeasurement,
+                  drive::getPose);
          
             turret = new Turret(new TurretIOSim());
             break;
