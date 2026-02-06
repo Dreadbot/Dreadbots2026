@@ -31,8 +31,7 @@ public class VisionIOSim implements VisionIO{
             StateSpaceUtil.makeWhiteNoiseVector(VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5)));
         return new Pose2d(
             estimatedRobotPose.getX() + rand.get(0, 0),
-            3,
-            //estimatedRobotPose.getY() + rand.get(1, 0),
+            3,//estimatedRobotPose.getY() + rand.get(1, 0),
             estimatedRobotPose.getRotation().plus(new Rotation2d(rand.get(2, 0))));
     }
 

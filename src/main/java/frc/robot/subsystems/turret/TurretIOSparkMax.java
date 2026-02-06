@@ -7,6 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import frc.robot.Constants.TurretConstants;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
@@ -19,7 +20,7 @@ public class TurretIOSparkMax implements TurretIO {
    public TurretIOSparkMax() {
        this.turretMotor = new SparkMax(14, MotorType.kBrushless);
        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
-       TurretConstants.TURRET_MAX_ANGLE, TurretConstants.TURRET_EXPECTED_ZERO);
+       TurretConstants.MAX_ANGLE_RAD, TurretConstants.TURRET_EXPECTED_ZERO);
        this.volts = 0.0;
        absoluteEncoder.setInverted(true);
        absoluteEncoder.setAssumedFrequency(975.6);
@@ -32,12 +33,12 @@ public class TurretIOSparkMax implements TurretIO {
     public void updateInputs(TurretIOInputs inputs) {
         inputs.pivotAppliedVolts = turretMotor.getAppliedOutput() * turretMotor.getBusVoltage();
         inputs.pivotCurrentAmps = turretMotor.getOutputCurrent();
-        inputs.pivotRotationDegrees = (absoluteEncoder.get() - TurretConstants.TURRET_ENCODER_OFFSET);
+        inputs.turretRotationRad = (Units.rotationsToRadians(absoluteEncoder.get()) - TurretConstants.TURRET_ENCODER_OFFSET_RAD);
     }
 
 
     @Override
-    public void runPivotVoltage(double volts){
+    public void runTurretVoltage(double volts){
         turretMotor.setVoltage(volts);
         this.volts = volts;
     }

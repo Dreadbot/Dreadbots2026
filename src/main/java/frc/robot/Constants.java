@@ -32,11 +32,17 @@ public class Constants {
 
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 1;
-    public static final double TURRET_ENCODER_OFFSET = 26.9;
-    public static final double TURRET_MAX_ANGLE = 360;
+    public static final double TURRET_ENCODER_OFFSET_RAD = 0.0;
     public static final double TURRET_JOYSTICK_SLEW_VALUE = 3;
     public static final double TURRET_EXPECTED_ZERO = 0;
-    public static final double GEAR_REDUCTION = 1.0 / 150.0;
-    public static final double TEST_ANGLE = 90;
+    public static final double GEAR_REDUCTION = 50.0;
+    public static final double TEST_ANGLE = Units.degreesToRadians(90);
+
+    public static final double TURRET_OFFSET_X = 0.0;     // +X = Towards front
+    public static final double TURRET_OFFSET_Y = 0.0;     // +Y = Towards right
+
+
+    public static final double MAX_ANGLE_RAD = Math.PI;   // +180
+    public static final double MIN_ANGLE_RAD = -Math.PI;  // -180
   }
 }

@@ -3,20 +3,21 @@ package frc.robot.subsystems.turret;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import frc.robot.Constants.TurretConstants;
 
 public class TurretIOSim implements TurretIO {
     
     private SingleJointedArmSim turret;
 
     public TurretIOSim() {
-        this.turret = new SingleJointedArmSim(DCMotor.getNEO(1), 
-        50.0, 
-        SingleJointedArmSim.estimateMOI(0.15, Units.lbsToKilograms(10)), 
-        0.15, 
-        Units.degreesToRadians(-90), 
-        Units.degreesToRadians(90), 
-        true,
-        Units.degreesToRadians(0)
+        this.turret = new SingleJointedArmSim(DCMotor.getNeo550(1), 
+        TurretConstants.GEAR_REDUCTION, 
+        0.0366, 
+        0.075, 
+        TurretConstants.MIN_ANGLE_RAD, 
+        TurretConstants.MAX_ANGLE_RAD, 
+        false,
+        0.0
         );
     }
 
@@ -26,11 +27,11 @@ public class TurretIOSim implements TurretIO {
         inputs.pivotAppliedVolts = 0.0;
         inputs.pivotRPM = (turret.getVelocityRadPerSec());
         inputs.pivotCurrentAmps = turret.getCurrentDrawAmps();
-        inputs.pivotRotationDegrees = Units.radiansToDegrees(turret.getAngleRads());
+        inputs.turretRotationRad = Units.radiansToDegrees(turret.getAngleRads());
     }
 
     @Override
-    public void runPivotVoltage(double volts){
+    public void runTurretVoltage(double volts){
         turret.setInputVoltage(volts);
     }
 }

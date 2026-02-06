@@ -12,7 +12,7 @@ public interface TurretIO {
         public double pivotCurrentAmps = 0.0;
 
         //Rotating By Degrees
-        public double pivotRotationDegrees = 0.0;
+        public double turretRotationRad = 0.0;
         
         //RPM
         public double pivotRPM = 0.0;
@@ -24,5 +24,5 @@ public interface TurretIO {
 
     public default void updateInputs(TurretIOInputs inputs) {};
 
-    public default void runPivotVoltage(double volts) {}
+    public default void runTurretVoltage(double volts) {}
 }

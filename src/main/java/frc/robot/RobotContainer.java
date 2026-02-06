@@ -10,6 +10,7 @@ import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -138,7 +139,12 @@ public class RobotContainer {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
-          secondaryController.leftTrigger().onTrue(turret.setAngleDegrees(TurretConstants.TEST_ANGLE));
+          primaryController.axisGreaterThan(0, 0).onTrue(
+            turret.setAngleRad(0.5 * Math.PI));
+          primaryController.axisLessThan(0, 0).onTrue(
+            turret.setAngleRad(-0.5 * Math.PI));
+          primaryController.axisGreaterThan(1, 0).onTrue(
+            turret.setAngleRad(0 * Math.PI)); 
          }
 
     public Command getAutonomousCommand() {
