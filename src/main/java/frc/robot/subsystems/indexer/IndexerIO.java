@@ -27,4 +27,12 @@ public interface IndexerIO {
     public default void changeCurrentLimit(double current) {};
 
 
+
+    public double indexerMotorAppliedVolts = 0.0;
+
+        //Current 
+    public double indexerMotorCurrentAmps = 0.0;
+    
+        //gets the voltage of the motor
+    public default void runIndexerMotorVoltage(double volts) {}
 }
