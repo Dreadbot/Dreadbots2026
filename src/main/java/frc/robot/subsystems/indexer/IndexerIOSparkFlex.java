@@ -16,30 +16,34 @@ import frc.robot.Constants.IndexerConstants;
 
 public class IndexerIOSparkFlex implements IndexerIO {
     private SparkFlex indexerMotor;
-    //private final SparkFlex kickerMotor;
+    private final SparkFlex kickerMotor;
     // initializes indexerMotor and kickerMotor
     public IndexerIOSparkFlex() {
         indexerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
-        //this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID + 1, MotorType.kBrushless); // change the MOTOR_ID + 1 to the actual ID of the kicker motor
+        this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
         config.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
         indexerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        //kickerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        kickerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     // updates the inputs
     @Override
-    public void updateInputs(IndexerIOInputs inputs/*, IndexerIOInputs kickerInputs*/) {
+    public void updateInputs(IndexerIOInputs inputs, IndexerIOInputs kickerInputs) {
         inputs.appliedVolts = indexerMotor.getAppliedOutput() * indexerMotor.getBusVoltage();
         inputs.currentAmps = indexerMotor.getOutputCurrent();
         inputs.RPM = indexerMotor.getEncoder().getVelocity();
-        // kickerInputs.appliedVolts = kickerMotor.getAppliedOutput() * kickerMotor.getBusVoltage();
-        // kickerInputs.currentAmps = kickerMotor.getOutputCurrent();
-        // kickerInputs.RPM = kickerMotor.getEncoder().getVelocity();
+        kickerInputs.appliedVolts = kickerMotor.getAppliedOutput() * kickerMotor.getBusVoltage();
+        kickerInputs.currentAmps = kickerMotor.getOutputCurrent();
+        kickerInputs.RPM = kickerMotor.getEncoder().getVelocity();
     }
-    // runs voltage for the indexerMotor and kickerMotor
+    // runs voltage for the indexerMotor
     @Override
-    public void runVoltage(double indexerVolts/*, double kickerVolts*/) {
-        indexerMotor.setVoltage(indexerVolts);
-        //kickerMotor.setVoltage(kickerVolts);
+    public void runVoltage(double volts) {
+        indexerMotor.setVoltage(volts);
+    }
+    // runs voltage for the kickerMotor
+    @Override
+    public void runKickerVoltage(double volts) {
+        kickerMotor.setVoltage(volts);
     }
 }

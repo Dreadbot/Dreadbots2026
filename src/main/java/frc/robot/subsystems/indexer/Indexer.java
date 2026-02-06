@@ -13,23 +13,28 @@ public class Indexer extends SubsystemBase {
     
     // sets up private variables
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+    private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
     private IndexerIO io;
-    private boolean isIntaking = false;
-    private boolean hasGamepiece = false;
+    //private boolean isIntaking = false;
+    //private boolean hasGamepiece = false;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
         this.io = io;
     }
 
-
-
     // runs the intake command
     public Command intake() {
         return(
             Commands.startEnd(
-            () -> io.runVoltage(IndexerConstants.INTAKE_VOLTAGE),
-            () -> { io.runVoltage(0.0); isIntaking = false; }
+                () -> { 
+                    io.runVoltage(IndexerConstants.INTAKE_VOLTAGE);
+                    io.runKickerVoltage(IndexerConstants.KICKER_INTAKE_VOLTAGE); 
+                },
+                () -> { 
+                    io.runVoltage(0.0);
+                    io.runKickerVoltage(0.0);
+                }
             )
         );
     }
@@ -37,16 +42,22 @@ public class Indexer extends SubsystemBase {
     public Command outtake() {
         return(
             Commands.startEnd(
-            () -> io.runVoltage(IndexerConstants.OUTAKE_VOLTAGE),
-            () -> { io.runVoltage(0.0); }
+            () -> {
+                io.runVoltage(IndexerConstants.OUTTAKE_VOLTAGE);
+                io.runKickerVoltage(IndexerConstants.KICKER_OUTAKE_VOLTAGE);},
+            () -> {
+                io.runVoltage(0.0);
+                io.runKickerVoltage(0.0);
+            }
             )
         );
     }
 
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
+        io.updateInputs(inputs, kickerInputs);
         Logger.processInputs("Indexer", inputs);
+        Logger.processInputs("IndexerKicker", kickerInputs);
     }
 
 }

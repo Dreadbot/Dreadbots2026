@@ -17,7 +17,9 @@ public class Constants {
 
     public static class IndexerConstants {
         public static final double INTAKE_VOLTAGE = 1.5;
-        public static final double OUTAKE_VOLTAGE = -1.5;
+        public static final double OUTTAKE_VOLTAGE = -1.5;
+        public static final double KICKER_INTAKE_VOLTAGE = 1.5;
+        public static final double KICKER_OUTAKE_VOLTAGE = -1.5;
         public static final int MOTOR_ID = 1;
         public static final int MOTOR_ID_2 = 2;
     }
