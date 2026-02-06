@@ -36,4 +36,11 @@ public class AutoCommands {
             factory.trajectoryCmd("StraightLine")
         );
     }
+
+    public Command LeftTrench(){
+        return Commands.sequence(
+            factory.resetOdometry("LeftTrench"),
+            factory.trajectoryCmd("LeftTrench")
+        );
+    }
 }

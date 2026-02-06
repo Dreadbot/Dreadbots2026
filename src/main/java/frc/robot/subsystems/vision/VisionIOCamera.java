@@ -18,12 +18,10 @@ public class VisionIOCamera implements VisionIO{
         NetworkTableInstance ntinst = NetworkTableInstance.getDefault();
         NetworkTable visionTable = ntinst.getTable(tableName);
         this.visionPositions = visionTable.getStructArrayTopic("visionPos", VisionPosition.struct).subscribe(
-            new VisionPosition[]{}, 
-            PubSubOption.periodic(0.02), 
+            new VisionPosition[]{},  
             PubSubOption.sendAll(true));
         this.latency = visionTable.getDoubleTopic("visionLatency").subscribe(
             0.0, 
-            PubSubOption.periodic(0.02), 
             PubSubOption.sendAll(true));
     }
 

@@ -166,7 +166,7 @@ public class RobotContainer {
     choreoAutoChooser.addCmd("Wheel Radius Calibration", () -> DriveCommands.wheelRadiusCharacterization(drive));
     
     choreoAutoChooser.addCmd("StraightLine", autos::StraightLine);
-    choreoAutoChooser.addCmd("StraightLineBack", autos::StraightLineBack);
+    choreoAutoChooser.addCmd("LeftTrench", autos::LeftTrench);
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
     // Configure the button bindings

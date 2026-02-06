@@ -36,9 +36,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,8 +79,8 @@ public class Drive extends SubsystemBase {
         rawGyroRotation,
         lastModulePositions,
         new Pose2d(),
-        VecBuilder.fill(0.3, 0.3, 0.001),
-        VecBuilder.fill(0.02, 0.02, 100_000)
+        VecBuilder.fill(0.005, 0.005, 0.002),
+        VecBuilder.fill(100_000, 100_000, 100_000)
         );
   
   private PIDController xController = new PIDController(xKp, 0.0, xKd);
@@ -176,7 +178,7 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
-      poseEstimator.updateWithTime(sampleTimestamps[i] / 1_000_000.0, rawGyroRotation, modulePositions);
+      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
     }
 
     // Update gyro alert
@@ -367,7 +369,11 @@ public class Drive extends SubsystemBase {
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
-        lerp(poseEstimator.getEstimatedPosition(), visionRobotPoseMeters, .04), timestampSeconds, visionMeasurementStdDevs);
+      visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    Logger.recordOutput("Vision/Delta", Timer.getFPGATimestamp() - timestampSeconds);
+    Logger.recordOutput("Vision/Stddev", visionMeasurementStdDevs.get(0, 0));
+      //poseEstimator.resetTranslation(lerp(poseEstimator.getEstimatedPosition(), visionRobotPoseMeters, .04).getTranslation()); 
+    //lerp(poseEstimator.getEstimatedPosition(), visionRobotPoseMeters, .04), timestampSeconds, visionMeasurementStdDevs);
   }
 
   /** Returns the maximum linear speed in meters per sec. */

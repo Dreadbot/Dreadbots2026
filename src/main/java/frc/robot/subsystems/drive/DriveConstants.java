@@ -36,10 +36,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(-87.60 + 180)); //new Rotation2d(1.11 + Math.PI);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(88.80)); //new Rotation2d(-2.461 + Math.PI);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(139.97)); //new Rotation2d(3.092 + Math.PI);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(-3.23)); //new Rotation2d(2.155);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(95.54 - 2.05 + 0.28)); //new Rotation2d(1.11 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(-90.43 - 0.99 + 180)); //new Rotation2d(-2.461 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(140.95 - 1.02 + 0.08)); //new Rotation2d(3.092 + Math.PI);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(176.05 + 0.70 + 180)); //new Rotation2d(2.155);
 
   // Device CAN IDs
   public static final int pigeonCanId = 20; //not yet determined/ not needed;
@@ -62,7 +62,7 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 60;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.9); // 1.88
+  public static final double wheelRadiusMeters = Units.inchesToMeters(1.964); // 1.88
   public static final double driveMotorReduction =
      (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -96,7 +96,7 @@ public class DriveConstants {
   public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0 / turnMotorReduction; // RPM -> Rad/Sec
 
   // Turn PID configuration
-  public static final double turnKp = 3.0;
+  public static final double turnKp = 2.0;
   public static final double turnKd = 0.0;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;
@@ -104,7 +104,7 @@ public class DriveConstants {
   public static final double turnPIDMaxInput = 2 * Math.PI; // Radians
 
   //Path following PID configuration
-  public static final double xKp = 2.0; //1.75
+  public static final double xKp = 2.5; //1.75
   public static final double xKd = 0.0;
   public static final double yKp = 2.0;
   public static final double yKd = 0.0;
