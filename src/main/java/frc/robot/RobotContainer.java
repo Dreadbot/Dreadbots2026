@@ -189,6 +189,7 @@ public class RobotContainer {
        
        
         primaryController.leftTrigger().whileTrue(indexer.intake());
+        primaryController.rightTrigger().whileTrue(indexer.outtake());
         //primaryController.x().whileTrue(flywheel.start());
         //primaryController.y().whileTrue(flywheel.stop());
     }

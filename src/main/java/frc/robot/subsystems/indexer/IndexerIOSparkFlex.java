@@ -27,7 +27,8 @@ public class IndexerIOSparkFlex implements IndexerIO {
         //kickerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     // updates the inputs
-    public void updateInputs(IndexerIOInputs inputs, IndexerIOInputs kickerInputs) {
+    @Override
+    public void updateInputs(IndexerIOInputs inputs/*, IndexerIOInputs kickerInputs*/) {
         inputs.appliedVolts = indexerMotor.getAppliedOutput() * indexerMotor.getBusVoltage();
         inputs.currentAmps = indexerMotor.getOutputCurrent();
         inputs.RPM = indexerMotor.getEncoder().getVelocity();
@@ -36,7 +37,8 @@ public class IndexerIOSparkFlex implements IndexerIO {
         // kickerInputs.RPM = kickerMotor.getEncoder().getVelocity();
     }
     // runs voltage for the indexerMotor and kickerMotor
-    public void runVoltage(double indexerVolts, double kickerVolts) {
+    @Override
+    public void runVoltage(double indexerVolts/*, double kickerVolts*/) {
         indexerMotor.setVoltage(indexerVolts);
         //kickerMotor.setVoltage(kickerVolts);
     }

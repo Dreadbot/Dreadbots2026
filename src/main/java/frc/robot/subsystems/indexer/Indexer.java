@@ -34,7 +34,16 @@ public class Indexer extends SubsystemBase {
         );
     }
 
-        @Override
+    public Command outtake() {
+        return(
+            Commands.startEnd(
+            () -> io.runVoltage(IndexerConstants.OUTAKE_VOLTAGE),
+            () -> { io.runVoltage(0.0); }
+            )
+        );
+    }
+
+    @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Indexer", inputs);
