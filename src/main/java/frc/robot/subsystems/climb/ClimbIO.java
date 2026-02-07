@@ -9,6 +9,7 @@ public interface ClimbIO {
     class ClimbIOInputs {
         //Screw Rotations
         public double RPM = 0.0;
+        public double absolutePosition = 0.0;
 
         //The Volts being applied to Screw Motor
         public double appliedVolts = 0.0;
@@ -16,6 +17,9 @@ public interface ClimbIO {
          //The Amps Curently in Screw Motor
         public double currentAmps = 0.0;    
     }
+
+    // functions
+
     //Updates inputs of Climb IO
      public default void updateInputs(ClimbIOInputs inputs) {};
 
@@ -33,4 +37,6 @@ public interface ClimbIO {
     
         //gets the voltage of the motor
         public default void runScrewMotorVoltage(double volts) {}
+
+        public default void stopMotors() {};
 }
