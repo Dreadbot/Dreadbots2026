@@ -7,10 +7,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
-
+// import frc.robot.subsystems.indexer.IndexerIO;
+// import frc.robot.subsystems.indexer.IndexerIO.IndexerIOInputs;
 
 import frc.robot.Constants.IndexerConstants;
 
@@ -22,7 +20,9 @@ public class IndexerIOSparkFlex implements IndexerIO {
         indexerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
         this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID_KICKER, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
-        config.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
+        config
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(50);
         indexerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         kickerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }

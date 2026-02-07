@@ -1,13 +1,10 @@
 package frc.robot.subsystems.indexer;
 // imports necessary libraries and files
 import frc.robot.Constants.IndexerConstants;
-
 import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 
 public class Indexer extends SubsystemBase {
     
@@ -15,8 +12,8 @@ public class Indexer extends SubsystemBase {
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
     private IndexerIO io;
-    //private boolean isIntaking = false;
-    //private boolean hasGamepiece = false;
+    // private boolean isIntaking = false;
+    // private boolean hasGamepiece = false;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {

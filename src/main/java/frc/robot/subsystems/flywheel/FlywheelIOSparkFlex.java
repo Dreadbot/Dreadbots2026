@@ -12,11 +12,9 @@ import com.revrobotics.ResetMode;
 import frc.robot.Constants.FlywheelConstants;
 
 public class FlywheelIOSparkFlex implements FlywheelIO {
-
     private final SparkFlex motor1;
-    SparkClosedLoopController controller;
-
     // private final SparkFlex motor2;
+    SparkClosedLoopController controller;
 
     public FlywheelIOSparkFlex() {
         motor1 = new SparkFlex(FlywheelConstants.MOTOR_ID_1, MotorType.kBrushless);
