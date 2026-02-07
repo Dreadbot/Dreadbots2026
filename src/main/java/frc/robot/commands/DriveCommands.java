@@ -171,12 +171,6 @@ public static Command driveToPosition(Drive drive, Supplier<Pose2d> position) {
      Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
      Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
      Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
-
-     if(leftTrim.getAsBoolean()) {
-       closestPose = closestPose.plus(new Transform2d(0, AutoAlignConstants.LEFT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
-     } else if(rightTrim.getAsBoolean()) {
-       closestPose = closestPose.plus(new Transform2d(0, -AutoAlignConstants.RIGHT_REEF_BRANCH_OFFSET, Rotation2d.kZero));
-     }
      Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
      return closestPose;
    }

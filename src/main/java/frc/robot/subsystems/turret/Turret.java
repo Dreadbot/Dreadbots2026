@@ -15,18 +15,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Turret extends SubsystemBase {
     private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private TurretIO io;
-    private final PIDController pid = new PIDController(0.1, 0, 0);
+    private final PIDController pid = new PIDController(1, 0, 0);
     private final ArmFeedforward feedforward = new ArmFeedforward(0.26, 0.15, 0.03);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 840));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    public DoubleSupplier joystickOverride;
     public double voltage;
-
 
     public Turret(TurretIO io) {
         this.io = io;
-        this.joystickOverride = () -> 0.0;
         this.voltage = 0;
         io.updateInputs(inputs);
         goal = new TrapezoidProfile.State(inputs.pivotRotationDegrees, 0);
@@ -56,7 +53,7 @@ public class Turret extends SubsystemBase {
         return runOnce(
             () -> {
                 goal = new TrapezoidProfile.State(angle, 0);
-            } );
+            });
     }
 
     public Command setAtZero() {

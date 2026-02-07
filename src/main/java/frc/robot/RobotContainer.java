@@ -20,7 +20,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretIO;
 import frc.robot.subsystems.turret.TurretIOSim;
-import frc.robot.subsystems.turret.TurretIOSparkMax;
+import frc.robot.subsystems.turret.TurretIOSparkFlex;
 import frc.robot.util.vision.VisionUtil;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
@@ -39,34 +39,66 @@ public class RobotContainer {
 
     public RobotContainer() {
         switch (Constants.currentMode) {
-            case REAL: 
+            
+          
+          
+          case REAL: 
+      //       drive = 
+      //       new Drive(
+      //            new GyroIONavX(),
+      //            new ModuleIOSpark(0),
+      //            new ModuleIOSpark(1),
+      //            new ModuleIOSpark(2),
+      //            new ModuleIOSpark(3));
+      //       turret = new Turret(new TurretIOSparkFlex());
+      //       cameras = List.of(
+      //   new VisionCamera(
+      //     new VisionIOCamera(VisionConstants.frontRightCameraName), 
+      //     0),
+      //   new VisionCamera(
+      //     new VisionIOCamera(VisionConstants.frontLeftCameraName),
+      //     1),
+      //   new VisionCamera(
+      //     new VisionIOCamera(VisionConstants.backCameraName),
+      //     2));
+      // vision = new Vision(
+      //   cameras,
+      //   drive::addVisionMeasurement,
+      //   drive::getPose);
+      //       CameraServer.startAutomaticCapture(0);
+      //       break;
 
-            drive = 
-            new Drive(
-                 new GyroIONavX(),
-                 new ModuleIOSpark(0),
-                 new ModuleIOSpark(1),
-                 new ModuleIOSpark(2),
-                 new ModuleIOSpark(3));
-            turret = new Turret(new TurretIOSparkMax());
-            cameras = List.of(
-        new VisionCamera(
-          new VisionIOCamera(VisionConstants.frontRightCameraName), 
-          0),
-        new VisionCamera(
-          new VisionIOCamera(VisionConstants.frontLeftCameraName),
-          1),
-        new VisionCamera(
-          new VisionIOCamera(VisionConstants.backCameraName),
-          2));
-      vision = new Vision(
-        cameras,
-        drive::addVisionMeasurement,
-        drive::getPose);
-            CameraServer.startAutomaticCapture(0);
+       drive = 
+             new Drive(
+                 new GyroIO() {},
+                 new ModuleIOSim(),
+                 new ModuleIOSim(),
+                 new ModuleIOSim(),
+                 new ModuleIOSim());
+                cameras = List.of(
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.frontRightCameraName), 
+            0),
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.frontLeftCameraName),
+            1),
+          new VisionCamera(
+            new VisionIOCamera(VisionConstants.backCameraName),
+            2));
+        vision = new Vision(
+          cameras,
+          drive::addVisionMeasurement,
+          drive::getPose);
+         
+            turret = new Turret(new TurretIOSparkFlex());
             break;
-            case SIM:
 
+
+
+
+
+
+            case SIM:
             drive = 
              new Drive(
                  new GyroIO() {},
@@ -92,32 +124,62 @@ public class RobotContainer {
             turret = new Turret(new TurretIOSim());
             break;
 
+
+
+            
             default:
 
-            drive = 
-                new Drive(
-                    new GyroIO() {},
-                    new ModuleIO() {}, 
-                    new ModuleIO() {}, 
-                    new ModuleIO() {}, 
-                    new ModuleIO() {});
 
-                     cameras = List.of(
+
+            drive = 
+             new Drive(
+                 new GyroIO() {},
+                 new ModuleIOSim(),
+                 new ModuleIOSim(),
+                 new ModuleIOSim(),
+                 new ModuleIOSim());
+                cameras = List.of(
           new VisionCamera(
-            new VisionIO() {},
+            new VisionIOCamera(VisionConstants.frontRightCameraName), 
             0),
           new VisionCamera(
-            new VisionIO() {},
+            new VisionIOCamera(VisionConstants.frontLeftCameraName),
             1),
           new VisionCamera(
-            new VisionIO() {},
+            new VisionIOCamera(VisionConstants.backCameraName),
             2));
         vision = new Vision(
           cameras,
           drive::addVisionMeasurement,
           drive::getPose);
-            turret = new Turret(new TurretIO() {});
+         
+            turret = new Turret(new TurretIOSparkFlex());
             break;
+
+        //     drive = 
+        //         new Drive(
+        //             new GyroIO() {},
+        //             new ModuleIO() {}, 
+        //             new ModuleIO() {}, 
+        //             new ModuleIO() {}, 
+        //             new ModuleIO() {});
+
+        //              cameras = List.of(
+        //   new VisionCamera(
+        //     new VisionIO() {},
+        //     0),
+        //   new VisionCamera(
+        //     new VisionIO() {},
+        //     1),
+        //   new VisionCamera(
+        //     new VisionIO() {},
+        //     2));
+        // vision = new Vision(
+        //   cameras,
+        //   drive::addVisionMeasurement,
+        //   drive::getPose);
+        //     turret = new Turret(new TurretIO() {});
+        //     break;
         }
         
         configureButtonBindings();
@@ -137,7 +199,7 @@ public class RobotContainer {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
-          secondaryController.leftTrigger().onTrue(turret.setAngleDegrees(TurretConstants.TEST_ANGLE));
+          primaryController.leftTrigger().whileTrue(turret.setAngleDegrees(TurretConstants.TEST_ANGLE));
          }
 
     public Command getAutonomousCommand() {
