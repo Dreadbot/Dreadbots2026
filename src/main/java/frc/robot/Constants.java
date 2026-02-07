@@ -30,6 +30,10 @@ public class Constants {
         public static final int MOTOR_ID_2 = 14;
     }
 
+    public static class HoodConstants {
+        public static final int MOTOR_ID = 1;
+    }
+
     public static final class AutoAlignConstants {
         public static final double TRANSLATION_KP = 0.5;
         public static final double TRANSLATION_KD = 0.0;
