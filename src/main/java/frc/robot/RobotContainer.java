@@ -23,7 +23,10 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
 
-import frc.robot.subsystems.flywheel.*;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIO;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
@@ -71,7 +74,7 @@ public class RobotContainer {
                 //     drive::addVisionMeasurement,
                 //     drive::getPose);
 
-                flywheel = new Flywheel(new FlywheelIOSim());
+                flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 // turret = new Turret(new TurretIOSim());
 
                 indexer = new Indexer(new IndexerIOSparkFlex());
@@ -92,7 +95,6 @@ public class RobotContainer {
                 //     drive::getPose);
                 // CameraServer.startAutomaticCapture(0);
 
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 break;
 
 
@@ -112,7 +114,7 @@ public class RobotContainer {
                 //     new ModuleIOSim(),
                 //     new ModuleIOSim(),
                 //     new ModuleIOSim());
-                // indexer = new Indexer(new IndexerIOSim());
+                indexer = new Indexer(new IndexerIOSim());
                 // cameras = List.of(
                 //     new VisionCamera(
                 //         new VisionIOCamera(VisionConstants.frontRightCameraName),
@@ -145,8 +147,7 @@ public class RobotContainer {
                 //     },
                 //     new ModuleIO() {
                 //     });
-                // indexer = new Indexer(new IndexerIO() {
-                // });
+                indexer = new Indexer(new IndexerIO() {});
                 // cameras = List.of(
                 //     new VisionCamera(
                 //         new VisionIO() {
@@ -165,7 +166,7 @@ public class RobotContainer {
                 //     drive::addVisionMeasurement,
                 //     drive::getPose);
 
-                flywheel = new Flywheel(new FlywheelIO());
+                flywheel = new Flywheel(new FlywheelIO() {});
                 // turret = new Turret(new TurretIO() {});
                 break;
         }
@@ -180,11 +181,11 @@ public class RobotContainer {
         //         () -> -primaryController.getLeftY(),
         //         () -> -primaryController.getLeftX(),
         //         () -> -primaryController.getRightX()));
+        // primaryController.start().onTrue(
+        //     Commands.runOnce(
+        //         () -> drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
+        //         drive).ignoringDisable(true));
 
-        primaryController.start().onTrue(
-            Commands.runOnce(
-                () -> drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
-                drive).ignoringDisable(true));
         primaryController.leftTrigger().whileTrue(indexer.intake());
         primaryController.rightTrigger().whileTrue(indexer.outtake());
         primaryController.a().onTrue(flywheel.setRPM(400));
