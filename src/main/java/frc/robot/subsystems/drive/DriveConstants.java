@@ -23,6 +23,7 @@ import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.0;
+  public static final double maxLinearAcceleration = 6;
   public static final double odometryFrequency = 200.0; // Hz
   public static final double trackWidth = Units.inchesToMeters(24.0 + 13.0 / 16.0);
   public static final double wheelBase = Units.inchesToMeters(24.0 + 13.0 / 16.0);
