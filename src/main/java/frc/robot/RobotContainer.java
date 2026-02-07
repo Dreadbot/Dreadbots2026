@@ -10,6 +10,7 @@ import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -27,6 +28,7 @@ import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
+import frc.robot.subsystems.vision.VisionIOSim;
 
 public class RobotContainer {
 
@@ -100,26 +102,26 @@ public class RobotContainer {
 
             case SIM:
             drive = 
-             new Drive(
-                 new GyroIO() {},
-                 new ModuleIOSim(),
-                 new ModuleIOSim(),
-                 new ModuleIOSim(),
-                 new ModuleIOSim());
-                cameras = List.of(
-          new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontRightCameraName), 
-            0),
-          new VisionCamera(
-            new VisionIOCamera(VisionConstants.frontLeftCameraName),
-            1),
-          new VisionCamera(
-            new VisionIOCamera(VisionConstants.backCameraName),
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+            cameras = List.of(
+              new VisionCamera(
+                new VisionIOSim(drive::getPose), 
+                0),
+              new VisionCamera(
+                new VisionIOSim(drive::getPose), 
+                1),
+              new VisionCamera(
+                new VisionIOSim(drive::getPose), 
             2));
-        vision = new Vision(
-          cameras,
-          drive::addVisionMeasurement,
-          drive::getPose);
+                vision = new Vision(
+                  cameras,
+                  drive::addVisionMeasurement,
+                  drive::getPose);
          
             turret = new Turret(new TurretIOSim());
             break;
@@ -199,7 +201,16 @@ public class RobotContainer {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
+<<<<<<< HEAD
           primaryController.leftTrigger().whileTrue(turret.setAngleDegrees(TurretConstants.TEST_ANGLE));
+=======
+          primaryController.axisGreaterThan(0, 0).onTrue(
+            turret.setAngleRad(0.5 * Math.PI));
+          primaryController.axisLessThan(0, 0).onTrue(
+            turret.setAngleRad(-0.5 * Math.PI));
+          primaryController.axisGreaterThan(1, 0).onTrue(
+            turret.setAngleRad(0 * Math.PI)); 
+>>>>>>> b95431b6e16c53c2036e3c94a7573fdd9db656a2
          }
 
     public Command getAutonomousCommand() {
