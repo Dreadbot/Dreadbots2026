@@ -5,34 +5,58 @@ import frc.robot.Constants.IndexerConstants;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class Indexer extends SubsystemBase {
+    
     // sets up private variables
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
+    private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
     private IndexerIO io;
-    private boolean isIntaking = false;
-    private boolean hasGamepiece = false;
+    //private boolean isIntaking = false;
+    //private boolean hasGamepiece = false;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
         this.io = io;
     }
 
+    // runs the intake command
+    public Command intake() {
+        return(
+            Commands.startEnd(
+                () -> { 
+                    io.runVoltage(IndexerConstants.INTAKE_VOLTAGE);
+                    io.runKickerVoltage(IndexerConstants.KICKER_INTAKE_VOLTAGE); 
+                },
+                () -> { 
+                    io.runVoltage(0.0);
+                    io.runKickerVoltage(0.0);
+                }
+            )
+        );
+    }
+
+    public Command outtake() {
+        return(
+            Commands.startEnd(
+            () -> {
+                io.runVoltage(IndexerConstants.OUTTAKE_VOLTAGE);
+                io.runKickerVoltage(IndexerConstants.KICKER_OUTTAKE_VOLTAGE);},
+            () -> {
+                io.runVoltage(0.0);
+                io.runKickerVoltage(0.0);
+            }
+            )
+        );
+    }
 
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
+        io.updateInputs(inputs, kickerInputs);
         Logger.processInputs("Indexer", inputs);
-    }
-
-    // runs the intake command
-    public Command intake() {
-        return startEnd(
-            () -> io.runVoltage(IndexerConstants.INTAKE_VOLTAGE),
-            () -> { io.runVoltage(0.0); isIntaking = false; }
-        );
+        Logger.processInputs("IndexerKicker", kickerInputs);
     }
 }
