@@ -41,6 +41,7 @@ public class RobotContainer {
     //private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
     private Indexer indexer;
+    private final Climb climb;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -132,6 +133,9 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
+               
+
+                climb = new Climb(new ClimbIOSim());
                 break;
 
             default:
@@ -167,6 +171,23 @@ public class RobotContainer {
                 //     drive::getPose);
 
                 flywheel = new Flywheel(new FlywheelIO() {});
+                        cameras = List.of(
+            new VisionCamera(
+                new VisionIO() {},
+                0),
+            new VisionCamera(
+                new VisionIO() {},
+                1),
+            new VisionCamera(
+                new VisionIO() {},
+                2));
+            vision = new Vision(
+            cameras,
+            drive::addVisionMeasurement,
+            drive::getPose);
+
+                climb = new Climb(new ClimbIO() {});
+                flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
                 break;
         }

@@ -30,6 +30,12 @@ public class Constants {
         public static final int MOTOR_ID_2 = 14;
     }
 
+    public static class ClimbConstants {
+        public static final double INTAKE_VOLTAGE = 1.5;
+        public static final double OUTAKE_VOLTAGE = -1.5;
+        public static final int MOTOR_ID = 1;
+    }
+
     public static final class AutoAlignConstants {
         public static final double TRANSLATION_KP = 0.5;
         public static final double TRANSLATION_KD = 0.0;
@@ -42,6 +48,5 @@ public class Constants {
         public static final double ROTATION_MAX_ACCELERATION = 10.0;
         public static final double LEFT_REEF_BRANCH_OFFSET = Units.inchesToMeters(11.5 / 2.0);
         public static final double RIGHT_REEF_BRANCH_OFFSET = Units.inchesToMeters(13.5 / 2.0);
-
     }
 }
