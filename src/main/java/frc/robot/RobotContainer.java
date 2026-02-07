@@ -27,6 +27,8 @@ import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.subsystems.hookprep.Hookprep;
+import frc.robot.subsystems.hookprep.HookprepIO;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
@@ -41,7 +43,8 @@ public class RobotContainer {
     //private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
     private Indexer indexer;
-    private final Climb climb;
+    private Hookprep hookprep;
+    //private final Climb climb;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -79,6 +82,7 @@ public class RobotContainer {
                 // turret = new Turret(new TurretIOSim());
 
                 indexer = new Indexer(new IndexerIOSparkFlex());
+                hookprep = new Hookprep(new HookprepIO() {});
                 // // turret = new Turret(new TurretIOSparkMax());
                 // cameras = List.of(
                 //     new VisionCamera(
@@ -116,6 +120,7 @@ public class RobotContainer {
                 //     new ModuleIOSim(),
                 //     new ModuleIOSim());
                 indexer = new Indexer(new IndexerIOSim());
+                hookprep = new Hookprep(new HookprepIO() {});
                 // cameras = List.of(
                 //     new VisionCamera(
                 //         new VisionIOCamera(VisionConstants.frontRightCameraName),
@@ -135,7 +140,7 @@ public class RobotContainer {
                 // turret = new Turret(new TurretIOSim());
                
 
-                climb = new Climb(new ClimbIOSim());
+                //climb = new Climb(new ClimbIOSim());
                 break;
 
             default:
@@ -152,6 +157,7 @@ public class RobotContainer {
                 //     new ModuleIO() {
                 //     });
                 indexer = new Indexer(new IndexerIO() {});
+                hookprep = new Hookprep(new HookprepIO() {});
                 // cameras = List.of(
                 //     new VisionCamera(
                 //         new VisionIO() {
@@ -171,23 +177,23 @@ public class RobotContainer {
                 //     drive::getPose);
 
                 flywheel = new Flywheel(new FlywheelIO() {});
-                        cameras = List.of(
-            new VisionCamera(
-                new VisionIO() {},
-                0),
-            new VisionCamera(
-                new VisionIO() {},
-                1),
-            new VisionCamera(
-                new VisionIO() {},
-                2));
-            vision = new Vision(
-            cameras,
-            drive::addVisionMeasurement,
-            drive::getPose);
+                        //cameras = List.of(
+            //new VisionCamera(
+            //     new VisionIO() {},
+            //     0),
+            // new VisionCamera(
+            //     new VisionIO() {},
+            //     1),
+            // new VisionCamera(
+            //     new VisionIO() {},
+            //     2));
+            //vision = new Vision(
+            //cameras,
+            //drive::addVisionMeasurement,
+            //drive::getPose);
 
-                climb = new Climb(new ClimbIO() {});
-                flywheel = new Flywheel(new FlywheelIOSim());
+                //climb = new Climb(new ClimbIO() {});
+                //flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
                 break;
         }
@@ -213,6 +219,7 @@ public class RobotContainer {
         primaryController.b().onTrue(flywheel.setRPM(0));
         primaryController.y().onTrue(flywheel.changeRPM(100));
         primaryController.x().onTrue(flywheel.changeRPM(-100));
+        primaryController.leftStick().onTrue(hookprep.readyHook(primaryController.getLeftY()));
     }
 
     public Command getAutonomousCommand() {
