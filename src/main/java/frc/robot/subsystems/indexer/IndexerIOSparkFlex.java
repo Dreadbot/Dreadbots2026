@@ -20,7 +20,7 @@ public class IndexerIOSparkFlex implements IndexerIO {
     // initializes indexerMotor and kickerMotor
     public IndexerIOSparkFlex() {
         indexerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
-        this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
+        this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID_KICKER, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
         config.idleMode(IdleMode.kBrake).smartCurrentLimit(50);
         indexerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

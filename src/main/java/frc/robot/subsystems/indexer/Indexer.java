@@ -44,7 +44,7 @@ public class Indexer extends SubsystemBase {
             Commands.startEnd(
             () -> {
                 io.runVoltage(IndexerConstants.OUTTAKE_VOLTAGE);
-                io.runKickerVoltage(IndexerConstants.KICKER_OUTAKE_VOLTAGE);},
+                io.runKickerVoltage(IndexerConstants.KICKER_OUTTAKE_VOLTAGE);},
             () -> {
                 io.runVoltage(0.0);
                 io.runKickerVoltage(0.0);
@@ -59,5 +59,4 @@ public class Indexer extends SubsystemBase {
         Logger.processInputs("Indexer", inputs);
         Logger.processInputs("IndexerKicker", kickerInputs);
     }
-
 }
