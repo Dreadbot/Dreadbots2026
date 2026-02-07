@@ -7,11 +7,11 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
-    private final HoodIO.HoodIOInputs inputs = new HoodIO.HoodIOInputs();
+    private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
     private final PIDController pid = new PIDController(0.0002, 0, 0);
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
 
-    private double goalAngle = 0.0;
+    private double goalAngle = 45.0;
 
     public Hood(HoodIO io) {
         this.io = io;
