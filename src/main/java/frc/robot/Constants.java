@@ -15,6 +15,10 @@ public class Constants {
         REPLAY
     }
 
+    public static class HookprepConstants {
+        public static final int Servo_ID = 10;
+    }
+
     public static class IndexerConstants {
         public static final double INTAKE_VOLTAGE = 1.5;
         public static final double OUTTAKE_VOLTAGE = -1.5;
