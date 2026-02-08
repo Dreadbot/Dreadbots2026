@@ -65,7 +65,7 @@ public class RobotContainer {
             drive::getPose);
           turret = new Turret(
             new TurretIOSparkFlex(),
-            drive::getPose);
+            drive);
           CameraServer.startAutomaticCapture(0);
           break;
 
@@ -93,7 +93,7 @@ public class RobotContainer {
                 drive::getPose);
           turret = new Turret(
             new TurretIOSim(),
-            drive::getPose);
+            drive);
           break;
         default:
           drive = 
@@ -120,7 +120,7 @@ public class RobotContainer {
 
           turret = new Turret(
             new TurretIOSparkFlex(), 
-            drive::getPose);
+            drive);
           break;
         }
       configureButtonBindings();
