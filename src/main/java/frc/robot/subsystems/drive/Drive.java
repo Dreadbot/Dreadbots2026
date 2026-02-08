@@ -80,7 +80,7 @@ public class Drive extends SubsystemBase {
         lastModulePositions,
         new Pose2d(),
         VecBuilder.fill(0.005, 0.005, 0.05),
-        VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(15))
+        VecBuilder.fill(100_000, 100_000, 100_000)
         );
   
   private PIDController xController = new PIDController(xKp, 0.0, xKd);

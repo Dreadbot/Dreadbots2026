@@ -17,9 +17,6 @@ public interface TurretIO {
         //RPM
         public double turretRPM = 0.0;
         public double absolutePosition = 0.0;
-
-        //Temp
-        public double turretTemperature = 0.0;
     }
 
     public default void updateInputs(TurretIOInputs inputs) {};
