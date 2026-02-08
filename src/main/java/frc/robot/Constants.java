@@ -35,10 +35,14 @@ public class Constants {
     public static final double TURRET_EXPECTED_ZERO = 0;
     public static final double GEAR_REDUCTION = 50.0;
     public static final double TEST_ANGLE = Units.degreesToRadians(90);
+    public static final double MAX_VOLTAGE = 9999.0;
+    public static final double TURRET_MOI = 0.0366;
 
     public static final Translation2d TURRET_OFFSET = new Translation2d(0.0, 0.0);     // +X = Towards front +Y = Towards right
 
     public static final double MAX_ANGLE_RAD = Math.PI;   // +180
     public static final double MIN_ANGLE_RAD = -Math.PI;  // -180
+
+    public static final double TURRET_LOOKAHEAD = 0.02;
   }
 }

@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
-    private final PIDController pid = new PIDController(0.25, 0, 0.003);
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.00896);
+    private final PIDController pid = new PIDController(2, 0, 0.0);
+    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.5135);
     private final Drive drive;
 
     private double setpointRelativeRad;
@@ -43,19 +43,23 @@ public class Turret extends SubsystemBase {
         Logger.processInputs("Turret", inputs);
 
         double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
-        Twist2d partialTwist = new Twist2d(drive.getFieldVelocity().dx * 0.02, drive.getFieldVelocity().dy * 0.02, drive.getFieldVelocity().dtheta * 0.02);
+        Twist2d partialTwist = new Twist2d(
+            drive.getFieldVelocity().dx     * TurretConstants.TURRET_LOOKAHEAD,
+            drive.getFieldVelocity().dy     * TurretConstants.TURRET_LOOKAHEAD,
+            drive.getFieldVelocity().dtheta * TurretConstants.TURRET_LOOKAHEAD);
+
         Pose2d estimatedFutureRobotPose = drive.getPose().exp(partialTwist);
         double estimatedAngleChange = MathUtil.angleModulus(getSetpointFromRobotPose(estimatedFutureRobotPose) - getSetpointFromRobotPose(drive.getPose()));
 
         voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint)
-            + feedforward.calculate(estimatedAngleChange * 50); // delta robot rad/s
-
+            + feedforward.calculate(estimatedAngleChange * (1.0 / TurretConstants.TURRET_LOOKAHEAD)); // delta robot rad/s
+        //   + feedforward.calculate(Units.degreesToRadians(50));
         if (inputs.turretRotationRad >= TurretConstants.MAX_ANGLE_RAD && voltage > 0) {
             voltage = 0.0;
         } else if (inputs.turretRotationRad <= TurretConstants.MIN_ANGLE_RAD && voltage < 0) {
             voltage = 0.0;
         }
-        
+        voltage = MathUtil.clamp(voltage, -TurretConstants.MAX_VOLTAGE, TurretConstants.MAX_VOLTAGE);
         io.runTurretVoltage(voltage);
 
         Logger.recordOutput("Turret/SetpointRelativeRadians", wrappedSetpoint);
@@ -116,10 +120,10 @@ public class Turret extends SubsystemBase {
         setCorrectAngleRad(getSetpointFromRobotPose(drive.getPose()));
     }
 
-    public double getSetpointFromRobotPose(Pose2d pose2d) {
+    public double getSetpointFromRobotPose(Pose2d robotPose) {
         Translation2d hubTranslation = TurretUtil.getHubTranslation();
-        Translation2d turretPosition = TurretUtil.getTurretTranslationFromRobotPose(pose2d);
+        Translation2d turretPosition = TurretUtil.getTurretTranslationFromRobotPose(robotPose);
 
-        return hubTranslation.minus(turretPosition).getAngle().getRadians() - pose2d.getRotation().getRadians();
+        return hubTranslation.minus(turretPosition).getAngle().getRadians() - robotPose.getRotation().getRadians();
     }
 }

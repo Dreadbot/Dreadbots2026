@@ -80,7 +80,7 @@ public class Drive extends SubsystemBase {
         rawGyroRotation,
         lastModulePositions,
         new Pose2d(),
-        VecBuilder.fill(0.005, 0.005, 0.05),
+        VecBuilder.fill(0.005, 0.005, 0.002),
         VecBuilder.fill(100_000, 100_000, 100_000)
         );
   
@@ -377,7 +377,7 @@ public class Drive extends SubsystemBase {
     ChassisSpeeds chassisSpeeds = getChassisSpeeds();
     Translation2d linearFieldVelocity =
       new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-          //.rotateBy(getRotation());
+        //.rotateBy(getRotation());
     return
       new Twist2d(
           linearFieldVelocity.getX(),
