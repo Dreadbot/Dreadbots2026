@@ -43,4 +43,10 @@ public class AutoCommands {
             factory.trajectoryCmd("LeftTrench")
         );
     }
+    public Command CenterRisk(){
+        return Commands.sequence(
+            factory.resetOdometry("CenterRisk"),
+            factory.trajectoryCmd("CenterRisk")
+        );
+    }
 }

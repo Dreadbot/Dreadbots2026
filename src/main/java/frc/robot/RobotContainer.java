@@ -167,6 +167,7 @@ public class RobotContainer {
     
     choreoAutoChooser.addCmd("StraightLine", autos::StraightLine);
     choreoAutoChooser.addCmd("LeftTrench", autos::LeftTrench);
+    choreoAutoChooser.addCmd("CenterRisk", autos::CenterRisk);
 
     SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
     // Configure the button bindings
