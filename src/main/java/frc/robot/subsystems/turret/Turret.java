@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
-    private final PIDController pid = new PIDController(2, 0, 0.0);
+    private final PIDController pid = new PIDController(6, 0, 0.2);
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.5135);
     private final Drive drive;
 
@@ -31,13 +31,13 @@ public class Turret extends SubsystemBase {
         this.io = io;
         this.voltage = 0;
         io.updateInputs(inputs);
-        pid.setTolerance(Units.degreesToRadians(1));
+        pid.setTolerance(Units.degreesToRadians(5));
         this.drive = drive;
     }
 
     @Override
     public void periodic() {
-        //setCorrectAngleRad(setpointRelativeRad + Units.degreesToRadians(1));
+        //setCorrectAngleRad(setpointRelativeRad + Units.degreesToRadians(0.1));
         aimAtHub();
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
@@ -51,9 +51,13 @@ public class Turret extends SubsystemBase {
         Pose2d estimatedFutureRobotPose = drive.getPose().exp(partialTwist);
         double estimatedAngleChange = MathUtil.angleModulus(getSetpointFromRobotPose(estimatedFutureRobotPose) - getSetpointFromRobotPose(drive.getPose()));
 
-        voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint)
-            + feedforward.calculate(estimatedAngleChange * (1.0 / TurretConstants.TURRET_LOOKAHEAD)); // delta robot rad/s
-        //   + feedforward.calculate(Units.degreesToRadians(50));
+        voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint); 
+        double feedforward_voltage = feedforward.calculate(estimatedAngleChange * (1.0 / TurretConstants.TURRET_LOOKAHEAD)); //feedforward.calculate(Units.degreesToRadians(5));// // delta robot rad/s
+
+        if (Math.signum(feedforward_voltage) == Math.signum(voltage)) {
+            voltage += feedforward_voltage;
+        }
+        
         if (inputs.turretRotationRad >= TurretConstants.MAX_ANGLE_RAD && voltage > 0) {
             voltage = 0.0;
         } else if (inputs.turretRotationRad <= TurretConstants.MIN_ANGLE_RAD && voltage < 0) {
@@ -105,7 +109,7 @@ public class Turret extends SubsystemBase {
     }
 
     public boolean atSetpoint() {
-        return MathUtil.isNear(setpointRelativeRad, inputs.turretRotationRad, Units.degreesToRadians(1));
+        return pid.atSetpoint();
     }
 
     public Command trackHub() {
