@@ -49,4 +49,19 @@ public class AutoCommands {
             factory.trajectoryCmd("CenterRisk")
         );
     }
+    public Command FullCenter(){
+        return Commands.sequence(
+            factory.resetOdometry("FullCenter"),
+            factory.trajectoryCmd("FullCenter")
+        );
+    }
+    public Command DoubleRight(){
+        return Commands.sequence(
+            factory.resetOdometry("DoubleRight"),
+            factory.trajectoryCmd("DoubleRight", 0)
+                .andThen(drive.stopDrive())
+                .andThen(Commands.waitSeconds(5)),
+            factory.trajectoryCmd("DoubleRight", 1)
+        );
+    }
 }

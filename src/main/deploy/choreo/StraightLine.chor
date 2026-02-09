@@ -4,7 +4,36 @@
  "type":"Swerve",
  "variables":{
   "expressions":{},
-  "poses":{}
+  "poses":{
+   "LeftTrench":{
+    "x":{
+     "exp":"4.435 m",
+     "val":4.435
+    },
+    "y":{
+     "exp":"7.43 m",
+     "val":7.43
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   },
+   "RightTrench":{
+    "x":{
+     "exp":"4.435 m",
+     "val":4.435
+    },
+    "y":{
+     "exp":"0.6375 m",
+     "val":0.6375
+    },
+    "heading":{
+     "exp":"0 rad",
+     "val":0.0
+    }
+   }
+  }
  },
  "config":{
   "frontLeft":{
@@ -52,8 +81,8 @@
    "val":3.6
   },
   "cof":{
-   "exp":"1.27",
-   "val":1.27
+   "exp":"1.2",
+   "val":1.2
   },
   "bumper":{
    "front":{
