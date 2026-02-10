@@ -200,8 +200,8 @@ public class RobotContainer {
         primaryController.b().onTrue(flywheel.setRPM(0));
         primaryController.y().onTrue(flywheel.changeRPM(100));
         primaryController.x().onTrue(flywheel.changeRPM(-100));
-        primaryController.rightBumper().onTrue(hood.setAngle(85.0));
-        primaryController.leftBumper().onTrue(hood.setAngle(45.0));
+        primaryController.rightBumper().onTrue(hood.setAngle(2));
+        primaryController.leftBumper().onTrue(hood.setAngle(0));
     }
 
     public Command getAutonomousCommand() {
