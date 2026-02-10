@@ -35,7 +35,7 @@ public class HoodIOSim implements HoodIO {
         sim.update(0.02);
 
         inputs.angle = Units.radiansToDegrees(sim.getAngleRads());
-        inputs.velocity = Units.radiansToDegrees(sim.getVelocityRadPerSec());
+        inputs.RPM = Units.radiansToDegrees(sim.getVelocityRadPerSec());
         inputs.appliedVolts = appliedVolts;
     }
 }

@@ -35,6 +35,6 @@ public class HoodIOSparkMax implements HoodIO {
     public void updateInputs(HoodIOInputs inputs) {
         inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.angle = motor.getEncoder().getPosition() * HoodConstants.ROTATIONS_TO_RADIANS;
-        inputs.velocity = motor.getEncoder().getVelocity();
+        inputs.RPM = motor.getEncoder().getVelocity();
     }
 }
