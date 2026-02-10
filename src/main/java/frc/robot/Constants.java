@@ -30,6 +30,7 @@ public class Constants {
 
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 1;
+    public static final int TURRET_MOTOR_ID = 1;
     public static final double TURRET_ENCODER_OFFSET_RAD = 0.0;
     public static final double TURRET_JOYSTICK_SLEW_VALUE = 3;
     public static final double TURRET_EXPECTED_ZERO = 0;

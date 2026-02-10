@@ -19,7 +19,7 @@ public class TurretIOSparkFlex implements TurretIO {
 
     //id is 14 but one for testing
     public TurretIOSparkFlex() {
-        this.turretMotor = new SparkFlex(1, MotorType.kBrushless);
+        this.turretMotor = new SparkFlex(TurretConstants.TURRET_MOTOR_ID, MotorType.kBrushless);
         this.absoluteEncoder = new DutyCycleEncoder(
             new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
             TurretConstants.MAX_ANGLE_RAD, TurretConstants.TURRET_EXPECTED_ZERO);

@@ -16,15 +16,6 @@ public class TurretIOSim implements TurretIO {
                 TurretConstants.TURRET_MOI, 
                 TurretConstants.GEAR_REDUCTION),
             DCMotor.getNeo550(1));
-        // this.turret = new SingleJointedArmSim(DCMotor.getNeo550(1), 
-        // TurretConstants.GEAR_REDUCTION, 
-        // 0.0366, 
-        // 0.075, 
-        // TurretConstants.MIN_ANGLE_RAD, 
-        // TurretConstants.MAX_ANGLE_RAD, 
-        // false,
-        // 0.0
-        // );
     }
 
     @Override
