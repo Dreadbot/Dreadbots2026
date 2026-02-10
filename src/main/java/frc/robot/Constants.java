@@ -16,6 +16,24 @@ public class Constants {
         REPLAY
     }
 
+    public static class IndexerConstants {
+        public static final double SPINDEXER_VOLTAGE = 1.5;
+       https://github.com/Dreadbot/Dreadbots2026/pull/4/conflict?name=simgui-ds.json&base_oid=7ca3bc56a422ffad8be0d44d739afd39ea0350a0&head_oid=73cc713cb5f51ba82e4023f835905c2096e55ccc public static final double KICKER_VOLTAGE = 1.5;
+        public static final int SPINDEXER_MOTOR_ID = 1;
+        public static final int KICKER_MOTOR_ID = 2;
+    }
+
+    public static class FlywheelConstants {
+        public static final double SHOOT_VOLTAGE = 1.0;
+        public static final int MOTOR_ID_1 = 14;
+        public static final int MOTOR_ID_2 = 13;
+        public static final double RPM_TOLERANCE = 100.0;
+    }
+
+    public static class HoodConstants {
+        public static final int MOTOR_ID = 1;
+    }
+
     public static final class AutoAlignConstants {
     public static final double TRANSLATION_KP = 0.5;
     public static final double TRANSLATION_KD = 0.0;

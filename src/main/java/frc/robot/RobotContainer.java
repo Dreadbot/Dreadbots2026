@@ -24,6 +24,19 @@ import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.vision.VisionIOSim;
 
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIO;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.subsystems.indexer.IndexerIO;
+import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.indexer.IndexerIOSparkFlex;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodIO;
+import frc.robot.subsystems.hood.HoodIOSim;
+import frc.robot.subsystems.hood.HoodIOSparkMax;
+
 public class RobotContainer {
 
     private final CommandXboxController primaryController = new CommandXboxController(0);
@@ -143,7 +156,7 @@ public class RobotContainer {
          }
 
     public Command getAutonomousCommand() {
-        return null; //choreoAutoChooser.selectedCommand();
+        return null; // choreoAutoChooser.selectedCommand();
     }
 
     public void autonomousInit() {

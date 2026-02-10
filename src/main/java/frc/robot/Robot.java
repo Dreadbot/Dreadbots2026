@@ -99,11 +99,6 @@ public class Robot extends LoggedRobot {
     Threads.setCurrentThreadPriority(false, 10);
   }
 
-  /** This function is called once when the robot is disabled. */
-  @Override
-  public void disabledInit() {}
-
-  /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {}
 
@@ -138,7 +133,6 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopPeriodic() {}
 
-  /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
@@ -156,4 +150,6 @@ public class Robot extends LoggedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
+
+
 }
