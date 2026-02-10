@@ -29,6 +29,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -36,9 +37,11 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -77,8 +80,8 @@ public class Drive extends SubsystemBase {
         rawGyroRotation,
         lastModulePositions,
         new Pose2d(),
-        VecBuilder.fill(0.3, 0.3, 0.001),
-        VecBuilder.fill(0.02, 0.02, 100_000)
+          VecBuilder.fill(0.005, 0.005, 0.002),
+          VecBuilder.fill(100_000, 100_000, 100_000)
         );
   
   private PIDController xController = new PIDController(xKp, 0.0, xKd);
@@ -176,7 +179,7 @@ public class Drive extends SubsystemBase {
 
       // Apply update
       Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
-      poseEstimator.updateWithTime(sampleTimestamps[i] / 1_000_000.0, rawGyroRotation, modulePositions);
+      poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
     }
 
     // Update gyro alert
@@ -357,6 +360,7 @@ public class Drive extends SubsystemBase {
       Matrix<N3, N1> visionMeasurementStdDevs) {
     poseEstimator.addVisionMeasurement(
         visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    Logger.recordOutput("Vision/Delta", Timer.getFPGATimestamp() - timestampSeconds);
   }
 
   /** Returns the maximum linear speed in meters per sec. */
@@ -367,5 +371,19 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return maxSpeedMetersPerSec / driveBaseRadius;
+  }
+
+  public Twist2d getFieldVelocity() {
+    ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+    Translation2d linearFieldVelocity =
+      new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        //.rotateBy(getRotation());
+    return
+      new Twist2d(
+          linearFieldVelocity.getX(),
+          linearFieldVelocity.getY(),
+          gyroInputs.connected
+              ? gyroInputs.yawVelocityRadPerSec
+              : chassisSpeeds.omegaRadiansPerSecond);
   }
 }

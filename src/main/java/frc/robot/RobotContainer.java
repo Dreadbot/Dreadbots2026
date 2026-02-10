@@ -2,26 +2,27 @@ package frc.robot;
 
 import java.util.List;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.DriveCommands;
-import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
-import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretIOSim;
+import frc.robot.subsystems.turret.TurretIOSparkMax;
 import frc.robot.util.vision.VisionUtil;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
+import frc.robot.subsystems.vision.VisionIOSim;
 
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
@@ -40,169 +41,119 @@ public class RobotContainer {
 
     private final CommandXboxController primaryController = new CommandXboxController(0);
     private final CommandXboxController secondaryController = new CommandXboxController(1);
-    // private final Drive drive;
-    // private final Vision vision;
-    // private final List<VisionCamera> cameras;
-    private final Flywheel flywheel;
-    // private Indexer indexer;
-    // private final Hood hood;
+    private final Drive drive;
+    private final Vision vision;
+    private final List<VisionCamera> cameras;
+    private final Turret turret;
 
     public RobotContainer() {
-        switch (Constants.currentMode) {
-            case REAL:
+      switch (Constants.currentMode) {
+        case REAL: 
+          drive = 
+          new Drive(
+                new GyroIONavX(),
+                new ModuleIOSpark(0),
+                new ModuleIOSpark(1),
+                new ModuleIOSpark(2),
+                new ModuleIOSpark(3));
+          cameras = List.of(
+            new VisionCamera(
+              new VisionIOCamera(VisionConstants.frontRightCameraName), 
+              0),
+            new VisionCamera(
+              new VisionIOCamera(VisionConstants.frontLeftCameraName),
+              1),
+            new VisionCamera(
+              new VisionIOCamera(VisionConstants.backCameraName),
+              2));
+          vision = new Vision(
+            cameras,
+            drive::addVisionMeasurement,
+            drive::getPose);
+          turret = new Turret(
+            new TurretIOSparkMax(),
+            drive);
+          CameraServer.startAutomaticCapture(0);
+          break;
 
-                // drive = new Drive(
-                //     new GyroIONavX(),
-                //     new ModuleIOSpark(0),
-                //     new ModuleIOSpark(1),
-                //     new ModuleIOSpark(2),
-                //     new ModuleIOSpark(3));
-                // drive = new Drive(
-                //     new GyroIO() {
-                //     },
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim());
-                // cameras = List.of(
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.frontRightCameraName),
-                //         0),
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.frontLeftCameraName),
-                //         1),
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.backCameraName),
-                //         2));
-                // vision = new Vision(
-                //     cameras,
-                //     drive::addVisionMeasurement,
-                //     drive::getPose);
+        case SIM:
+          drive = 
+          new Drive(
+              new GyroIO() {},
+              new ModuleIOSim(),
+              new ModuleIOSim(),
+              new ModuleIOSim(),
+              new ModuleIOSim());
+          cameras = List.of(
+            new VisionCamera(
+              new VisionIOSim(drive::getPose), 
+              0),
+            new VisionCamera(
+              new VisionIOSim(drive::getPose), 
+              1),
+            new VisionCamera(
+              new VisionIOSim(drive::getPose), 
+          2));
+              vision = new Vision(
+                cameras,
+                drive::addVisionMeasurement,
+                drive::getPose);
+          turret = new Turret(
+            new TurretIOSim(),
+            drive);
+          break;
+        default:
+          drive = 
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+          cameras = List.of(
+            new VisionCamera(
+              new VisionIOCamera(VisionConstants.frontRightCameraName), 
+              0),
+            new VisionCamera(
+              new VisionIOCamera(VisionConstants.frontLeftCameraName),
+              1),
+            new VisionCamera(
+              new VisionIOCamera(VisionConstants.backCameraName),
+              2));
+          vision = new Vision(
+            cameras,
+            drive::addVisionMeasurement,
+            drive::getPose);
 
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // turret = new Turret(new TurretIOSim());
-
-                // indexer = new Indexer(new IndexerIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
-                // // turret = new Turret(new TurretIOSparkMax());
-                // cameras = List.of(
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.frontRightCameraName),
-                //         0),
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.frontLeftCameraName),
-                //         1),
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.backCameraName),
-                //         2));
-                // vision = new Vision(
-                //     cameras,
-                //     drive::addVisionMeasurement,
-                //     drive::getPose);
-                // CameraServer.startAutomaticCapture(0);
-
-                break;
-
-
-
-
-
-
-
-
-
-
-            case SIM:
-                // drive = new Drive(
-                //     new GyroIO() {
-                //     },
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim(),
-                //     new ModuleIOSim());
-                // indexer = new Indexer(new IndexerIOSim());
-                // cameras = List.of(
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.frontRightCameraName),
-                //         0),
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.frontLeftCameraName),
-                //         1),
-                //     new VisionCamera(
-                //         new VisionIOCamera(VisionConstants.backCameraName),
-                //         2));
-                // vision = new Vision(
-                //     cameras,
-                //     drive::addVisionMeasurement,
-                //     drive::getPose);
-
-                flywheel = new Flywheel(new FlywheelIOSim());
-                // hood = new Hood(new HoodIOSim());
-                // turret = new Turret(new TurretIOSim());
-                break;
-
-            default:
-
-                // drive = new Drive(
-                //     new GyroIO() {
-                //     },
-                //     new ModuleIO() {
-                //     },
-                //     new ModuleIO() {
-                //     },
-                //     new ModuleIO() {
-                //     },
-                //     new ModuleIO() {
-                //     });
-                // indexer = new Indexer(new IndexerIO() {});
-                // cameras = List.of(
-                //     new VisionCamera(
-                //         new VisionIO() {
-                //         },
-                //         0),
-                //     new VisionCamera(
-                //         new VisionIO() {
-                //         },
-                //         1),
-                //     new VisionCamera(
-                //         new VisionIO() {
-                //         },
-                //         2));
-                // vision = new Vision(
-                //     cameras,
-                //     drive::addVisionMeasurement,
-                //     drive::getPose);
-
-                flywheel = new Flywheel(new FlywheelIO() {});
-                // hood = new Hood(new HoodIO() {});
-                // turret = new Turret(new TurretIO() {});
-                break;
+          turret = new Turret(
+            new TurretIOSparkMax(), 
+            drive);
+          break;
         }
-        configureButtonBindings();
+      configureButtonBindings();
     }
 
-    private void configureButtonBindings() {
-        // VisionUtil.getApriltagPose(1);
-        // drive.setDefaultCommand(
-        //     DriveCommands.joystickDrive(
-        //         drive,
-        //         () -> -primaryController.getLeftY(),
-        //         () -> -primaryController.getLeftX(),
-        //         () -> -primaryController.getRightX()));
-        // primaryController.start().onTrue(
-        //     Commands.runOnce(
-        //         () -> drive.setPose(new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
-        //         drive).ignoringDisable(true));
+     private void configureButtonBindings() {
+        VisionUtil.getApriltagPose(1);
+         drive.setDefaultCommand(
+              DriveCommands.joystickDrive(
+                  drive, 
+                      () -> -primaryController.getLeftY(),
+                      () -> -primaryController.getLeftX(),
+                      () -> -primaryController.getRightX()));
 
-        // primaryController.leftTrigger().whileTrue(indexer.intake());
-        // primaryController.rightTrigger().whileTrue(indexer.outtake());
-        primaryController.a().onTrue(flywheel.setRPM(3000));
-        primaryController.b().onTrue(flywheel.setRPM(0));
-        primaryController.y().onTrue(flywheel.changeRPM(100));
-        primaryController.x().onTrue(flywheel.changeRPM(-100));
-        // primaryController.rightBumper().onTrue(hood.setAngle(85.0));
-        // primaryController.leftBumper().onTrue(hood.setAngle(45.0));
-    }
+          primaryController.start().onTrue(
+              Commands.runOnce(
+                  () -> drive.setPose(
+                          new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
+                          drive).ignoringDisable(true));
+          primaryController.axisGreaterThan(0, 0).onTrue(
+            turret.setAngleRad(0.5 * Math.PI));
+          primaryController.axisLessThan(0, 0).onTrue(
+            turret.setAngleRad(-0.5 * Math.PI));
+          primaryController.axisGreaterThan(1, 0).onTrue(
+            turret.setAngleRad(0 * Math.PI)); 
+         }
 
     public Command getAutonomousCommand() {
         return null; // choreoAutoChooser.selectedCommand();
