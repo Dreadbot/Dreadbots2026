@@ -21,9 +21,7 @@ public class Climb  extends SubsystemBase {
     private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
    
-<<<<<<< Updated upstream
-=======
-    //PID work?
+ //PID work?
     private final PIDController pid = new PIDController(0.013, 0.0, 0);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
@@ -33,7 +31,6 @@ public class Climb  extends SubsystemBase {
 
 
     
->>>>>>> Stashed changes
     @AutoLogOutput
     // Setting up the boolean Varible, which is for right now isClimbed (Basic will be updated later)
     public boolean isClimbed = false; 
@@ -62,10 +59,6 @@ public class Climb  extends SubsystemBase {
                             () -> io.runVoltage(ClimbConstants.OUTAKE_VOLTAGE),
                             () -> io.runVoltage(0.0) 
                         )
-<<<<<<< Updated upstream
-=======
-                        
->>>>>>> Stashed changes
                 );
         }
 
@@ -80,10 +73,10 @@ public class Climb  extends SubsystemBase {
             goal = setpoint;
         }
 
-         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
-        Logger.recordOutput("Slapdown/GoalPosition", goal.position);
+         Logger.recordOutput("Climb/SetpointPosition", setpoint.position);
+        Logger.recordOutput("Climb/GoalPosition", goal.position);
         setpoint = profile.calculate(0.02, setpoint, goal);
-        io.runPivotVoltage(
+        io.runScrewMotorVoltage(
             pid.calculate(inputs.absolutePosition, setpoint.position) + 
             feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
             // use acutal position degrees to make sure that we always apply the correct gravity feed forward.
