@@ -18,7 +18,7 @@ public interface IndexerIO {
     public default void updateInputs(IndexerIOInputs inputs) {}
     
     // Method to run voltage
-    public default void runVoltage(double volts) {};
+    public default void runSpindexerVoltage(double volts) {};
     
     // Method to run kicker voltage
     public default void runKickerVoltage(double volts) {};
