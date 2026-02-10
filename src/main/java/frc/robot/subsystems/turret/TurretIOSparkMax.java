@@ -31,8 +31,8 @@ public class TurretIOSparkMax implements TurretIO {
        
     @Override   
     public void updateInputs(TurretIOInputs inputs) {
-        inputs.pivotAppliedVolts = turretMotor.getAppliedOutput() * turretMotor.getBusVoltage();
-        inputs.pivotCurrentAmps = turretMotor.getOutputCurrent();
+        inputs.turretAppliedVolts = turretMotor.getAppliedOutput() * turretMotor.getBusVoltage();
+        inputs.turretCurrentAmps = turretMotor.getOutputCurrent();
         inputs.turretRotationRad = (Units.rotationsToRadians(absoluteEncoder.get()) - TurretConstants.TURRET_ENCODER_OFFSET_RAD);
     }
 

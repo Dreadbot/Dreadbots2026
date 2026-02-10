@@ -4,7 +4,6 @@ import java.util.Random;
 
 import edu.wpi.first.math.StateSpaceUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
@@ -28,10 +27,10 @@ public class VisionIOSim implements VisionIO{
      */
     public static Pose2d getEstimatedGlobalPose(Pose2d estimatedRobotPose) {
         var rand =
-            StateSpaceUtil.makeWhiteNoiseVector(VecBuilder.fill(0.1, 0.1, Units.degreesToRadians(5)));
+            StateSpaceUtil.makeWhiteNoiseVector(VecBuilder.fill(0.001, 0.001, Units.degreesToRadians(5)));
         return new Pose2d(
             estimatedRobotPose.getX() + rand.get(0, 0),
-            3,//estimatedRobotPose.getY() + rand.get(1, 0),
+            estimatedRobotPose.getY() + rand.get(1, 0),
             estimatedRobotPose.getRotation().plus(new Rotation2d(rand.get(2, 0))));
     }
 

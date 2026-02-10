@@ -29,6 +29,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -79,8 +80,8 @@ public class Drive extends SubsystemBase {
         rawGyroRotation,
         lastModulePositions,
         new Pose2d(),
-        VecBuilder.fill(0.005, 0.005, 0.05),
-        VecBuilder.fill(0.3, 0.3, Units.degreesToRadians(15))
+          VecBuilder.fill(0.005, 0.005, 0.002),
+          VecBuilder.fill(100_000, 100_000, 100_000)
         );
   
   private PIDController xController = new PIDController(xKp, 0.0, xKd);
@@ -370,5 +371,19 @@ public class Drive extends SubsystemBase {
   /** Returns the maximum angular speed in radians per sec. */
   public double getMaxAngularSpeedRadPerSec() {
     return maxSpeedMetersPerSec / driveBaseRadius;
+  }
+
+  public Twist2d getFieldVelocity() {
+    ChassisSpeeds chassisSpeeds = getChassisSpeeds();
+    Translation2d linearFieldVelocity =
+      new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
+        //.rotateBy(getRotation());
+    return
+      new Twist2d(
+          linearFieldVelocity.getX(),
+          linearFieldVelocity.getY(),
+          gyroInputs.connected
+              ? gyroInputs.yawVelocityRadPerSec
+              : chassisSpeeds.omegaRadiansPerSecond);
   }
 }
