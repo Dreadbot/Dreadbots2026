@@ -2,31 +2,22 @@ package frc.robot;
 
 import java.util.List;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.DriveCommands;
-import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIONavX;
-import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
-import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.turret.Turret;
-import frc.robot.subsystems.turret.TurretIO;
 import frc.robot.subsystems.turret.TurretIOSim;
-import frc.robot.subsystems.turret.TurretIOSparkFlex;
+import frc.robot.subsystems.turret.TurretIOSparkMax;
 import frc.robot.util.vision.VisionUtil;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.vision.VisionIOSim;
 
@@ -92,7 +83,7 @@ public class RobotContainer {
           drive::addVisionMeasurement,
           drive::getPose);
          
-            turret = new Turret(new TurretIOSparkFlex());
+            turret = new Turret(new TurretIOSparkMax());
             break;
 
 
@@ -155,7 +146,7 @@ public class RobotContainer {
           drive::addVisionMeasurement,
           drive::getPose);
          
-            turret = new Turret(new TurretIOSparkFlex());
+            turret = new Turret(new TurretIOSparkMax());
             break;
 
         //     drive = 
@@ -201,17 +192,14 @@ public class RobotContainer {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
-<<<<<<< HEAD
-          primaryController.leftTrigger().whileTrue(turret.setAngleDegrees(TurretConstants.TEST_ANGLE));
-=======
+
           primaryController.axisGreaterThan(0, 0).onTrue(
             turret.setAngleRad(0.5 * Math.PI));
           primaryController.axisLessThan(0, 0).onTrue(
             turret.setAngleRad(-0.5 * Math.PI));
           primaryController.axisGreaterThan(1, 0).onTrue(
             turret.setAngleRad(0 * Math.PI)); 
->>>>>>> b95431b6e16c53c2036e3c94a7573fdd9db656a2
-         }
+          }
 
     public Command getAutonomousCommand() {
         return null; //choreoAutoChooser.selectedCommand();

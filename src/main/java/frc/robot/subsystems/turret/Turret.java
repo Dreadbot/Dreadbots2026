@@ -15,11 +15,6 @@ public class Turret extends SubsystemBase {
     private final PIDController pid = new PIDController(0.2, 0, 0.003);
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.0, 0.00896);
     private double setpointRelativeRad;
-    private final PIDController pid = new PIDController(1, 0, 0);
-    private final ArmFeedforward feedforward = new ArmFeedforward(0.26, 0.15, 0.03);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 840));
-    private TrapezoidProfile.State goal = new TrapezoidProfile.State();
-    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
     public double voltage;
 
     public Turret(TurretIO io) {
@@ -66,8 +61,6 @@ public class Turret extends SubsystemBase {
         double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
         double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
         setpointRelativeRad = wrapToLimits(inputs.turretRotationRad + delta); 
-                goal = new TrapezoidProfile.State(angle, 0);
-            });
     }
 
     public Command setAtZero() {

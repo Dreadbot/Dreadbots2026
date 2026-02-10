@@ -2,7 +2,7 @@ package frc.robot.subsystems.turret;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -11,14 +11,14 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
-public class TurretIOSparkFlex implements TurretIO {
+public class TurretIOSparkMax implements TurretIO {
     
-    private final SparkFlex turretMotor;
+    private final SparkMax turretMotor;
     private DutyCycleEncoder absoluteEncoder;
     private double volts = 0.0;
-//id is 14 but one for testing
-   public TurretIOSparkFlex() {
-       this.turretMotor = new SparkFlex(1, MotorType.kBrushless);
+//id is 14 but 2 for testing
+   public TurretIOSparkMax() {
+       this.turretMotor = new SparkMax(2, MotorType.kBrushless);
        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
        TurretConstants.MAX_ANGLE_RAD, TurretConstants.TURRET_EXPECTED_ZERO);
        this.volts = 0.0;
