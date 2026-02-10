@@ -18,6 +18,7 @@ public class Flywheel extends SubsystemBase {
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
+        pid.setTolerance(FlywheelConstants.RPM_TOLERANCE);
     }
 
     @Override
@@ -37,6 +38,10 @@ public class Flywheel extends SubsystemBase {
 
     public double getRPM() {
         return inputs.RPM;
+    }
+
+    public boolean atRPM() {
+        return pid.atSetpoint();
     }
 
     // These commands are for just starting and stopping at a set voltage

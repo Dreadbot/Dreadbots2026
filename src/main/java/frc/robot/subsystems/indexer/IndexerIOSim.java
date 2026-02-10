@@ -27,7 +27,7 @@ public class IndexerIOSim implements IndexerIO {
 
     // Runs voltage for the simulation
     @Override
-    public void runVoltage(double volts) {
+    public void runSpindexerVoltage(double volts) {
         motorSim.setInputVoltage(volts);
     }
 }

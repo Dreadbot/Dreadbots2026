@@ -12,8 +12,6 @@ public class Indexer extends SubsystemBase {
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
     private IndexerIO io;
-    // private boolean isIntaking = false;
-    // private boolean hasGamepiece = false;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
@@ -21,33 +19,21 @@ public class Indexer extends SubsystemBase {
     }
 
     // runs the intake command
-    public Command intake() {
-        return(
-            Commands.startEnd(
-                () -> { 
-                    io.runVoltage(IndexerConstants.INTAKE_VOLTAGE);
-                    io.runKickerVoltage(IndexerConstants.KICKER_INTAKE_VOLTAGE); 
-                },
-                () -> { 
-                    io.runVoltage(0.0);
-                    io.runKickerVoltage(0.0);
-                }
-            )
-        );
+    public void startIndexer() {
+        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
+        
     }
 
-    public Command outtake() {
-        return(
-            Commands.startEnd(
-            () -> {
-                io.runVoltage(IndexerConstants.OUTTAKE_VOLTAGE);
-                io.runKickerVoltage(IndexerConstants.KICKER_OUTTAKE_VOLTAGE);},
-            () -> {
-                io.runVoltage(0.0);
-                io.runKickerVoltage(0.0);
-            }
-            )
-        );
+    public void stopIndexer() {
+        io.runSpindexerVoltage(0.0);
+    }
+
+    public void startKicker() {
+        io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE);
+    }
+
+    public void stopKicker() {
+        io.runKickerVoltage(0.0);
     }
 
     @Override

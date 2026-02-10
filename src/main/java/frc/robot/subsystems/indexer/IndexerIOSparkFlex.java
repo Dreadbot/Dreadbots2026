@@ -17,8 +17,8 @@ public class IndexerIOSparkFlex implements IndexerIO {
     private final SparkFlex kickerMotor;
     // initializes indexerMotor and kickerMotor
     public IndexerIOSparkFlex() {
-        indexerMotor = new SparkFlex(IndexerConstants.MOTOR_ID, MotorType.kBrushless);
-        this.kickerMotor = new SparkFlex(IndexerConstants.MOTOR_ID_KICKER, MotorType.kBrushless);
+        indexerMotor = new SparkFlex(IndexerConstants.SPINDEXER_MOTOR_ID, MotorType.kBrushless);
+        this.kickerMotor = new SparkFlex(IndexerConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
         SparkFlexConfig config = new SparkFlexConfig();
         config
             .idleMode(IdleMode.kBrake)
@@ -38,7 +38,7 @@ public class IndexerIOSparkFlex implements IndexerIO {
     }
     // runs voltage for the indexerMotor
     @Override
-    public void runVoltage(double volts) {
+    public void runSpindexerVoltage(double volts) {
         indexerMotor.setVoltage(volts);
     }
     // runs voltage for the kickerMotor
