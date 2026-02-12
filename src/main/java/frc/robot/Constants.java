@@ -80,4 +80,24 @@ public class Constants {
         public static final double OUTAKE_VOLTAGE = -1.5;
         public static final int MOTOR_ID = 1;
     }
+
+    public static class SlapdownConstants {
+        public static final double INTAKE_VOLTAGE = -5.0;
+        public static final double OUTAKE_VOLTAGE = 5.0;
+        public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 8;
+        public static final double ENCODER_OFFSET = 108.125;
+        public static final double HOME_ANGLE_DEGREES = 0;
+        public static final double OUTTAKE_ANGLE_DEGREES = 3;
+        public static final double INTAKE_ANGLE_DEGREES = 60.0;
+        public static final double HOLD_ANGLE_DEGREES = 14.0;
+        public static final double MAX_ANGLE_DEGREES = 80.0;
+        public static final double ENCODER_FREQUENCY = 975.6;
+        public static final int INTAKE_MOTOR_ID = 20;
+        public static final int PIVOT_MOTOR_ID = 18;
+
+        public static final double SIM_INTAKE_MOI = 0.00011264;
+        public static final double SIM_PIVOT_MOI = 0.15180934;
+
+  }
+
 }

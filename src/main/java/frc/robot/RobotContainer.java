@@ -27,6 +27,9 @@ import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.vision.VisionIOSim;
 
 import frc.robot.subsystems.flywheel.*;
+import frc.robot.subsystems.slapdown.Slapdown;
+import frc.robot.subsystems.slapdown.SlapdownIOSim;
+import frc.robot.subsystems.slapdown.SlapdownIOSparkMax;
 import frc.robot.subsystems.climb.*;
 
 public class RobotContainer {
@@ -38,6 +41,7 @@ public class RobotContainer {
     private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
     private final Climb climb;
+    private final Slapdown slapdown;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -70,6 +74,7 @@ public class RobotContainer {
                  flywheel = new Flywheel(new FlywheelIOSim());
                 //flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 climb = new Climb(new ClimbIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
                 break;
 
                 case SIM:
@@ -99,6 +104,7 @@ public class RobotContainer {
             flywheel = new Flywheel(new FlywheelIOSim());
             // turret = new Turret(new TurretIOSim());
             climb = new Climb(new ClimbIOSim());
+            slapdown = new Slapdown(new SlapdownIOSim());
                 break;
 
                 default:
@@ -129,6 +135,7 @@ public class RobotContainer {
                 climb = new Climb(new ClimbIO() {});
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
                 break;
             }
             configureButtonBindings();
