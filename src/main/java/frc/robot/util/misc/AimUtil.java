@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.TurretConstants;
 
-public class TurretUtil {
+public class AimUtil {
     public static Translation2d getHubTranslation() {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
             return new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84));

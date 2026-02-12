@@ -3,12 +3,14 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -45,6 +47,11 @@ public class RobotContainer {
     private final Vision vision;
     private final List<VisionCamera> cameras;
     private final Turret turret;
+    private final Hood hood;
+    private final Flywheel flywheel;
+    private final Indexer indexer;
+    
+    private final AutoAim autoAim;
 
     public RobotContainer() {
       switch (Constants.currentMode) {
@@ -73,7 +80,11 @@ public class RobotContainer {
           turret = new Turret(
             new TurretIOSparkMax(),
             drive);
-          CameraServer.startAutomaticCapture(0);
+          hood = new Hood(new HoodIOSparkMax());
+          flywheel = new Flywheel(new FlywheelIOSparkFlex());
+          indexer = new Indexer(new IndexerIOSparkFlex());
+
+          autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
           break;
 
         case SIM:
@@ -93,14 +104,19 @@ public class RobotContainer {
               1),
             new VisionCamera(
               new VisionIOSim(drive::getPose), 
-          2));
-              vision = new Vision(
+              2));
+          vision = new Vision(
                 cameras,
                 drive::addVisionMeasurement,
                 drive::getPose);
           turret = new Turret(
             new TurretIOSim(),
             drive);
+          hood = new Hood(new HoodIOSim());
+          flywheel = new Flywheel(new FlywheelIOSim());
+          indexer = new Indexer(new IndexerIOSim());
+
+          autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
           break;
         default:
           drive = 
@@ -124,10 +140,14 @@ public class RobotContainer {
             cameras,
             drive::addVisionMeasurement,
             drive::getPose);
-
           turret = new Turret(
             new TurretIOSparkMax(), 
             drive);
+          hood = new Hood(new HoodIOSim());
+          flywheel = new Flywheel(new FlywheelIOSim());
+          indexer = new Indexer(new IndexerIOSim());
+
+          autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
           break;
         }
       configureButtonBindings();
@@ -147,12 +167,15 @@ public class RobotContainer {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
+          // primaryController.axisGreaterThan(0, 0).onTrue(
+          //   turret.setAngleRad(0.5 * Math.PI));
+          // primaryController.axisLessThan(0, 0).onTrue(
+          //   turret.setAngleRad(-0.5 * Math.PI));
+          // primaryController.axisGreaterThan(1, 0).onTrue(
+          //   turret.setAngleRad(0 * Math.PI)); 
           primaryController.axisGreaterThan(0, 0).onTrue(
-            turret.setAngleRad(0.5 * Math.PI));
-          primaryController.axisLessThan(0, 0).onTrue(
-            turret.setAngleRad(-0.5 * Math.PI));
-          primaryController.axisGreaterThan(1, 0).onTrue(
-            turret.setAngleRad(0 * Math.PI)); 
+            autoAim.shoot()
+          );
          }
 
     public Command getAutonomousCommand() {
