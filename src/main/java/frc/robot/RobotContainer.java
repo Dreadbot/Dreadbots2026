@@ -3,12 +3,14 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -39,9 +41,12 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private final List<VisionCamera> cameras;
+    private final Turret turret;
+    private final Hood hood;
     private final Flywheel flywheel;
-    private final Climb climb;
-    private final Slapdown slapdown;
+    private final Indexer indexer;
+    
+    private final AutoAim autoAim;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -69,24 +74,47 @@ public class RobotContainer {
             cameras,
             drive::addVisionMeasurement,
             drive::getPose);
+          turret = new Turret(
+            new TurretIOSparkMax(),
+            drive);
+          CameraServer.startAutomaticCapture(0);
+          break;
 
-
-                 flywheel = new Flywheel(new FlywheelIOSim());
-                //flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                climb = new Climb(new ClimbIOSparkFlex());
-                slapdown = new Slapdown(new SlapdownIOSparkMax());
-                break;
-
-                case SIM:
-                
-                drive = 
-                new Drive(
-                    new GyroIO() {},
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim());
-                    cameras = List.of(
+        case SIM:
+          drive = 
+          new Drive(
+              new GyroIO() {},
+              new ModuleIOSim(),
+              new ModuleIOSim(),
+              new ModuleIOSim(),
+              new ModuleIOSim());
+          cameras = List.of(
+            new VisionCamera(
+              new VisionIOSim(drive::getPose), 
+              0),
+            new VisionCamera(
+              new VisionIOSim(drive::getPose), 
+              1),
+            new VisionCamera(
+              new VisionIOSim(drive::getPose), 
+          2));
+              vision = new Vision(
+                cameras,
+                drive::addVisionMeasurement,
+                drive::getPose);
+          turret = new Turret(
+            new TurretIOSim(),
+            drive);
+          break;
+        default:
+          drive = 
+            new Drive(
+                new GyroIO() {},
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim(),
+                new ModuleIOSim());
+          cameras = List.of(
             new VisionCamera(
               new VisionIOCamera(VisionConstants.frontRightCameraName), 
               0),
@@ -101,45 +129,13 @@ public class RobotContainer {
             drive::addVisionMeasurement,
             drive::getPose);
 
-            flywheel = new Flywheel(new FlywheelIOSim());
-            // turret = new Turret(new TurretIOSim());
-            climb = new Climb(new ClimbIOSim());
-            slapdown = new Slapdown(new SlapdownIOSim());
-                break;
-
-                default:
-
-                drive = 
-                    new Drive(
-                        new GyroIO() {},
-                        new ModuleIO() {}, 
-                        new ModuleIO() {}, 
-                        new ModuleIO() {}, 
-                        new ModuleIO() {});
-
-                        cameras = List.of(
-            new VisionCamera(
-                new VisionIO() {},
-                0),
-            new VisionCamera(
-                new VisionIO() {},
-                1),
-            new VisionCamera(
-                new VisionIO() {},
-                2));
-            vision = new Vision(
-            cameras,
-            drive::addVisionMeasurement,
-            drive::getPose);
-
-                climb = new Climb(new ClimbIO() {});
-                flywheel = new Flywheel(new FlywheelIOSim());
-                // turret = new Turret(new TurretIO() {});
-                slapdown = new Slapdown(new SlapdownIOSparkMax());
-                break;
-            }
-            configureButtonBindings();
+          turret = new Turret(
+            new TurretIOSparkMax(), 
+            drive);
+          break;
         }
+      configureButtonBindings();
+    }
 
 
 
@@ -164,14 +160,12 @@ private void configureButtonBindings() {
                   () -> drive.setPose(
                           new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                           drive).ignoringDisable(true));
-
-
-
-        // //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
-        primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
-        primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
-
-
+          primaryController.axisGreaterThan(0, 0).onTrue(
+            turret.setAngleRad(0.5 * Math.PI));
+          primaryController.axisLessThan(0, 0).onTrue(
+            turret.setAngleRad(-0.5 * Math.PI));
+          primaryController.axisGreaterThan(1, 0).onTrue(
+            turret.setAngleRad(0 * Math.PI)); 
          }
 
     public Command getAutonomousCommand() {

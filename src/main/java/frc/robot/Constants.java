@@ -57,12 +57,14 @@ public class Constants {
     public static final double MAX_VOLTAGE = 9999.0;
     public static final double TURRET_MOI = 0.0366;
 
-    public static final Translation2d TURRET_OFFSET = new Translation2d(0.0, 0.0);     // +X = Towards front +Y = Towards right
+    public static final Translation2d TURRET_OFFSET = new Translation2d(-0.1518, -0.210);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
 
     public static final double MAX_ANGLE_RAD = Math.PI;   // +180
     public static final double MIN_ANGLE_RAD = -Math.PI;  // -180
+  }
 
-    public static final double TURRET_LOOKAHEAD = 0.02;
+  public static class AutoAimConstants {
+    public static final double PHASE_DELAY = 0.02;
   }
     public static class ClimbConstants {
         public static final double TRANSLATION_KP = 0.5;
