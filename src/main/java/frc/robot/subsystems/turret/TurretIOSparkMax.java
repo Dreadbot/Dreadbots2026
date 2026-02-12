@@ -16,24 +16,32 @@ public class TurretIOSparkMax implements TurretIO {
     private final SparkMax turretMotor;
     private DutyCycleEncoder absoluteEncoder;
     private double volts = 0.0;
-//id is 14 but 2 for testing
-   public TurretIOSparkMax() {
-       this.turretMotor = new SparkMax(2, MotorType.kBrushless);
-       this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
-       TurretConstants.MAX_ANGLE_RAD, TurretConstants.TURRET_EXPECTED_ZERO);
-       this.volts = 0.0;
-       absoluteEncoder.setInverted(true);
-       absoluteEncoder.setAssumedFrequency(975.6);
-       SparkMaxConfig config = new SparkMaxConfig();
-       config.idleMode(IdleMode.kBrake);
-       turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }    
+    //id is 14 but 2 for testing
+    public TurretIOSparkMax() {
+        this.turretMotor = new SparkMax(2, MotorType.kBrushless);
+        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
+        TurretConstants.MAX_ANGLE_RAD, TurretConstants.TURRET_EXPECTED_ZERO);
+        this.volts = 0.0;
+        absoluteEncoder.setInverted(true);
+        absoluteEncoder.setAssumedFrequency(975.6);
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kBrake);
+        turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        double absoluteRad =
+            Units.rotationsToRadians(absoluteEncoder.get()) - TurretConstants.TURRET_ENCODER_OFFSET_RAD;
+
+        double motorRotations = Units.radiansToRotations(absoluteRad);
+
+        motorRotations *= TurretConstants.GEAR_REDUCTION;
+        turretMotor.getEncoder().setPosition(motorRotations);
+    }
        
     @Override   
     public void updateInputs(TurretIOInputs inputs) {
         inputs.turretAppliedVolts = turretMotor.getAppliedOutput() * turretMotor.getBusVoltage();
         inputs.turretCurrentAmps = turretMotor.getOutputCurrent();
-        inputs.turretRotationRad = (Units.rotationsToRadians(absoluteEncoder.get()) - TurretConstants.TURRET_ENCODER_OFFSET_RAD);
+        inputs.turretRotationRad = turretMotor.getEncoder().getPosition() / TurretConstants.GEAR_REDUCTION;
     }
 
 
