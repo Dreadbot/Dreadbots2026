@@ -24,6 +24,7 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
 
 import frc.robot.subsystems.flywheel.*;
+import frc.robot.subsystems.slapdown.*;
 import frc.robot.subsystems.climb.*;
 
 public class RobotContainer {
@@ -35,6 +36,7 @@ public class RobotContainer {
     private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
     private final Climb climb;
+    private final Slapdown slapdown;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -93,6 +95,7 @@ public class RobotContainer {
                  flywheel = new Flywheel(new FlywheelIOSim());
                 //flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 climb = new Climb(new ClimbIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
                 break;
 
 
@@ -126,7 +129,7 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
-               
+                slapdown = new Slapdown(new SlapdownIOSim());
 
                 climb = new Climb(new ClimbIOSim());
                 break;
@@ -161,6 +164,7 @@ public class RobotContainer {
 
                 climb = new Climb(new ClimbIO() {});
                 flywheel = new Flywheel(new FlywheelIOSim());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
                 // turret = new Turret(new TurretIO() {});
                 break;
             }
@@ -197,7 +201,8 @@ private void configureButtonBindings() {
         primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
         primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
 
-
+        primaryController.rightTrigger().whileTrue(slapdown.intakeSequence());
+        primaryController.leftTrigger().whileTrue(slapdown.outtakeSequence());
          }
          public Command getAutonomousCommand() {
         return null; //choreoAutoChooser.selectedCommand();
