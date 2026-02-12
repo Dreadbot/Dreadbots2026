@@ -173,7 +173,7 @@ public class RobotContainer {
           //   turret.setAngleRad(-0.5 * Math.PI));
           // primaryController.axisGreaterThan(1, 0).onTrue(
           //   turret.setAngleRad(0 * Math.PI)); 
-          primaryController.axisGreaterThan(0, 0).onTrue(
+          primaryController.x().whileTrue(
             autoAim.shoot()
           );
          }
