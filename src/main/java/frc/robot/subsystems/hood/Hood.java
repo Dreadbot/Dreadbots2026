@@ -2,16 +2,24 @@ package frc.robot.subsystems.hood;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DigitalInput;
+
+import frc.robot.Constants.HoodConstants;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.0002, 0, 0);
+    private final PIDController pid = new PIDController(0.2, 0, 0);
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
 
-    private double goalAngle = 45.0;
+    private DigitalInput lowerSwitch = new DigitalInput(HoodConstants.LOWER_LIMIT_SWITCH_ID);
+    
+    private double goalAngle = 0.0;
 
     public Hood(HoodIO io) {
         this.io = io;
@@ -20,25 +28,41 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+        Logger.processInputs("Hood", inputs);
 
-        double pidValue = pid.calculate(inputs.angle, goalAngle);
-        double feedforwardValue = feedforward.calculate(inputs.velocity);
-        io.setVoltage(pidValue/* + (goalAngle / 1)*/);
-    }
+        double pidVoltage = pid.calculate(inputs.angle, goalAngle);
+        double feedforwardVoltage = feedforward.calculate(inputs.RPM);
+        if (pidVoltage > 0 && inputs.angle >= HoodConstants.MAX_ANGLE) {
+            pidVoltage = 0;
+        }
+        io.setVoltage(pidVoltage);
 
-    public void setVoltage(double volts) {
-        io.setVoltage(volts);
+        Logger.recordOutput("Hood/lowerSwitch", lowerSwitch.get());
+
+        if (!lowerSwitch.get()) {
+            io.setPosition(0);
+        }
     }
 
     public double getAngle() {
         return inputs.angle;
     }
 
-    public double getVelocity() {
-        return inputs.velocity;
+    public double getRPM() {
+        return inputs.RPM;
     }
 
-    public Command setAngle(double angle) {
-        return runOnce(() -> goalAngle = angle);
+    public Command calibrate() {
+        return runOnce(() -> {
+            while (lowerSwitch.get()) {
+                io.setVoltage(-0.1);
+            }
+            io.setVoltage(0);
+            io.setPosition(0);
+        });
+    }
+
+    public Command setAngle(double radians) {
+        return runOnce(() -> goalAngle = radians);
     }
 }

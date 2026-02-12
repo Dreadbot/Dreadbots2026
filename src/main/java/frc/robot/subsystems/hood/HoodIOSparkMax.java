@@ -7,7 +7,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import frc.robot.Constants.HoodConstants;;
+import frc.robot.Constants.HoodConstants;
 
 public class HoodIOSparkMax implements HoodIO {
     private final SparkMax motor;
@@ -27,9 +27,14 @@ public class HoodIOSparkMax implements HoodIO {
     }
 
     @Override
+    public void setPosition(double position) {
+        motor.getEncoder().setPosition(position);
+    }
+
+    @Override
     public void updateInputs(HoodIOInputs inputs) {
         inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
-        inputs.angle = motor.getEncoder().getPosition() * 360; // Convert total rotations to radians
-        inputs.velocity = motor.getEncoder().getVelocity();
+        inputs.angle = motor.getEncoder().getPosition() * HoodConstants.ROTATIONS_TO_RADIANS;
+        inputs.RPM = motor.getEncoder().getVelocity();
     }
 }
