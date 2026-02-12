@@ -42,11 +42,11 @@ public class RobotContainer {
     private final Vision vision;
     private final List<VisionCamera> cameras;
     private final Turret turret;
-    private final Hood hood;
-    private final Flywheel flywheel;
-    private final Indexer indexer;
+    // private final Hood hood;
+    // private final Flywheel flywheel;
+    // private final Indexer indexer;
     
-    private final AutoAim autoAim;
+    // private final AutoAim autoAim;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
