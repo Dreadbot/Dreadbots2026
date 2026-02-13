@@ -16,7 +16,7 @@ public class Constants {
     }
 
     public static class HookprepConstants {
-        public static final int Servo_ID = 10;
+        public static final int Servo_ID = 1;
     }
 
     public static class IndexerConstants {

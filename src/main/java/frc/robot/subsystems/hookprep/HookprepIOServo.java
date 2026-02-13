@@ -24,7 +24,8 @@ public class HookprepIOServo implements HookprepIO {
 
     @Override
     public void runPulse(double volts) {
-        int pulseWidth = (int)(volts / 12.0 * 2000) + 500; // Assuming 0-12V maps to 500-2500 microseconds
+        System.out.println("here" + volts);
+        int pulseWidth = (int)(volts / 12.0 * 2000) + 500;
         channel0.setPulseWidth(pulseWidth);
     }
 }

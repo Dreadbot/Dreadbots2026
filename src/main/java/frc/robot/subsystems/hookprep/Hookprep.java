@@ -21,7 +21,7 @@ public class Hookprep extends SubsystemBase {
     public Command readyHook(double joystickPosition) {
         double desiredPosition = joystickPosition + 1.0;
         int pulseWidth = (int)desiredPosition * 2000 + 500;
-        
+        System.out.println("readyhook" + pulseWidth);
         return(
             Commands.startEnd(
                 () -> {
