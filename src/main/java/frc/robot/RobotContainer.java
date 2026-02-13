@@ -48,7 +48,7 @@ public class RobotContainer {
     private final Hood hood;
     private final Indexer indexer;
 
-    // private final AutoAim autoAim;
+    private final AutoAim autoAim;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -111,6 +111,7 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSim());
                 break;
         }
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
         configureButtonBindings();
     }
 
@@ -139,9 +140,12 @@ public class RobotContainer {
             ).ignoringDisable(true)
         );
 
-        primaryController.axisGreaterThan(0, 0).onTrue(turret.setAngleRad(0.5 * Math.PI));
-        primaryController.axisLessThan(0, 0).onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        primaryController.axisGreaterThan(1, 0).onTrue(turret.setAngleRad(0 * Math.PI));
+        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
+        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+
+        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
         // Subsystem button bindings used for testing
         // Can be changed or refit for actual use

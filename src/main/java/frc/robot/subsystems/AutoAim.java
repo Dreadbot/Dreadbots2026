@@ -44,27 +44,28 @@ public class AutoAim {
     }
 
     public Command shoot() {
-        return prepShot().andThen(Commands.runEnd(() -> shootSequence(), () -> stopShooting()));
+        return prepShot().andThen(() -> startFeeding()).andThen(Commands.runEnd(() -> setSetpoints(true), () -> stopShooting()));
     }
 
     public Command prepShot() {
-        return Commands.runOnce(() -> startShootSequence()).andThen(Commands.waitUntil(flywheel::atRPM));
+        return Commands.runOnce(() -> setSetpoints(true)).andThen(Commands.waitUntil(flywheel::atRPM));
     }
 
-    public void startShootSequence() {
-        setSetpoints();
+    public void startFeeding() {
         indexer.startIndexer();
         indexer.startKicker();
-    }
-
-    public void shootSequence() {
-        setSetpoints();
     }
 
     public void stopShooting() {
         flywheel.setRPM(0);
         indexer.stopIndexer();
         indexer.stopKicker();
+    }
+
+    public Command trackTarget() {
+        return Commands.run(
+            () -> setSetpoints(false)
+        );
     }
 
     public Translation2d getTargetTranslation() {
@@ -77,11 +78,12 @@ public class AutoAim {
         return turretTranslation.getDistance(getTargetTranslation());
     }
 
-    public void setSetpoints() {
+    public void setSetpoints(boolean setFlywheel) {
         double phaseDelay = AutoAimConstants.PHASE_DELAY;
 
         Pose2d estimatedPose = drive.getPose();
         ChassisSpeeds robotRelativeVelocity = drive.getChassisSpeeds();
+
         estimatedPose =
             estimatedPose.exp(
                 new Twist2d(
@@ -90,45 +92,31 @@ public class AutoAim {
                     robotRelativeVelocity.omegaRadiansPerSecond * phaseDelay));
 
         Translation2d target = getTargetTranslation();
-        Pose2d turretPosition = estimatedPose.plus(new Transform2d(TurretConstants.TURRET_OFFSET, Rotation2d.kZero));
-        double turretToTargetDistance = turretPosition.getTranslation().getDistance(getTargetTranslation());
-
-        // Calculate field relative turret velocity
-        ChassisSpeeds robotVelocity = ChassisSpeeds.fromRobotRelativeSpeeds(robotRelativeVelocity, drive.getRotation());
-        double robotAngle = estimatedPose.getRotation().getRadians();
-        double turretVelocityX =
-            robotVelocity.vxMetersPerSecond
-                + robotVelocity.omegaRadiansPerSecond
-                    * (TurretConstants.TURRET_OFFSET.getY() * Math.cos(robotAngle)
-                        - TurretConstants.TURRET_OFFSET.getX() * Math.sin(robotAngle));
-        
-        double turretVelocityY =
-            robotVelocity.vyMetersPerSecond
-                + robotVelocity.omegaRadiansPerSecond
-                    * (TurretConstants.TURRET_OFFSET.getX() * Math.cos(robotAngle)
-                        - TurretConstants.TURRET_OFFSET.getY() * Math.sin(robotAngle));
 
         double timeOfFlight = 0;
         Pose2d lookaheadPose = drive.getPose();
-        double lookaheadTurretToTargetDistance = turretToTargetDistance;
+        double lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(estimatedPose);
         
         for (int i = 0; i < 20; i++) {
             timeOfFlight = firingTable.get(lookaheadTurretToTargetDistance).get(2, 0);
-            double offsetX = turretVelocityX * timeOfFlight;
-            double offsetY = turretVelocityY * timeOfFlight;
+            ChassisSpeeds robotDelta = robotRelativeVelocity.times(timeOfFlight);
             lookaheadPose =
-                new Pose2d(
-                    turretPosition.getTranslation().plus(new Translation2d(offsetX, offsetY)),
-                    turretPosition.getRotation());
-            lookaheadTurretToTargetDistance = target.getDistance(lookaheadPose.getTranslation());
+                estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond, robotDelta.vyMetersPerSecond, new Rotation2d(robotDelta.omegaRadiansPerSecond)));
+            lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(lookaheadPose);
         }
 
         Matrix<N3, N1> firingValues = getFiringTableValues(lookaheadTurretToTargetDistance);
-        turret.setSetpointFromTurretPose(lookaheadPose, target);
+
+        Pose2d robotPoseForTurret = new Pose2d(lookaheadPose.getX(), lookaheadPose.getY(), estimatedPose.getRotation());
+
+        turret.setSetpointFromTurretPose(new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), estimatedPose.getRotation()), target);
         hood.setAngle(firingValues.get(0, 0));
-        flywheel.setRPM(firingValues.get(1, 0));
+        if (setFlywheel) {
+            flywheel.setRPM(firingValues.get(1, 0));
+        }
 
         Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
+        Logger.recordOutput("AutoAim/TurretPose", new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), estimatedPose.getRotation()));
         Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
     }   
 

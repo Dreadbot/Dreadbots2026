@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
-    private final PIDController pid = new PIDController(6, 0, 0.2);
+    private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, 0, TurretConstants.TURRET_Kd);
     private final Drive drive;
 
     private double setpointRelativeRad;
@@ -38,13 +38,17 @@ public class Turret extends SubsystemBase {
 
         double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
         
-        voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint); 
+        voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint);
+        if (!pid.atSetpoint()) {
+            voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
+        }
         
         if (inputs.turretRotationRad >= TurretConstants.MAX_ANGLE_RAD && voltage > 0) {
             voltage = 0.0;
         } else if (inputs.turretRotationRad <= TurretConstants.MIN_ANGLE_RAD && voltage < 0) {
             voltage = 0.0;
         }
+
         voltage = MathUtil.clamp(voltage, -TurretConstants.MAX_VOLTAGE, TurretConstants.MAX_VOLTAGE);
         io.runTurretVoltage(voltage);
 
@@ -57,6 +61,10 @@ public class Turret extends SubsystemBase {
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
                 drive.getPose()), 
                 new Rotation2d(inputs.turretRotationRad).plus(drive.getPose().getRotation())));
+        Logger.recordOutput("Turret/SetpointPose", 
+            new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
+                drive.getPose()), 
+                new Rotation2d(wrappedSetpoint).plus(drive.getPose().getRotation())));
     }   
     
     public Command setAngleRad(double angleRad) {
