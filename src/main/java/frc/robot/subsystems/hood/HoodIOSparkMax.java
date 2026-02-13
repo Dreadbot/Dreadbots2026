@@ -33,6 +33,11 @@ public class HoodIOSparkMax implements HoodIO {
     }
 
     @Override
+    public void setSpeed(double speed) {
+        motor.set(speed);
+    }
+
+    @Override
     public void setPosition(double position) {
         encoder.setPosition(position);
     }

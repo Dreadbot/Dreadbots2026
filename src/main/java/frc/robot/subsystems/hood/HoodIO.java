@@ -15,5 +15,7 @@ public interface HoodIO {
 
     default void setVoltage(double volts) {}
 
+    default void setSpeed(double speed) {}
+
     default void setPosition(double position) {}
 }
