@@ -197,13 +197,17 @@ private void configureButtonBindings() {
 
 
 
-        // //Slapdown Algae Buttons (Left Trigger Intakes wheels/ Right Trigger Outakes wheels) (D-pad Up will pull in the intake system while D-pad down will push the intake system out to grab Algae) 
+        // Climb controls
         primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
         primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
 
-        primaryController.rightTrigger().whileTrue(slapdown.intakeSequence());
-        primaryController.leftTrigger().whileTrue(slapdown.outtakeSequence());
+
+        // Slapdwon controls 
+        primaryController.rightTrigger().whileTrue(slapdown.slapDownSequence());
+        primaryController.leftTrigger().whileTrue(slapdown.slapUpSequence());
+        primaryController.rightTrigger().whileTrue(slapdown.intakeMotorSequence());
          }
+
          public Command getAutonomousCommand() {
         return null; //choreoAutoChooser.selectedCommand();
     }
