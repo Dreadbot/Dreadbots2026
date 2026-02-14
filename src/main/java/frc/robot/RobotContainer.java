@@ -166,7 +166,7 @@ public class RobotContainer {
         // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
 
         // Flywheel, FeedForward and PID
-        primaryController.a().onTrue(flywheel.setRPM(3000));
+        primaryController.a().onTrue(flywheel.start());
         primaryController.b().onTrue(flywheel.stop());
         primaryController.y().onTrue(flywheel.changeRPM(100));
         primaryController.x().onTrue(flywheel.changeRPM(-100));
