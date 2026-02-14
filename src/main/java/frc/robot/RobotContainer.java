@@ -28,9 +28,8 @@ import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.vision.VisionIOSim;
 
-import frc.robot.subsystems.slapdown.Slapdown;
-import frc.robot.subsystems.slapdown.SlapdownIOSim;
-import frc.robot.subsystems.slapdown.SlapdownIOSparkMax;
+import frc.robot.subsystems.flywheel.*;
+import frc.robot.subsystems.slapdown.*;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.flywheel.*;
 import frc.robot.subsystems.hood.*;
@@ -47,11 +46,15 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Hood hood;
     private final Indexer indexer;
-
     private final AutoAim autoAim;
+    private final Climb climb;
+    private final Slapdown slapdown;
+
 
     public RobotContainer() {
         switch (Constants.currentMode) {
+
+
             case REAL:
                 drive = new Drive(
                     new GyroIONavX(),
@@ -68,10 +71,19 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 CameraServer.startAutomaticCapture(0);
+
+
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
+
                 break;
+
+
+
+
+
+
             case SIM:
                 drive = new Drive(
                     new GyroIO() {},
@@ -90,14 +102,22 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSim());
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
+                    new ModuleIOSim();
+               
                 break;
+
+
+
+
+
+
             default:
-                drive = new Drive(
-                    new GyroIO() {},
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim()
+               drive = new Drive(
+                    new GyroIONavX(),
+                    new ModuleIOSpark(0),
+                    new ModuleIOSpark(1),
+                    new ModuleIOSpark(2),
+                    new ModuleIOSpark(3)
                 );
                 cameras = List.of(
                     new VisionCamera(new VisionIOCamera(VisionConstants.frontRightCameraName), 0),
@@ -106,14 +126,17 @@ public class RobotContainer {
                 );
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
-                flywheel = new Flywheel(new FlywheelIOSim());
-                hood = new Hood(new HoodIOSim());
-                indexer = new Indexer(new IndexerIOSim());
+                CameraServer.startAutomaticCapture(0);
+
+
+                flywheel = new Flywheel(new FlywheelIOSparkFlex());
+                hood = new Hood(new HoodIOSparkMax());
+                indexer = new Indexer(new IndexerIOSparkFlex());
+                
                 break;
         }
-        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
-        configureButtonBindings();
     }
+
 
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
@@ -146,6 +169,9 @@ public class RobotContainer {
         primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
         primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        // Climb controls
+        primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
+        primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
 
         // Subsystem button bindings used for testing
         // Can be changed or refit for actual use
@@ -168,6 +194,14 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return null; // choreoAutoChooser.selectedCommand();
+        // Slapdwon controls 
+        primaryController.rightTrigger().whileTrue(slapdown.slapDownSequence());
+        primaryController.leftTrigger().whileTrue(slapdown.slapUpSequence());
+        primaryController.rightTrigger().whileTrue(slapdown.intakeMotorSequence());
+         }
+
+         public Command getAutonomousCommand() {
+        return null; //choreoAutoChooser.selectedCommand();
     }
 
     public void autonomousInit() {

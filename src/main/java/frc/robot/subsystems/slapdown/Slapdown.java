@@ -26,22 +26,24 @@ public class Slapdown extends SubsystemBase {
         this.io = io;
     }
 
-    public Command intakeSequence() {
+    public Command slapDownSequence() {
         return Commands.sequence(
-            setAngleDegrees(SlapdownConstants.INTAKE_ANGLE_DEGREES),
-                    Commands.startEnd(
-                        () -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE),
-                        () -> io.runIntakeVoltage(0.0)
-                    )
+            setAngleDegrees(SlapdownConstants.INTAKE_ANGLE_DEGREES)
+     
             ).finallyDo(
                 () -> {
                     goal = new TrapezoidProfile.State(SlapdownConstants.HOLD_ANGLE_DEGREES, 0);
             });
     }
 
-    public Command outtakeSequence() {
+    public Command slapUpSequence() {
         return Commands.sequence(
-            setAngleDegrees(SlapdownConstants.OUTTAKE_ANGLE_DEGREES),
+            setAngleDegrees(SlapdownConstants.OUTTAKE_ANGLE_DEGREES)
+        );
+    }
+
+    public Command intakeMotorSequence() {
+        return Commands.sequence(
                 Commands.startEnd(
                     () -> io.runIntakeVoltage(SlapdownConstants.OUTAKE_VOLTAGE),
                     () -> io.runIntakeVoltage(0.0)

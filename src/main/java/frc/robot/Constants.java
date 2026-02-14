@@ -21,7 +21,8 @@ public class Constants {
         public static final double KICKER_VOLTAGE = 1.5;
         public static final int SPINDEXER_MOTOR_ID = 1;
         public static final int KICKER_MOTOR_ID = 2;
-    }
+  }
+
 
     public static class FlywheelConstants {
         public static final double SHOOT_VOLTAGE = 1.0;
