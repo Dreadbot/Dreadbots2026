@@ -17,9 +17,6 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.subsystems.turret.Turret;
-import frc.robot.subsystems.turret.TurretIOSim;
-import frc.robot.subsystems.turret.TurretIOSparkMax;
 import frc.robot.util.vision.VisionUtil;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
@@ -29,11 +26,12 @@ import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.vision.VisionIOSim;
 
 import frc.robot.subsystems.flywheel.*;
+import frc.robot.subsystems.turret.*;
 import frc.robot.subsystems.slapdown.*;
 import frc.robot.subsystems.climb.*;
-import frc.robot.subsystems.flywheel.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.indexer.*;
+import frc.robot.subsystems.vision.*;
 
 public class RobotContainer {
 
@@ -46,7 +44,7 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Hood hood;
     private final Indexer indexer;
-    private final AutoAim autoAim;
+    //private final AutoAim autoAim;
     private final Climb climb;
     private final Slapdown slapdown;
 
@@ -76,7 +74,10 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                climb = new Climb(new ClimbIOSparkFlex());
+              
+             
                 break;
 
 
@@ -97,12 +98,16 @@ public class RobotContainer {
                     new VisionCamera(new VisionIOSim(drive::getPose), 1),
                     new VisionCamera(new VisionIOSim(drive::getPose), 2)
                 );
+
+
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSim(), drive);
                 flywheel = new Flywheel(new FlywheelIOSim());
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
-                    new ModuleIOSim();
+                slapdown = new Slapdown(new SlapdownIOSim());
+                climb = new Climb(new ClimbIOSim());
+                
                
                 break;
 
@@ -132,7 +137,10 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                climb = new Climb(new ClimbIOSparkFlex());
+               
+             
                 break;
         }
     }
@@ -163,45 +171,55 @@ public class RobotContainer {
             ).ignoringDisable(true)
         );
 
+
+         // Subsystem button bindings used for testing
+        // Can be changed or refit for actual use
+        // These were all used seperately so buttons may be used more than once
+
+
+
+        //Turret Angle Controls
         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
         primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
         primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
         primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
-        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        //primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+
         // Climb controls
         primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
         primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
 
-        // Subsystem button bindings used for testing
-        // Can be changed or refit for actual use
-        // These were all used seperately so buttons may be used more than once
+       
+        //Flywheel  Controles
+        secondaryController.a().onTrue(flywheel.setRPM(3000));
+        secondaryController.b().onTrue(flywheel.setRPM(0));
+        secondaryController.y().onTrue(flywheel.changeRPM(100));
+        secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
-        // primaryController.a().onTrue(flywheel.setRPM(3000));
-        // primaryController.b().onTrue(flywheel.setRPM(0));
-        // primaryController.y().onTrue(flywheel.changeRPM(100));
-        // primaryController.x().onTrue(flywheel.changeRPM(-100));
-
-        // primaryController.leftTrigger().whileTrue(indexer.intake());
-        // primaryController.rightTrigger().whileTrue(indexer.outtake());
+        //Indexer and Kicker motors conrtlled by the second controller
+        secondaryController.povLeft().onTrue(indexer.startIndexer());
+        secondaryController.povRight().onTrue(indexer.stopIndexer());
+        secondaryController.povDown().onTrue(indexer.startKicker());
+        secondaryController.povUp().onTrue(indexer.stopKicker());
         
-        // primaryController.rightBumper().onTrue(hood.setAngle(4));
-        // primaryController.leftBumper().onTrue(hood.setAngle(0));
-        // primaryController.povLeft().onTrue(hood.calibrate());
-        // primaryController.povUp().onTrue(hood.changeAngle(0.1));
-        // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
+        //Hood Controls on the Robot
+        primaryController.rightBumper().onTrue(hood.setAngle(4));
+        primaryController.leftBumper().onTrue(hood.setAngle(0));
+        primaryController.povLeft().onTrue(hood.calibrate());
+        primaryController.povUp().onTrue(hood.changeAngle(0.1));
+        primaryController.povDown().onTrue(hood.changeAngle(-0.1));
+    
+
+        // Slapdwon controls 
+        secondaryController.rightTrigger().whileTrue(slapdown.slapDownSequence());
+        secondaryController.leftTrigger().whileTrue(slapdown.slapUpSequence());
+        secondaryController.leftBumper().whileTrue(slapdown.intakeMotorSequence());
     }
 
     public Command getAutonomousCommand() {
         return null; // choreoAutoChooser.selectedCommand();
-        // Slapdwon controls 
-        primaryController.rightTrigger().whileTrue(slapdown.slapDownSequence());
-        primaryController.leftTrigger().whileTrue(slapdown.slapUpSequence());
-        primaryController.rightTrigger().whileTrue(slapdown.intakeMotorSequence());
-         }
-
-         public Command getAutonomousCommand() {
-        return null; //choreoAutoChooser.selectedCommand();
+        
     }
 
     public void autonomousInit() {
