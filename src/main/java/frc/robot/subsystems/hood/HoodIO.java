@@ -18,4 +18,6 @@ public interface HoodIO {
 
     default void setPosition(double position) {}
 
+    default void getPosition() {}
+
 }

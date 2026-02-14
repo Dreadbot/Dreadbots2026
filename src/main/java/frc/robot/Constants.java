@@ -37,7 +37,7 @@ public class Constants {
         // This number should be calibrated based on the gear ratio between the motor and the hood
         public static final double ROTATIONS_TO_RADIANS = 2 * Math.PI;
         public static final double MAX_ANGLE = 2.0; // Radians + Not set
-        public static final double MAX_ANGLE = 0.0; // Radians + Not set
+        public static final double MIN_ANGLE = 0.0; // Radians + Not set
     }
 
     public static final class AutoAlignConstants {

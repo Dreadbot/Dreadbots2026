@@ -77,3 +77,4 @@ public class Flywheel extends SubsystemBase {
     public Command decreaseVolts() {
         return runOnce(() -> io.setVoltage(storedVoltage -= 1));
     }
+}

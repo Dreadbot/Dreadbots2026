@@ -2,11 +2,13 @@ package frc.robot.subsystems.hood;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 import frc.robot.Constants.HoodConstants;
@@ -84,11 +86,26 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> goalAngle += radians);
     }
 
-    public Command raiseHood() {
-        if (io.getPosition() > HoodConstants.MAX_ANGLE) {
-            io.setPosition(HoodConstants.MAX_ANGLE);
-        } else {
-            io.setPosition(getPosition() + Units.degreesToRadians(10));
-        }
+    public Command raiseHood() { 
+        return runOnce(() -> {
+            double position = getPosition() + Units.degreesToRadians(10); 
+
+            if (position > HoodConstants.MAX_ANGLE) {
+                position = HoodConstants.MAX_ANGLE;
+            } 
+            
+            io.setPosition(position); 
+        }); 
+    }
+    public Command lowerHood() { 
+        return runOnce(() -> {
+            double position = getPosition() - Units.degreesToRadians(10); 
+
+            if (position < HoodConstants.MIN_ANGLE) {
+                position = HoodConstants.MIN_ANGLE;
+            } 
+            
+            io.setPosition(position); 
+        }); 
     }
 }
