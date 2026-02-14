@@ -45,7 +45,7 @@ public class RobotContainer {
     // private final List<VisionCamera> cameras;
     // private final Flywheel flywheel;
     // private Indexer indexer;
-    private final Hood hood;
+    // private final Hood hood;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -83,7 +83,7 @@ public class RobotContainer {
                 // turret = new Turret(new TurretIOSim());
 
                 // indexer = new Indexer(new IndexerIOSparkFlex());
-                hood = new Hood(new HoodIOSparkMax());
+                // hood = new Hood(new HoodIOSparkMax());
                 // // turret = new Turret(new TurretIOSparkMax());
                 // cameras = List.of(
                 //     new VisionCamera(
@@ -137,7 +137,7 @@ public class RobotContainer {
                 //     drive::getPose);
 
                 // flywheel = new Flywheel(new FlywheelIOSim());
-                hood = new Hood(new HoodIOSim());
+                // hood = new Hood(new HoodIOSim());
                 // turret = new Turret(new TurretIOSim());
                 break;
 
@@ -174,7 +174,7 @@ public class RobotContainer {
                 //     drive::getPose);
 
                 // flywheel = new Flywheel(new FlywheelIO() {});
-                hood = new Hood(new HoodIO() {});
+                // hood = new Hood(new HoodIO() {});
                 // turret = new Turret(new TurretIO() {});
                 break;
         }
@@ -200,7 +200,8 @@ public class RobotContainer {
         // primaryController.b().onTrue(flywheel.setRPM(0));
         // primaryController.y().onTrue(flywheel.changeRPM(100));
         // primaryController.x().onTrue(flywheel.changeRPM(-100));
-        primaryController.rightBumper().whileTrue(hood.setSpeed(primaryController.getRightY()));
+
+        // primaryController.rightBumper().whileTrue(hood.setSpeed(primaryController.getRightY()));
     }
 
     public Command getAutonomousCommand() {

@@ -16,12 +16,21 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,8 +41,17 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  
+  final CommandXboxController primaryController = new CommandXboxController(0);
+  final SparkMax motor = new SparkMax(2, MotorType.kBrushless);
 
   public Robot() {
+    SparkMaxConfig config = new SparkMaxConfig();
+    config
+      .idleMode(IdleMode.kBrake)
+      .smartCurrentLimit(50);
+    motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -131,7 +149,9 @@ public class Robot extends LoggedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    motor.set(primaryController.getRightY());
+  }
 
   @Override
   public void testInit() {
