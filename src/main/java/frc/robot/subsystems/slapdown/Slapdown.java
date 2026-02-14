@@ -13,7 +13,6 @@ import frc.robot.Constants.SlapdownConstants;
 
 public class Slapdown extends SubsystemBase {
     
-    
     private final SlapdownIOInputsAutoLogged inputs = new SlapdownIOInputsAutoLogged();
     private final SlapdownIO io;
     public final PIDController pid = new PIDController(0.013, 0.0, 0);
