@@ -172,7 +172,7 @@ public class RobotContainer {
         );
 
 
-         // Subsystem button bindings used for testing
+        // Subsystem button bindings used for testing
         // Can be changed or refit for actual use
         // These were all used seperately so buttons may be used more than once
 
@@ -219,7 +219,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return null; // choreoAutoChooser.selectedCommand();
-        
+
     }
 
     public void autonomousInit() {
