@@ -29,6 +29,8 @@ import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
 import frc.robot.subsystems.hookprep.Hookprep;
 import frc.robot.subsystems.hookprep.HookprepIO;
+import frc.robot.subsystems.hookprep.HookprepIOServo;
+import frc.robot.subsystems.hookprep.HookprepIOSim;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.indexer.IndexerIO;
 import frc.robot.subsystems.indexer.IndexerIOSim;
@@ -82,7 +84,7 @@ public class RobotContainer {
                 // turret = new Turret(new TurretIOSim());
 
                 //indexer = new Indexer(new IndexerIOSparkFlex());
-                hookprep = new Hookprep(new HookprepIO() {});
+                hookprep = new Hookprep(new HookprepIOServo() {});
                 // // turret = new Turret(new TurretIOSparkMax());
                 // cameras = List.of(
                 //     new VisionCamera(
@@ -120,7 +122,7 @@ public class RobotContainer {
                 //     new ModuleIOSim(),
                 //     new ModuleIOSim());
                 //indexer = new Indexer(new IndexerIOSim());
-                hookprep = new Hookprep(new HookprepIO() {});
+                hookprep = new Hookprep(new HookprepIOSim() {});
                 // cameras = List.of(
                 //     new VisionCamera(
                 //         new VisionIOCamera(VisionConstants.frontRightCameraName),
@@ -157,7 +159,7 @@ public class RobotContainer {
                 //     new ModuleIO() {
                 //     });
                 //indexer = new Indexer(new IndexerIO() {});
-                hookprep = new Hookprep(new HookprepIO() {});
+                hookprep = new Hookprep(new HookprepIOServo() {});
                 // cameras = List.of(
                 //     new VisionCamera(
                 //         new VisionIO() {
