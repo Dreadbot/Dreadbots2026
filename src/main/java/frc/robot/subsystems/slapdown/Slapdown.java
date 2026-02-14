@@ -26,7 +26,7 @@ public class Slapdown extends SubsystemBase {
         this.io = io;
     }
 
-    public Command slapDownSequence() {
+      public Command slapDownSequence() {
         return Commands.sequence(
             setAngleDegrees(SlapdownConstants.INTAKE_ANGLE_DEGREES)
      
