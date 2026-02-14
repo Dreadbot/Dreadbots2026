@@ -63,6 +63,10 @@ public class Hood extends SubsystemBase {
         return inputs.RPM;
     }
 
+    public double getPosition() {
+        return inputs.position;
+    }
+
     public Command calibrate() {
         return runOnce(() -> {
             if (lowerSwitch.get()) {
@@ -78,5 +82,13 @@ public class Hood extends SubsystemBase {
 
     public Command changeAngle(double radians) {
         return runOnce(() -> goalAngle += radians);
+    }
+
+    public Command raiseHood() {
+        if (io.getPosition() > HoodConstants.MAX_ANGLE) {
+            io.setPosition(HoodConstants.MAX_ANGLE);
+        } else {
+            io.setPosition(getPosition() + Units.degreesToRadians(10));
+        }
     }
 }

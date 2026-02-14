@@ -13,7 +13,8 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
     private final PIDController pid = new PIDController(0.0002, 0, 0);
     private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
-
+    
+    private double storedVoltage = FlywheelConstants.SHOOT_VOLTAGE;
     private double goalRPM = 0.0;
 
     public Flywheel(FlywheelIO io) {
@@ -67,4 +68,12 @@ public class Flywheel extends SubsystemBase {
     public Command changeRPM(double rpm) {
         return runOnce(() -> goalRPM += rpm);
     }
-}
+
+    // The increase / decrease flywheel speed/volts commands (intended for every click)
+    public Command increaseVolts() {
+        return runOnce(() -> io.setVoltage(storedVoltage += 1));
+    }
+
+    public Command decreaseVolts() {
+        return runOnce(() -> io.setVoltage(storedVoltage -= 1));
+    }

@@ -13,6 +13,8 @@ public class Indexer extends SubsystemBase {
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
     private IndexerIO io;
 
+    private double storedVoltage = IndexerConstants.KICKER_VOLTAGE;
+
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
         this.io = io;
@@ -41,5 +43,14 @@ public class Indexer extends SubsystemBase {
         io.updateInputs(inputs, kickerInputs);
         Logger.processInputs("Indexer", inputs);
         Logger.processInputs("IndexerKicker", kickerInputs);
+    }
+
+    // The increase / decrease kicker speed/volts commands (intended for every click)
+    public Command increaseVolts() {
+        return runOnce(() -> io.runKickerVoltage(storedVoltage += 1));
+    }
+
+    public Command decreaseVolts() {
+        return runOnce(() -> io.runKickerVoltage(storedVoltage -= 1));
     }
 }
