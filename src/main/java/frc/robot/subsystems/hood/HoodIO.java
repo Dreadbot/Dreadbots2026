@@ -9,6 +9,7 @@ public interface HoodIO {
         public double angle = 0.0;
         public double RPM = 0.0;
         public double appliedVolts = 0.0;
+        public boolean lowerSwitch = false;
     }
 
     default void updateInputs(HoodIOInputs inputs) {}
