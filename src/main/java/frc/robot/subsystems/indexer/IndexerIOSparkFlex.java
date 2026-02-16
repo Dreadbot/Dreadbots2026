@@ -15,6 +15,7 @@ import frc.robot.Constants.IndexerConstants;
 public class IndexerIOSparkFlex implements IndexerIO {
     private SparkFlex indexerMotor;
     private final SparkFlex kickerMotor;
+   
     // initializes indexerMotor and kickerMotor
     public IndexerIOSparkFlex() {
         indexerMotor = new SparkFlex(IndexerConstants.SPINDEXER_MOTOR_ID, MotorType.kBrushless);
