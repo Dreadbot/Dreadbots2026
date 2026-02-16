@@ -88,6 +88,8 @@ public class Constants {
         public static final double INTAKE_VOLTAGE = 1.5;
         public static final double OUTAKE_VOLTAGE = -1.5;
         public static final int MOTOR_ID = 1;
+        public static final int LOWER_LIMIT_SWITCH_ID = 1;
+        public static final int UPPER_LIMIT_SWITCH_ID = 2;
     }
 
     public static class SlapdownConstants {

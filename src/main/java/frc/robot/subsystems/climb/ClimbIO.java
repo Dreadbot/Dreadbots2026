@@ -16,6 +16,7 @@ public interface ClimbIO {
 
          //The Amps Curently in Screw Motor
         public double currentAmps = 0.0;    
+        
     }
 
     // functions
