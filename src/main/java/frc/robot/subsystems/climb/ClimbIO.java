@@ -40,4 +40,6 @@ public interface ClimbIO {
         public default void runScrewMotorVoltage(double volts) {}
 
         public default void stopMotors() {};
+
+        public default void setPosition(double position) {};
 }

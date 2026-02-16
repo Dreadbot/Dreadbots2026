@@ -19,10 +19,15 @@ public class ClimbIOSparkFlex implements ClimbIO {
         screwMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    public void setPosition(double position) {
+        screwMotor.getEncoder().setPosition(position);
+    }
+
     public void updateInputs(ClimbIOInputs inputs) {
         inputs.appliedVolts = screwMotor.getAppliedOutput() * screwMotor.getBusVoltage();
         inputs.currentAmps = screwMotor.getOutputCurrent();
         inputs.RPM = screwMotor.getEncoder().getVelocity();
+        inputs.absolutePosition = screwMotor.getEncoder().getPosition();
     }
 
     public void runVoltage(double volts) {
