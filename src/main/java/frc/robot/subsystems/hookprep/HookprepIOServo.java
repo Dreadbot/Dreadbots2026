@@ -20,6 +20,8 @@ public class HookprepIOServo implements HookprepIO {
 
         // Get the servo channel (assuming channel 0 for this example)
         channel1 = servoHub.getServoChannel(ChannelId.kChannelId0);
+
+        channel1.setEnabled(true);
     }
 
     // Method to update inputs (if needed)
