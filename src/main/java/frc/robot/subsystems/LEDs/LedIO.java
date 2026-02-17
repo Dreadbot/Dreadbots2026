@@ -1,17 +1,17 @@
-package frc.robot.subsystems.underglow;
+package frc.robot.subsystems.LEDs;
 
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 
-public interface UnderglowIO {
+public interface LedIO {
     @AutoLog
-    public static class UnderglowIOInputs {
+    public static class LedIOInputs {
         Color currentColor;
     }
 
-    public default void updateInputs(UnderglowIOInputs inputs) {};
+    public default void updateInputs(LedIOInputs inputs) {};
 
     public default void setPattern(LEDPattern pattern) {};
 

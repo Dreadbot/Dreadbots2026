@@ -1,22 +1,22 @@
-package frc.robot.subsystems.underglow;
+package frc.robot.subsystems.LEDs;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
-import frc.robot.Constants.UnderglowConstants;
+import frc.robot.Constants.LedConstants;
 
-public class UnderglowIOAddressableLED implements UnderglowIO {
+public class LedIOAddressableLED implements LedIO {
     private final AddressableLED led;
     private AddressableLEDBuffer buffer;
     private LEDPattern currentPattern;
 
-    public UnderglowIOAddressableLED() {
-        led = new AddressableLED(UnderglowConstants.PWM_PORT);
-        buffer = new AddressableLEDBuffer(UnderglowConstants.LED_COUNT);
+    public LedIOAddressableLED() {
+        led = new AddressableLED(LedConstants.PWM_PORT);
+        buffer = new AddressableLEDBuffer(LedConstants.LED_COUNT);
         led.setLength(buffer.getLength());
     }
     
-    public void updateInputs(UnderglowIOInputs inputs) {
+    public void updateInputs(LedIOInputs inputs) {
         inputs.currentColor = buffer.getLED(0);
     }
 

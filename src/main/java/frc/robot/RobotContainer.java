@@ -24,9 +24,7 @@ import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
-import frc.robot.subsystems.underglow.Underglow;
-import frc.robot.subsystems.underglow.UnderglowIO;
-import frc.robot.subsystems.underglow.UnderglowIOAddressableLED;
+import frc.robot.subsystems.LEDs.*;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -42,7 +40,7 @@ public class RobotContainer {
     private final Vision vision;
     private final List<VisionCamera> cameras;
     private final Flywheel flywheel;
-    private final Underglow underglow;
+    private final Led leds;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -73,7 +71,7 @@ public class RobotContainer {
                 CameraServer.startAutomaticCapture(0);
 
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                underglow = new Underglow(new UnderglowIOAddressableLED());
+                leds = new Led(new LedIOAddressableLED());
             break;
             
             case SIM:
@@ -102,7 +100,7 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
-                underglow = new Underglow(new UnderglowIO() {});
+                leds = new Led(new LedIO() {});
                 break;
 
             default:
@@ -132,7 +130,7 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
-                underglow = new Underglow(new UnderglowIO() {});
+                leds = new Led(new LedIO() {});
                 break;
             }
             configureButtonBindings();
@@ -155,7 +153,7 @@ public class RobotContainer {
                         drive).ignoringDisable(true));
         disabled().onTrue(
             new InstantCommand(() -> {
-                underglow.setToPattern(LEDPattern.solid(underglow.getAllianceColor())
+                leds.setToPattern(LEDPattern.solid(leds.getAllianceColor())
                 .breathe(Seconds.of(1)));})
                 .ignoringDisable(true));
     }
