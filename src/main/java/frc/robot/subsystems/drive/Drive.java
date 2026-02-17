@@ -62,8 +62,8 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
-  private final Alert gyroDisconnectedAlert =
-      new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
+  // private final Alert gyroDisconnectedAlert =
+  //     new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -168,14 +168,14 @@ public class Drive extends SubsystemBase {
       }
 
       // Update gyro angle
-      if (gyroInputs.connected) {
+      //if (gyroInputs.connected) {
         // Use the real gyro angle
-        rawGyroRotation = gyroInputs.odometryYawPositions[i];
-      } else {
+      rawGyroRotation = gyroInputs.odometryYawPositions[i];
+      //} else {
         // Use the angle delta from the kinematics and module deltas
-        Twist2d twist = kinematics.toTwist2d(moduleDeltas);
-        rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
-      }
+      //   Twist2d twist = kinematics.toTwist2d(moduleDeltas);
+      //   rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+      // }
 
       // Apply update
       Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
@@ -183,7 +183,7 @@ public class Drive extends SubsystemBase {
     }
 
     // Update gyro alert
-    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    //gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
 
   /**
@@ -382,8 +382,6 @@ public class Drive extends SubsystemBase {
       new Twist2d(
           linearFieldVelocity.getX(),
           linearFieldVelocity.getY(),
-          gyroInputs.connected
-              ? gyroInputs.yawVelocityRadPerSec
-              : chassisSpeeds.omegaRadiansPerSecond);
+          gyroInputs.yawVelocityRadPerSec);
   }
 }

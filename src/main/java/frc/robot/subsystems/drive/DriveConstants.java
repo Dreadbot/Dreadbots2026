@@ -41,9 +41,6 @@ public class DriveConstants {
   public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(-1.96)); //new Rotation2d(3.092 + Math.PI);
   public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(123.55)); //new Rotation2d(2.155);
 
-  // Device CAN IDs
-  public static final int pigeonCanId = 20; //not yet determined/ not needed;
-
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 7;
   public static final int frontRightDriveCanId = 3;
@@ -62,9 +59,9 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 60;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.9); // 1.88
+  public static final double wheelRadiusMeters = Units.inchesToMeters(2.0); 
   public static final double driveMotorReduction =
-     (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0); // SDS L2
+     (54.0 / 12.0) * (25.0 / 32.0) * (30.0 / 15.0); // SDS Mk5i R1
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
 
   // Drive encoder configuration
@@ -87,7 +84,7 @@ public class DriveConstants {
   // Turn motor configuration
   public static final boolean turnInverted = true;
   public static final int turnMotorCurrentLimit = 35;
-  public static final double turnMotorReduction = (150.0 / 7.0);
+  public static final double turnMotorReduction = 26.0; // From SDS Mk5i Website
   public static final DCMotor turnGearbox = DCMotor.getNeoVortex(1);
 
   // Turn encoder configuration
