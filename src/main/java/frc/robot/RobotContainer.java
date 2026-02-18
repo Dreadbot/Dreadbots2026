@@ -1,5 +1,6 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -71,7 +73,7 @@ public class RobotContainer {
                 CameraServer.startAutomaticCapture(0);
 
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                leds = new Led(new LedIOAddressableLED());
+                leds = new Led(new LedIO());
             break;
             
             case SIM:
@@ -100,7 +102,7 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIOSim());
-                leds = new Led(new LedIO() {});
+                leds = new Led(new LedIO());
                 break;
 
             default:
@@ -130,7 +132,7 @@ public class RobotContainer {
 
                 flywheel = new Flywheel(new FlywheelIOSim());
                 // turret = new Turret(new TurretIO() {});
-                leds = new Led(new LedIO() {});
+                leds = new Led(new LedIO());
                 break;
             }
             configureButtonBindings();
@@ -152,24 +154,31 @@ public class RobotContainer {
                         new Pose2d(vision.getLastVisionPose().getTranslation(), new Rotation2d())),
                         drive).ignoringDisable(true));
         disabled().onTrue(
-            new InstantCommand(() -> {
-                leds.setToPattern(LEDPattern.solid(leds.getAllianceColor())
-                .breathe(Seconds.of(1)));})
-                .ignoringDisable(true));
+            new InstantCommand(() ->
+                leds.setPattern(LEDPattern.solid(leds.getAllianceColor()).breathe(Seconds.of(3)).atBrightness(Percent.of(50)))
+            ).ignoringDisable(true));
+        gotAlliance().onTrue(
+            new InstantCommand(() ->
+                leds.setPattern(LEDPattern.solid(leds.getAllianceColor()).breathe(Seconds.of(3)).atBrightness(Percent.of(50)))
+            ).ignoringDisable(true));
     }
     public Command getAutonomousCommand() {
         return null; //choreoAutoChooser.selectedCommand();
     }
 
     public void autonomousInit() {
-
+        leds.autonomousInit();
     }
 
     public void teleopInit() {
-
+        leds.teleopInit();
     }
 
     private static Trigger disabled() {
         return new Trigger(DriverStation::isDisabled);
+    }
+
+    private static Trigger gotAlliance() {
+        return new Trigger(() -> DriverStation.getAlliance().isPresent());
     }
 }
