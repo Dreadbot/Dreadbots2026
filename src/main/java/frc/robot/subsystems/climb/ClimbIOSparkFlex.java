@@ -31,6 +31,7 @@ public class ClimbIOSparkFlex implements ClimbIO {
     }
 
     public void runVoltage(double volts) {
+        System.out.println("Setting voltage: " + volts);
         screwMotor.setVoltage(volts);
     }
 }

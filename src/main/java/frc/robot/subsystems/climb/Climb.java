@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.HoodConstants;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -34,6 +33,7 @@ public class Climb extends SubsystemBase {
     // be updated later)
     public boolean isClimbed = false;
     public boolean raisingArm = false;
+    public boolean loweringArm = false;
 
     public Climb(ClimbIO io) {
         this.io = io;
@@ -41,24 +41,32 @@ public class Climb extends SubsystemBase {
     
     public Command motorForward() {
         return Commands.startEnd(
-            () -> io.runVoltage(ClimbConstants.RAISE_VOLTAGE),
-            () -> io.runVoltage(0.0)
+            () -> {
+                if (upperSwitch.get()) raisingArm = true;
+            },
+            () -> raisingArm = false
         );
     }
 
     public Command motorBackward() {
         return Commands.startEnd(
-            () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
-            () -> io.runVoltage(0.0)
+            () -> {
+                if (lowerSwitch.get()) loweringArm = true;
+            },
+            () -> loweringArm = false
         );
     }
 
     public Command raiseClimbArm() {
-        return Commands.runOnce(() -> raisingArm = true);
+        return Commands.runOnce(() -> {
+            if (upperSwitch.get()) raisingArm = true;
+        });
     }
 
     public Command raiseRobotLevelOne() {
-        return Commands.runOnce (() -> goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0));
+        return Commands.runOnce (() -> {
+            if (lowerSwitch.get()) goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
+        });
     }
 
     public Command levelOneClimb() {
@@ -66,29 +74,6 @@ public class Climb extends SubsystemBase {
             raiseClimbArm(),
             Commands.waitUntil(() -> raisingArm == false),
             raiseRobotLevelOne()
-        );
-    }
-
-    public Command doClimbSequence() {
-        System.out.println("Climbing/Climbed");
-        Logger.recordOutput("Climbing/Climbed", isClimbed);
-        return Commands.sequence(
-            Commands.startEnd(
-                () -> io.runVoltage(ClimbConstants.RAISE_VOLTAGE),
-                () -> io.runVoltage(0.0)
-            )
-        );
-    }
-
-    public Command unClimbSequence() {
-        isClimbed = false;
-        System.out.println("UnClimbing/UnClimbed");
-        Logger.recordOutput("unClimbSequence", isClimbed);
-        return Commands.sequence(
-            Commands.startEnd(
-                () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
-                () -> io.runVoltage(0.0)
-            )
         );
     }
 
@@ -105,24 +90,37 @@ public class Climb extends SubsystemBase {
 
         Logger.recordOutput("Climb/SetpointPosition", setpoint.position);
         Logger.recordOutput("Climb/GoalPosition", goal.position);
+        Logger.recordOutput("Climb/LowerSwitch", lowerSwitch.get());
+        Logger.recordOutput("Climb/UpperSwitch", upperSwitch.get());
+        Logger.recordOutput("Climb/RaisingArm", raisingArm);
+        Logger.recordOutput("Climb/LoweringArm", loweringArm);
         setpoint = profile.calculate(0.02, setpoint, goal);
-        if(!raisingArm) {
-            io.runScrewMotorVoltage(
-                pid.calculate(inputs.absolutePosition, setpoint.position) +
-                feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
-                // use acutal position degrees to make sure that we always apply the correct
-                // gravity feed forward.
-            );
-        } else {
-            io.runScrewMotorVoltage(ClimbConstants.RAISE_VOLTAGE);
-        }
+
+        // If upperSwitch is tripped
         if(!upperSwitch.get()) {
             raisingArm = false;
-            goal = new TrapezoidProfile.State(inputs.absolutePosition, 0);
             io.setPosition(0);
+            goal = new TrapezoidProfile.State(setpoint.position, 0);
         }
+        // If lowerSwitch is tripped
         if(!lowerSwitch.get()) {
-            goal = new TrapezoidProfile.State(inputs.absolutePosition, 0);
+            loweringArm = false;
+            goal = new TrapezoidProfile.State(setpoint.position, 0);
         }
+
+        if (raisingArm) {
+            io.runVoltage(ClimbConstants.RAISE_VOLTAGE);
+            return;
+        }
+        if (loweringArm) {
+            io.runVoltage(ClimbConstants.LOWER_VOLTAGE);
+            return;
+        }
+        io.runVoltage(
+            pid.calculate(inputs.absolutePosition, setpoint.position) +
+            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
+            // use acutal position degrees to make sure that we always apply the correct
+            // gravity feed forward.
+        );
     }
 }

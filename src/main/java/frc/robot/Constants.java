@@ -84,13 +84,13 @@ public class Constants {
     public static final double ROTATION_KD = 0.0;
     public static final double ROTATION_MAX_VELOCITY = 5.0;
     public static final double ROTATION_MAX_ACCELERATION = 10.0;
-    public static final double RAISE_VOLTAGE = 1.5;
-    public static final double LOWER_VOLTAGE = -1.5;
+    public static final double RAISE_VOLTAGE = 0.5;
+    public static final double LOWER_VOLTAGE = -0.5;
     public static final double LEVEL_ONE_CLIMB_POSITION = -1.0; // Placeholder value, should be calibrated based on the actual climb mechanism
     public static final double HOOK_DISENGAGE_POSITION = -2.0; // Value where the hooks go in
     public static final int MOTOR_ID = 1;
-    public static final int LOWER_LIMIT_SWITCH_ID = 1;
-    public static final int UPPER_LIMIT_SWITCH_ID = 2;
+    public static final int LOWER_LIMIT_SWITCH_ID = 0;
+    public static final int UPPER_LIMIT_SWITCH_ID = 9;
   }
 
   public static class SlapdownConstants {
