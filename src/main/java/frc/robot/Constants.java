@@ -48,10 +48,11 @@ public class Constants {
 
     }
     public static final class LedConstants {
-        public static final int LED_COUNT = 100;
+        public static final int LED_COUNT = 700;
         public static final int PWM_PORT = 0;
         public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
         public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
         public static final double WARN_TIME = 3.0;
+        public static final double SHOOT_SIGNAL_TIME = 2.0;
     }
 }

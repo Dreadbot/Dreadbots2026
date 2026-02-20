@@ -36,6 +36,7 @@ public class Led extends SubsystemBase{
     public void periodic() {
         if (allianceColor.equals(Color.kWhite)) {
             updateAllianceColor();
+            setPattern(LEDPattern.solid(allianceColor).breathe(Seconds.of(2)).atBrightness(Percent.of(50)));
         }
         io.updateInputs(inputs);
         if (enabled) {
@@ -122,26 +123,32 @@ public class Led extends SubsystemBase{
             .andThen(setToAllianceColor())
             .andThen(new WaitCommand(9 - LedConstants.WARN_TIME))
             .andThen(breatheActive())
-            .andThen(warn());
+            .andThen(warn(true));
     }
 
     public Command activePeriod() {
         return setToAllianceColor()
             .andThen(new WaitCommand(25 - LedConstants.WARN_TIME))
             .andThen(breatheActive())
-            .andThen(warn());
+            .andThen(warn(true));
     }
 
     public Command inactivePeriod() {
-        return setToPattern(LEDPattern.solid(Color.kWhite))
+        return setToPattern(LEDPattern.solid(Color.kWhite).atBrightness(Percent.of(25)))
             .andThen(new WaitCommand(25 - LedConstants.WARN_TIME))
             .andThen(breatheInactive())
-            .andThen(warn());
+            .andThen(warn(false));
     }
 
-    public Command warn() {
+    public Command warn(boolean active) {
         warning = true;
-        return new WaitCommand(LedConstants.WARN_TIME)
+        if (active) {
+            return new WaitCommand(LedConstants.WARN_TIME)
+                .andThen(new InstantCommand(() -> warning = false));
+        }
+        return new WaitCommand(LedConstants.WARN_TIME - LedConstants.SHOOT_SIGNAL_TIME)
+            .andThen(setToPattern(LEDPattern.solid(Color.kYellow).blink(LedConstants.BLINK_FREQUENCY)))
+            .andThen(new WaitCommand(LedConstants.SHOOT_SIGNAL_TIME))
             .andThen(new InstantCommand(() -> warning = false));
     }
 
@@ -154,20 +161,20 @@ public class Led extends SubsystemBase{
     }
 
     public Command breatheInactive() {
-        return setToPattern(LEDPattern.solid(Color.kWhite).breathe(LedConstants.BREATHE_FREQUENCY));
+        return setToPattern(LEDPattern.solid(Color.kWhite).breathe(LedConstants.BREATHE_FREQUENCY).atBrightness(Percent.of(25)));
     }
 
     public Command auton() {
         return setToPattern(LEDPattern
-            .gradient(GradientType.kContinuous, Color.kMaroon, Color.kWhite)
-            .scrollAtRelativeSpeed(Percent.per(Second).of(50))
+            .gradient(GradientType.kContinuous, Color.kRed, Color.kRed, Color.kWhite, Color.kRed)
+            .scrollAtRelativeSpeed(Percent.per(Second).of(100))
         );
     }
 
     public Command endgame() {
         return setToPattern(LEDPattern
-            .gradient(GradientType.kContinuous, Color.kMaroon, Color.kWhite)
-            .scrollAtRelativeSpeed(Percent.per(Second).of(50))
+            .gradient(GradientType.kContinuous, Color.kRed, Color.kWhite)
+            .scrollAtRelativeSpeed(Percent.per(Second).of(100))
         );
     }
 
