@@ -168,14 +168,14 @@ public class Drive extends SubsystemBase {
       }
 
       // Update gyro angle
-      //if (gyroInputs.connected) {
+      if (gyroInputs.connected) {
         // Use the real gyro angle
-      rawGyroRotation = gyroInputs.odometryYawPositions[i];
-      //} else {
+        rawGyroRotation = gyroInputs.odometryYawPositions[i];
+      } else {
         // Use the angle delta from the kinematics and module deltas
-      //   Twist2d twist = kinematics.toTwist2d(moduleDeltas);
-      //   rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
-      // }
+        Twist2d twist = kinematics.toTwist2d(moduleDeltas);
+        rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+      }
 
       // Apply update
       Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);

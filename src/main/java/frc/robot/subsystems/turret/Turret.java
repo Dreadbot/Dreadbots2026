@@ -60,11 +60,11 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Turret/FieldPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
                 drive.getPose()), 
-                new Rotation2d(inputs.turretRotationRad).plus(drive.getPose().getRotation())));
+                new Rotation2d(inputs.turretRotationRad).plus(drive.getPose().getRotation().plus(new Rotation2d(TurretConstants.TURRET_ZERO_ROBOT_RELATIVE)))));
         Logger.recordOutput("Turret/SetpointPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
                 drive.getPose()), 
-                new Rotation2d(wrappedSetpoint).plus(drive.getPose().getRotation())));
+                new Rotation2d(wrappedSetpoint).plus(drive.getPose().getRotation().plus(new Rotation2d(TurretConstants.TURRET_ZERO_ROBOT_RELATIVE)))));
     }   
     
     public Command setAngleRad(double angleRad) {
@@ -77,7 +77,11 @@ public class Turret extends SubsystemBase {
     public void setCorrectAngleRad(double angleRad) {
         double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
         double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
-        setpointRelativeRad = wrapToLimits(inputs.turretRotationRad + delta); 
+        setpointRelativeRad = wrapToLimits(robotRelativeToTurretRelative(inputs.turretRotationRad + delta)); 
+    }
+
+    public double robotRelativeToTurretRelative(double angleRad) {
+        return MathUtil.angleModulus(angleRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE);
     }
 
     public Command setAtZero() {
@@ -102,7 +106,7 @@ public class Turret extends SubsystemBase {
     }
 
     public void setSetpointFromTurretPose(Pose2d turretPose, Translation2d target) {
-        double setpointRad = target.minus(turretPose.getTranslation()).getAngle().getRadians() - drive.getRotation().getRadians();
+        double setpointRad = target.minus(turretPose.getTranslation()).getAngle().getRadians() - turretPose.getRotation().getRadians();
         setCorrectAngleRad(setpointRad);
     }
 }

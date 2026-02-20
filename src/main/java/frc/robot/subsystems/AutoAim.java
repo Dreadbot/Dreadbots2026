@@ -23,8 +23,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AutoAim {
+public class AutoAim extends SubsystemBase{
     private final InterpolatingMatrixTreeMap<Double, N3, N1> firingTable = new InterpolatingMatrixTreeMap<Double, N3, N1>();
     private final Hood hood;
     private final Flywheel flywheel;
@@ -64,7 +65,10 @@ public class AutoAim {
 
     public Command trackTarget() {
         return Commands.run(
-            () -> setSetpoints(false)
+            () -> setSetpoints(false),
+            turret,
+            hood,
+            this
         );
     }
 
@@ -109,14 +113,16 @@ public class AutoAim {
 
         Pose2d robotPoseForTurret = new Pose2d(lookaheadPose.getX(), lookaheadPose.getY(), estimatedPose.getRotation());
 
-        turret.setSetpointFromTurretPose(new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), estimatedPose.getRotation()), target);
+        Pose2d turretPose = new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), robotPoseForTurret.getRotation());
+
+        turret.setSetpointFromTurretPose(turretPose, target);
         hood.setAngle(firingValues.get(0, 0));
         if (setFlywheel) {
             flywheel.setRPM(firingValues.get(1, 0));
         }
 
         Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
-        Logger.recordOutput("AutoAim/TurretPose", new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), estimatedPose.getRotation()));
+        Logger.recordOutput("AutoAim/TurretPose", turretPose);
         Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
     }   
 

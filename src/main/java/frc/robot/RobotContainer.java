@@ -140,12 +140,15 @@ public class RobotContainer {
             ).ignoringDisable(true)
         );
 
+        // autoAim.setDefaultCommand(
+        //     autoAim.trackTarget()
+        // );
         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
         primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
         primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+        //primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
-        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        primaryController.a().onTrue(autoAim.trackTarget());
 
         // Subsystem button bindings used for testing
         // Can be changed or refit for actual use

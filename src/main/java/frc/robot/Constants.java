@@ -55,15 +55,16 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 1;
     public static final int TURRET_MOTOR_ID = 1;
-    public static final double TURRET_ENCODER_OFFSET_RAD = 0.0;
+    public static final double TURRET_ENCODER_OFFSET_RAD = 0;//Math.PI;
+    public static final double TURRET_ZERO_ROBOT_RELATIVE = Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 50.0;
     public static final double MAX_VOLTAGE = 9999.0;
     public static final double TURRET_MOI = 0.0366;
 
     public static final Translation2d TURRET_OFFSET = new Translation2d(0.0, 0.0);//new Translation2d(-0.1518, -0.210);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
 
-    public static final double MAX_ANGLE_RAD = Math.PI;   // +180
-    public static final double MIN_ANGLE_RAD = -Math.PI;  // -180
+    public static final double MAX_ANGLE_RAD = Units.degreesToRadians(185);   // +180
+    public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(185);  // -180
 
     public static final double TURRET_Kp = 9.0;
     public static final double TURRET_Kd = 0.2;
@@ -71,7 +72,7 @@ public class Constants {
   }
 
   public static class AutoAimConstants {
-    public static final double PHASE_DELAY = 0.0;
+    public static final double PHASE_DELAY = 0.02;
   }
   public static class ClimbConstants {
     public static final double TRANSLATION_KP = 0.5;
