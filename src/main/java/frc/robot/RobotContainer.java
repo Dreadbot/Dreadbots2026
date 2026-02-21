@@ -48,7 +48,6 @@ public class RobotContainer {
     private final Hood hood;
     private final Indexer indexer;
     private final Slapdown slapdown;
-    private final Climb climb;
 
     private final AutoAim autoAim;
 
@@ -74,7 +73,6 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
                 break;
             case SIM:
                 drive = new Drive(
@@ -95,7 +93,6 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
-                climb = new Climb(new ClimbIOSim());
                 break;
             default:
                 drive = new Drive(
@@ -116,7 +113,6 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
-                climb = new Climb(new ClimbIOSim());
                 break;
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
@@ -158,12 +154,9 @@ public class RobotContainer {
 
         primaryController.a().onTrue(autoAim.trackTarget());
 
-        /* ==============================================
-            Subsystem button bindings used for testing
-            Can be changed or refit for actual use
-            These were all used seperately 
-            Buttons may be used more than once
-        ============================================== */
+        // Subsystem button bindings used for testing
+        // Can be changed or refit for actual use
+        // These were all used seperately so buttons may be used more than once
 
         // primaryController.a().onTrue(flywheel.setRPM(3000));
         // primaryController.b().onTrue(flywheel.setRPM(0));
@@ -178,15 +171,14 @@ public class RobotContainer {
         // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.changeAngle(0.1));
         // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
-
-        // primaryController.a().whileTrue(climb.motorForward());
-        // primaryController.b().whileTrue(climb.motorBackward());
-        // primaryController.x().onTrue(climb.raiseClimbArm());
-        // primaryController.y().onTrue(climb.raiseRobotLevelOne());
-
         secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
         secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
         primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+
+        // Double check with test
+        secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
+        secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
     }
 
     public Command getAutonomousCommand() {

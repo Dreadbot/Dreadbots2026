@@ -46,6 +46,24 @@ public class Slapdown extends SubsystemBase {
         );
     }
 
+    public Command stopIntakeCommand() {
+        return Commands.run(
+            () -> {
+                io.runIntakeVoltage(0);
+            }
+        );
+    }
+
+    // Double check with test
+    public Command agitateCommand() {
+        return Commands.sequence(
+            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE * -1)),
+            Commands.waitSeconds(0.2),
+            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE)),
+            Commands.waitSeconds(0.2)
+        );    
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);
