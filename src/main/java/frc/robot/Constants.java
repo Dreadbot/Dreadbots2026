@@ -91,6 +91,14 @@ public class Constants {
     public static final int MOTOR_ID = 1;
     public static final int LOWER_LIMIT_SWITCH_ID = 1;
     public static final int UPPER_LIMIT_SWITCH_ID = 2;
+    public static final double PIDCONTROLLER_KP = 0.013;
+    public static final double PIDCONTROLLER_KD = 0.00;
+    public static final double ARMFEEDFORWARD_KS = 0.00;
+    public static final double ARMFEEDFORWARD_KV = 0.023;
+    public static final int TRAPEZOID_CONSTRAINTS_MAX_VELOCITY = 540;
+    public static final int TRAPEZOID_CONSTRAINTS_MAX_ACCELERATION = 540;
+    public static final int TRAPEZOID_STATE_POSITION = 0;
+    public static final int TRAPEZOID_STATE_VELOCITY = 0;
   }
 
   public static class SlapdownConstants {

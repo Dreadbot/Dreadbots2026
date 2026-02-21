@@ -21,11 +21,11 @@ public class Climb extends SubsystemBase {
     private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
     // PID work?
-    private final PIDController pid = new PIDController(0.013, 0.0, 0);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
-    private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
+    private final PIDController pid = new PIDController(ClimbConstants.PIDCONTROLLER_KP, 0.0, ClimbConstants.PIDCONTROLLER_KD);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(ClimbConstants.TRAPEZOID_CONSTRAINTS_MAX_VELOCITY, ClimbConstants.TRAPEZOID_CONSTRAINTS_MAX_ACCELERATION));
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State(ClimbConstants.TRAPEZOID_STATE_POSITION, ClimbConstants.TRAPEZOID_STATE_VELOCITY);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    public final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.0, 0.023);
+    public final ArmFeedforward feedforward = new ArmFeedforward(ClimbConstants.ARMFEEDFORWARD_KS, 0.0, ClimbConstants.ARMFEEDFORWARD_KV);
     private DigitalInput lowerSwitch = new DigitalInput(ClimbConstants.LOWER_LIMIT_SWITCH_ID);
     private DigitalInput upperSwitch = new DigitalInput(ClimbConstants.UPPER_LIMIT_SWITCH_ID);
 
