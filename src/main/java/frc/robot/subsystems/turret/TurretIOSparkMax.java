@@ -25,7 +25,7 @@ public class TurretIOSparkMax implements TurretIO {
             new DigitalInput(TurretConstants.TURRET_DUTY_CYCLE_ENCODER),
             2 * Math.PI, 
             0.0);
-        absoluteEncoder.setInverted(false);
+        absoluteEncoder.setInverted(true);
         absoluteEncoder.setAssumedFrequency(975.6);
         
         this.volts = 0.0;
