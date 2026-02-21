@@ -28,6 +28,9 @@ public class Flywheel extends SubsystemBase {
         Logger.processInputs("Flywheel", inputs);
 
         double pidValue = pid.calculate(inputs.RPM, goalRPM);
+        if(goalRPM == 0){
+            pidValue = 0;    
+        }
         double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
         io.setVoltage(pidValue + (goalRPM / 525));
         // io.setRPM(goalRPM); // For sparkflex PID system
