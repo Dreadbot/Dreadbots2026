@@ -16,6 +16,10 @@ public class Constants {
         REPLAY
     }
 
+    public static class HookprepConstants {
+        public static final int SERVO_ID = 1;
+    }
+
     public static class IndexerConstants {
         public static final double SPINDEXER_VOLTAGE = 1.5;
         public static final double KICKER_VOLTAGE = 1.5;

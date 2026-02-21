@@ -35,6 +35,7 @@ import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.flywheel.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.indexer.*;
+import frc.robot.subsystems.hookprep.*;
 
 public class RobotContainer {
 
@@ -49,6 +50,7 @@ public class RobotContainer {
     // private final Indexer indexer;
     // private final AutoAim autoAim;
     private final Climb climb;
+    // private final Hookprep hookprep;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -72,6 +74,7 @@ public class RobotContainer {
                 // hood = new Hood(new HoodIOSparkMax());
                 // indexer = new Indexer(new IndexerIOSparkFlex());
                 climb = new Climb(new ClimbIOSparkFlex());
+                // hookprep = new Hookprep(new HookprepIOServo() {});
                 break;
             case SIM:
                 // drive = new Drive(
@@ -92,6 +95,7 @@ public class RobotContainer {
                 // hood = new Hood(new HoodIOSim());
                 // indexer = new Indexer(new IndexerIOSim());
                 climb = new Climb(new ClimbIOSim());
+                // hookprep = new Hookprep(new HookprepIOSim() {});
                 break;
             default:
                 // drive = new Drive(
@@ -112,6 +116,7 @@ public class RobotContainer {
                 // hood = new Hood(new HoodIOSim());
                 // indexer = new Indexer(new IndexerIOSim());
                 climb = new Climb(new ClimbIOSim());
+                // hookprep = new Hookprep(new HookprepIOServo() {});
                 break;
         }
         // autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
@@ -175,6 +180,10 @@ public class RobotContainer {
         primaryController.b().whileTrue(climb.motorBackward());
         primaryController.x().onTrue(climb.raiseClimbArm());
         primaryController.y().onTrue(climb.raiseRobotLevelOne());
+
+        // primaryController.x().whileTrue(hookprep.readyHook(500));
+        // primaryController.y().whileTrue(hookprep.readyHook(2500));
+        
     }
 
     public Command getAutonomousCommand() {
