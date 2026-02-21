@@ -47,6 +47,7 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Hood hood;
     private final Indexer indexer;
+    private final Slapdown slapdown;
 
     private final AutoAim autoAim;
 
@@ -71,6 +72,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
                 break;
             case SIM:
                 drive = new Drive(
@@ -90,6 +92,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSim());
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
+                slapdown = new Slapdown(new SlapdownIOSim());
                 break;
             default:
                 drive = new Drive(
@@ -109,6 +112,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSim());
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
+                slapdown = new Slapdown(new SlapdownIOSim());
                 break;
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
@@ -167,6 +171,9 @@ public class RobotContainer {
         // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.changeAngle(0.1));
         // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
+        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
     }
 
     public Command getAutonomousCommand() {

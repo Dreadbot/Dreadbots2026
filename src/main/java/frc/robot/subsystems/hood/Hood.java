@@ -33,6 +33,7 @@ public class Hood extends SubsystemBase {
                 io.setPosition(0);
                 goalAngle = 0.0;
                 calibrating = false;
+                io.setVoltage(0);
             }
             return;
         }
