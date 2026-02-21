@@ -59,30 +59,22 @@ public class VisionCamera {
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
 			boolean shouldRejectTag =
-				detection.id() == 14 
-				|| detection.id() == 15 
-				|| detection.id() == 4 
-				|| detection.id() == 5
-				|| detection.id() == 12
-				|| detection.id() == 13
-				|| detection.id() == 1
-				|| detection.id() == 2
-				|| tagDist > 5.0
+				tagDist > 5.0
 				|| detection.pose().getX() < 0.0
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
 				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
 
-			if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) { // If we are auto aligning, or this cam is the back cam, reject every non barge tags 
-				shouldRejectTag = shouldRejectTag || VisionUtil.isNotReefId(detection.id());
-			}
+			// if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) { // If we are auto aligning, or this cam is the back cam, reject every non barge tags 
+			// 	shouldRejectTag = shouldRejectTag || VisionUtil.isNotReefId(detection.id());
+			// }
 			
 			if (shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				continue;
 			}
-			double stdDevFactor = Math.pow(tagDist, 2.0);
+			double stdDevFactor = Math.pow(tagDist, 1.2);
 
 			tagPoses.add(tagPose);
 

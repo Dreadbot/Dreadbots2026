@@ -47,3 +47,4 @@ public class VisionIOCamera implements VisionIO{
         inputs.visionDelay = latency.getAsDouble();
     }
 }
+

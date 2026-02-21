@@ -1,16 +1,18 @@
 package frc.robot.subsystems.hood;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import frc.robot.Constants.HoodConstants;;
+import frc.robot.Constants.HoodConstants;
 
 public class HoodIOSparkMax implements HoodIO {
     private final SparkMax motor;
+    private final RelativeEncoder encoder;
 
     public HoodIOSparkMax() {
         motor = new SparkMax(HoodConstants.MOTOR_ID, MotorType.kBrushless);
@@ -19,6 +21,7 @@ public class HoodIOSparkMax implements HoodIO {
             .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(50);
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        encoder = motor.getEncoder();
     }
 
     @Override
@@ -27,9 +30,15 @@ public class HoodIOSparkMax implements HoodIO {
     }
 
     @Override
+    public void setPosition(double position) {
+        encoder.setPosition(position);
+    }
+
+    @Override
     public void updateInputs(HoodIOInputs inputs) {
         inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
-        inputs.angle = motor.getEncoder().getPosition() * 360.0; // Convert total rotations to degrees
-        inputs.velocity = motor.getEncoder().getVelocity();
+        inputs.angle = encoder.getPosition() * HoodConstants.MOTOR_ROTATIONS_TO_HOOD_RADIANS;
+        inputs.RPM = encoder.getVelocity();
+        inputs.lowerSwitch = motor.getReverseLimitSwitch().isPressed();
     }
 }

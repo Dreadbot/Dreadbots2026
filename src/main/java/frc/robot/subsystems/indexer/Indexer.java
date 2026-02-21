@@ -2,8 +2,10 @@ package frc.robot.subsystems.indexer;
 // imports necessary libraries and files
 import frc.robot.Constants.IndexerConstants;
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -11,9 +13,11 @@ public class Indexer extends SubsystemBase {
     // sets up private variables
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
+    private final PIDController pid = new PIDController(0.013, 0.0, 0);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.001);
     private IndexerIO io;
-    // private boolean isIntaking = false;
-    // private boolean hasGamepiece = false;
+    private double kickerTargetRPM = 0;
+    private double storedVoltage = IndexerConstants.KICKER_VOLTAGE;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
@@ -21,33 +25,13 @@ public class Indexer extends SubsystemBase {
     }
 
     // runs the intake command
-    public Command intake() {
-        return(
-            Commands.startEnd(
-                () -> { 
-                    io.runVoltage(IndexerConstants.INTAKE_VOLTAGE);
-                    io.runKickerVoltage(IndexerConstants.KICKER_INTAKE_VOLTAGE); 
-                },
-                () -> { 
-                    io.runVoltage(0.0);
-                    io.runKickerVoltage(0.0);
-                }
-            )
-        );
+    public void startIndexer() {
+        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
+        
     }
 
-    public Command outtake() {
-        return(
-            Commands.startEnd(
-            () -> {
-                io.runVoltage(IndexerConstants.OUTTAKE_VOLTAGE);
-                io.runKickerVoltage(IndexerConstants.KICKER_OUTTAKE_VOLTAGE);},
-            () -> {
-                io.runVoltage(0.0);
-                io.runKickerVoltage(0.0);
-            }
-            )
-        );
+    public void stopIndexer() {
+        io.runSpindexerVoltage(0.0);
     }
 
     @Override
@@ -55,5 +39,33 @@ public class Indexer extends SubsystemBase {
         io.updateInputs(inputs, kickerInputs);
         Logger.processInputs("Indexer", inputs);
         Logger.processInputs("IndexerKicker", kickerInputs);
+        
+        double currentRPM = kickerInputs.RPM;
+        double output = feedforward.calculate(kickerTargetRPM);
+        double pidOutput = pid.calculate(currentRPM, kickerTargetRPM);
+        
+        if (kickerTargetRPM > 0) {
+            io.runKickerVoltage(pidOutput + output);
+        } else {
+            io.runKickerVoltage(0.0);
+            pid.reset(); 
+        }
+    }
+
+    public void startKicker() {
+        kickerTargetRPM = IndexerConstants.KICKER_VOLTAGE; 
+    }
+
+    public void stopKicker() {
+        kickerTargetRPM = 0.0;
+    }
+
+    // The increase / decrease kicker speed/volts commands (intended for every click)
+    public Command increaseVolts() {
+        return runOnce(() -> io.runKickerVoltage(storedVoltage += 1));
+    }
+
+    public Command decreaseVolts() {
+        return runOnce(() -> io.runKickerVoltage(storedVoltage -= 1));
     }
 }
