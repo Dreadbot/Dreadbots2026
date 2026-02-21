@@ -16,9 +16,9 @@ public class Slapdown extends SubsystemBase {
     
     private final SlapdownIOInputsAutoLogged inputs = new SlapdownIOInputsAutoLogged();
     private final SlapdownIO io;
-    public final PIDController pid = new PIDController(0.013, 0.0, 0);
-    public final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.0, 0.023);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
+    public final PIDController pid = new PIDController(SlapdownConstants.KP, 0.0, SlapdownConstants.KD);
+    public final ArmFeedforward feedforward = new ArmFeedforward(SlapdownConstants.KS, SlapdownConstants.KG, SlapdownConstants.KV);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(SlapdownConstants.MAX_ANGLE_DEGREES, SlapdownConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
