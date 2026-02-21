@@ -8,8 +8,6 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class ClimbIOSim implements ClimbIO {
    
-
-
     private final DCMotorSim motorSim;
     private final double rollerWheelMOI = 0.5 * Units.lbsToKilograms(0.12) * Units.inchesToMeters(1.5) * Units.inchesToMeters(1.5);
     public ClimbIOSim() {
@@ -19,17 +17,13 @@ public class ClimbIOSim implements ClimbIO {
         );
     }
 
-
     @Override
     public void updateInputs(ClimbIOInputs inputs) {
         motorSim.update(0.02);
 
         inputs.appliedVolts = 0.0;
-
         inputs.RPM = motorSim.getAngularVelocityRPM();
-
         inputs.currentAmps = motorSim.getCurrentDrawAmps();
-
     }
 
     @Override
