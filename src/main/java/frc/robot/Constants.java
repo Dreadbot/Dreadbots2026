@@ -37,7 +37,7 @@ public class Constants {
         // This number should be calibrated based on the gear ratio between the motor and the hood
         public static final double GEAR_RATIO = 5; // Probably more like 75 or 150 but this was for testing
         public static final double MOTOR_ROTATIONS_TO_HOOD_RADIANS = (2 * Math.PI) / GEAR_RATIO;
-        public static final double MAX_ANGLE = 75.0; // Radians
+        public static final double MAX_ROTATIONS = 50; // Placeholder value
     }
 
     public static final class AutoAlignConstants {
@@ -94,21 +94,30 @@ public class Constants {
   }
 
   public static class SlapdownConstants {
-    public static final double INTAKE_VOLTAGE = -5.0;
-    public static final double OUTAKE_VOLTAGE = 5.0;
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 8;
-    public static final double ENCODER_OFFSET = 108.125;
+    public static final double ENCODER_OFFSET = 0;
     public static final double HOME_ANGLE_DEGREES = 0;
-    public static final double OUTTAKE_ANGLE_DEGREES = 3;
-    public static final double INTAKE_ANGLE_DEGREES = 60.0;
-    public static final double HOLD_ANGLE_DEGREES = 14.0;
-    public static final double MAX_ANGLE_DEGREES = 80.0;
+    public static final double INTAKE_ANGLE_DEGREES = 0;
+    public static final double MAX_ANGLE_DEGREES =  131.5;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 20;
     public static final int PIVOT_MOTOR_ID = 18;
+    public static final double INTAKE_VOLTAGE = 0;
+    public static final double KP = 2;
+    public static final double KD = 0;
+    public static final double KS = 0;
+    public static final double KV = 0;
+    public static final double KG = 0;
+    public static final double MAX_VELOCITY = 540;
+    public static final double MAX_ACCELERATION = 540;
+    public static final int SLAPDOWN_GEARING = 0;
+    public static final int INTAKE_GEARING = 0;
+    public static final double ARM_LENGTH = Units.inchesToMeters(11.75);
+    public static final double MIN_ANGLE_RAD = Units.degreesToRadians(0);
+    public static final double MAX_ANGLE_RAD = Units.degreesToRadians(131.5);
 
     public static final double SIM_INTAKE_MOI = 0.00011264;
-    public static final double SIM_PIVOT_MOI = 0.15180934;
+    public static final double SIM_PIVOT_MOI = .11;
   }
 
 }

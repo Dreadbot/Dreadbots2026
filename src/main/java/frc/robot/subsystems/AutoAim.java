@@ -116,7 +116,7 @@ public class AutoAim extends SubsystemBase{
         Pose2d turretPose = new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), robotPoseForTurret.getRotation());
 
         turret.setSetpointFromTurretPose(turretPose, target);
-        hood.setAngle(firingValues.get(0, 0));
+        hood.setRotations(firingValues.get(0, 0));
         if (setFlywheel) {
             flywheel.setRPM(firingValues.get(1, 0));
         }

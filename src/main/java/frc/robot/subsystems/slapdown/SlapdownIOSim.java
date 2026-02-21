@@ -19,16 +19,16 @@ public class SlapdownIOSim implements SlapdownIO {
     public SlapdownIOSim() {
         this.slapdown = new SingleJointedArmSim(
             DCMotor.getNeoVortex(1), 
-            50.0, 
+            SlapdownConstants.SLAPDOWN_GEARING, 
             SlapdownConstants.SIM_PIVOT_MOI, 
-            Units.inchesToMeters(16), 
-            Units.degreesToRadians(-20), 
-            Units.degreesToRadians(90), 
+            SlapdownConstants.ARM_LENGTH, 
+            SlapdownConstants.MIN_ANGLE_RAD, 
+            SlapdownConstants.MAX_ANGLE_RAD, 
             true,
             Units.degreesToRadians(0)
             );
         this.intakeMotor = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), SlapdownConstants.SIM_INTAKE_MOI, 2), 
+            LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), SlapdownConstants.SIM_INTAKE_MOI, SlapdownConstants.INTAKE_GEARING), 
             DCMotor.getNEO(1)
         );
         pivotVolts = 0.0;
