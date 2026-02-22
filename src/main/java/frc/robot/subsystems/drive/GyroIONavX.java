@@ -24,8 +24,7 @@ import java.util.Queue;
 
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  // apparently in the 5.0.4 firmware theres a bug so that it always uses id 0. update if navX is not 5.0.4
-  private final Navx navX = new Navx(0, (int) odometryFrequency);
+  private final Navx navX = new Navx(30, (int) odometryFrequency);
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 

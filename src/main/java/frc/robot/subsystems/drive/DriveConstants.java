@@ -24,8 +24,8 @@ import edu.wpi.first.math.util.Units;
 public class DriveConstants {
   public static final double maxSpeedMetersPerSec = 4.0;
   public static final double odometryFrequency = 200.0; // Hz
-  public static final double trackWidth = Units.inchesToMeters(24.0 + 13.0 / 16.0);
-  public static final double wheelBase = Units.inchesToMeters(24.0 + 13.0 / 16.0);
+  public static final double trackWidth = 0.564769; // Distance between center of wheels - found in CAD
+  public static final double wheelBase = 0.564769;
   public static final double driveBaseRadius = Math.hypot(trackWidth / 2.0, wheelBase / 2.0);
   public static final Translation2d[] moduleTranslations =
       new Translation2d[] {
@@ -36,10 +36,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(62.86 + 180)); //new Rotation2d(1.11 + Math.PI);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(38.76)); //new Rotation2d(-2.461 + Math.PI);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(-1.96)); //new Rotation2d(3.092 + Math.PI);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(123.55)); //new Rotation2d(2.155);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(1.11 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(-2.461 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(3.092 + Math.PI);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(2.155);
 
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 7;
