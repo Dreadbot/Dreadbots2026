@@ -24,14 +24,14 @@ public class Indexer extends SubsystemBase {
         this.io = io;
     }
 
+
     // runs the intake command
-    public void startIndexer() {
-        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
-        
+    public Command startIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
     }
 
-    public void stopIndexer() {
-        io.runSpindexerVoltage(0.0);
+    public Command stopIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(0.0));
     }
 
     @Override
