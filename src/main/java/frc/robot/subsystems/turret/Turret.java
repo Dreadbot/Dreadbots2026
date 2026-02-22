@@ -39,7 +39,7 @@ public class Turret extends SubsystemBase {
         double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
         
         voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint);
-        if (!pid.atSetpoint()) {
+        if (Math.abs(voltage) > 1e-5) {
             voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
         }
         

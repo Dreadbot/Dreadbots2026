@@ -36,6 +36,7 @@ public class TurretIOSparkMax implements TurretIO {
         turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         double absoluteRad = MathUtil.angleModulus(absoluteEncoder.get() - TurretConstants.TURRET_ENCODER_OFFSET_RAD);
+        System.out.println("ABSOLUTE ENCODER" + absoluteRad);
         double motorRotations = Units.radiansToRotations(absoluteRad) * TurretConstants.GEAR_REDUCTION;
         turretMotor.getEncoder().setPosition(motorRotations);
     }
