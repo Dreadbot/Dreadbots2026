@@ -5,9 +5,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.wpilibj.Encoder;
-
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -40,7 +37,9 @@ public class HoodIOSparkMax implements HoodIO {
     @Override
     public void updateInputs(HoodIOInputs inputs) {
         inputs.appliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
-        inputs.angle = encoder.getPosition() * HoodConstants.ROTATIONS_TO_RADIANS;
+        // inputs.angle = encoder.getPosition() * HoodConstants.MOTOR_ROTATIONS_TO_HOOD_RADIANS;
+        inputs.rotations = encoder.getPosition();
         inputs.RPM = encoder.getVelocity();
+        inputs.lowerSwitch = motor.getReverseLimitSwitch().isPressed();
     }
 }

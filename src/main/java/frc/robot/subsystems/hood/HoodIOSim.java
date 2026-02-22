@@ -12,7 +12,7 @@ public class HoodIOSim implements HoodIO {
             LinearSystemId.createDCMotorSystem(
                 DCMotor.getNEO(1),
                 0.0366,
-                1.0
+                150.0
             ),
             DCMotor.getNeo550(1)
         );
@@ -23,7 +23,7 @@ public class HoodIOSim implements HoodIO {
         hood.update(0.02);
         inputs.RPM = hood.getAngularVelocityRPM();
         inputs.appliedVolts = hood.getInputVoltage();
-        inputs.angle = hood.getAngularPositionRad();
+        inputs.rotations = hood.getAngularPositionRad() / (2 * Math.PI);
     }
 
     @Override 

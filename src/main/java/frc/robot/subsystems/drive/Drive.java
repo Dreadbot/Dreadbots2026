@@ -62,8 +62,8 @@ public class Drive extends SubsystemBase {
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
   private final Module[] modules = new Module[4]; // FL, FR, BL, BR
   private final SysIdRoutine sysId;
-  private final Alert gyroDisconnectedAlert =
-      new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
+  // private final Alert gyroDisconnectedAlert =
+  //     new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
   private SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
   private Rotation2d rawGyroRotation = new Rotation2d();
@@ -183,7 +183,7 @@ public class Drive extends SubsystemBase {
     }
 
     // Update gyro alert
-    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    //gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
   }
 
   /**
@@ -382,8 +382,6 @@ public class Drive extends SubsystemBase {
       new Twist2d(
           linearFieldVelocity.getX(),
           linearFieldVelocity.getY(),
-          gyroInputs.connected
-              ? gyroInputs.yawVelocityRadPerSec
-              : chassisSpeeds.omegaRadiansPerSecond);
+          gyroInputs.yawVelocityRadPerSec);
   }
 }

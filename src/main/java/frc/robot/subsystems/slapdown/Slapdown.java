@@ -15,9 +15,9 @@ public class Slapdown extends SubsystemBase {
     
     private final SlapdownIOInputsAutoLogged inputs = new SlapdownIOInputsAutoLogged();
     private final SlapdownIO io;
-    public final PIDController pid = new PIDController(0.013, 0.0, 0);
-    public final ArmFeedforward feedforward = new ArmFeedforward(0.00, 0.0, 0.023);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(540, 540));
+    public final PIDController pid = new PIDController(SlapdownConstants.KP, 0.0, SlapdownConstants.KD);
+    public final ArmFeedforward feedforward = new ArmFeedforward(SlapdownConstants.KS, SlapdownConstants.KG, SlapdownConstants.KV);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(SlapdownConstants.MAX_ANGLE_DEGREES, SlapdownConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
@@ -25,29 +25,42 @@ public class Slapdown extends SubsystemBase {
         this.io = io;
     }
 
-      public Command slapDownSequence() {
-        return Commands.sequence(
-            setAngleDegrees(SlapdownConstants.INTAKE_ANGLE_DEGREES)
-     
-            ).finallyDo(
-                () -> {
-                    goal = new TrapezoidProfile.State(SlapdownConstants.HOLD_ANGLE_DEGREES, 0);
-            });
+    public Command goToIntakeCommand() {
+        return Commands.runOnce(() -> {
+                    goal = new TrapezoidProfile.State(SlapdownConstants.INTAKE_ANGLE_DEGREES, 0);
+                });
     }
 
-    public Command slapUpSequence() {
-        return Commands.sequence(
-            setAngleDegrees(SlapdownConstants.OUTTAKE_ANGLE_DEGREES)
+    public Command goToHomeCommand() {
+        return Commands.runOnce(() -> {
+            goal = new TrapezoidProfile.State(SlapdownConstants.HOME_ANGLE_DEGREES, 0);
+        });
+    }
+
+    public Command intakeCommand() {
+        return Commands.run(
+            () -> {
+                io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE);
+            }
         );
     }
 
-    public Command intakeMotorSequence() {
-        return Commands.sequence(
-                Commands.startEnd(
-                    () -> io.runIntakeVoltage(SlapdownConstants.OUTAKE_VOLTAGE),
-                    () -> io.runIntakeVoltage(0.0)
-                )
+    public Command stopIntakeCommand() {
+        return Commands.run(
+            () -> {
+                io.runIntakeVoltage(0);
+            }
         );
+    }
+
+    // Double check with test
+    public Command agitateCommand() {
+        return Commands.sequence(
+            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE * -1)),
+            Commands.waitSeconds(0.2),
+            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE)),
+            Commands.waitSeconds(0.2)
+        );    
     }
 
     @Override
