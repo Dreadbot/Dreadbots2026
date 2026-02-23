@@ -227,6 +227,8 @@ public class RobotContainer {
         secondaryController.b().onTrue(turret.setAngleRad(Constants.TurretConstants.PASS_ANGLE));
         // Hub Track
         secondaryController.a().onTrue(turret.setAngleRad(Constants.TurretConstants.HUB_ANGLE));
+        // Brace
+        primaryController.a().onTrue(drive.BraceCommand());
     }
 
     public Command getAutonomousCommand() {

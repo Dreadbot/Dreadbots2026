@@ -37,6 +37,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -48,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import frc.robot.Constants.SlapdownConstants;
 import frc.robot.util.misc.ChassisAcceleration;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -384,4 +386,12 @@ public class Drive extends SubsystemBase {
           linearFieldVelocity.getY(),
           gyroInputs.yawVelocityRadPerSec);
   }
+  public Command BraceCommand() {
+        return Commands.runOnce(() -> {
+          final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(1.11 + Math.PI);
+          final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(-2.461 + Math.PI);
+          final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(3.092 + Math.PI);
+          final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(2.155);
+                });
+    }
 }
