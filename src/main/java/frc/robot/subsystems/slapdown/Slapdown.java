@@ -2,6 +2,7 @@ package frc.robot.subsystems.slapdown;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -75,9 +76,11 @@ public class Slapdown extends SubsystemBase {
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);
         setpoint = profile.calculate(0.02, setpoint, goal);
+        double voltage = MathUtil.clamp(pid.calculate(inputs.absolutePosition, setpoint.position) + 
+            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity), -8, 8);
+        Logger.recordOutput("Slapdown/voltage", voltage);
         io.runPivotVoltage(
-            pid.calculate(inputs.absolutePosition, setpoint.position) + 
-            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
+            voltage
             // use acutal position degrees to make sure that we always apply the correct gravity feed forward.
         ); 
     }
@@ -89,6 +92,6 @@ public class Slapdown extends SubsystemBase {
              } );
     }
     public double getAngle() {
-        return inputs.pivotRotationDegrees;
+        return inputs.absolutePosition;
     }
 }

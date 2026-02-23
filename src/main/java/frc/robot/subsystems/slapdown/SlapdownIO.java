@@ -19,7 +19,7 @@ public interface SlapdownIO {
         public double intakeCurrentAmps = 0.0;
 
         //Rotating By Degrees
-        public double pivotRotationDegrees = 0.0;
+        //public double pivotRotationDegrees = 0.0;
         
         //RPM
         public double intakeRPM = 0.0;

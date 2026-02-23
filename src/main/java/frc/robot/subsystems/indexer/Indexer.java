@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -13,11 +12,10 @@ public class Indexer extends SubsystemBase {
     // sets up private variables
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.013, 0.0, 0);
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.001);
+    private final PIDController pid = new PIDController(0.001, 0.0, 0);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.0);
     private IndexerIO io;
     private double kickerTargetRPM = 0;
-    private double storedVoltage = IndexerConstants.KICKER_VOLTAGE;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
@@ -26,12 +24,12 @@ public class Indexer extends SubsystemBase {
 
 
     // runs the intake command
-    public Command startIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
+    public void startIndexer() {
+        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
     }
 
-    public Command stopIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(0.0));
+    public void stopIndexer() {
+        io.runSpindexerVoltage(0.0);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class Indexer extends SubsystemBase {
     }
 
     public void startKicker() {
-        kickerTargetRPM = IndexerConstants.KICKER_VOLTAGE; 
+        kickerTargetRPM = IndexerConstants.KICKER_RPM; 
     }
 
     public void stopKicker() {
@@ -61,11 +59,11 @@ public class Indexer extends SubsystemBase {
     }
 
     // The increase / decrease kicker speed/volts commands (intended for every click)
-    public Command increaseVolts() {
-        return runOnce(() -> io.runKickerVoltage(storedVoltage += 1));
-    }
+    // public Command increaseVolts() {
+    //     return runOnce(() -> io.runKickerVoltage(storedVoltage += 1));
+    // }
 
-    public Command decreaseVolts() {
-        return runOnce(() -> io.runKickerVoltage(storedVoltage -= 1));
-    }
+    // public Command decreaseVolts() {
+    //     return runOnce(() -> io.runKickerVoltage(storedVoltage -= 1));
+    // }
 }

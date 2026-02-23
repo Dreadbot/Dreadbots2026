@@ -20,12 +20,18 @@ public class IndexerIOSparkFlex implements IndexerIO {
     public IndexerIOSparkFlex() {
         indexerMotor = new SparkFlex(IndexerConstants.SPINDEXER_MOTOR_ID, MotorType.kBrushless);
         this.kickerMotor = new SparkFlex(IndexerConstants.KICKER_MOTOR_ID, MotorType.kBrushless);
-        SparkFlexConfig config = new SparkFlexConfig();
-        config
+        SparkFlexConfig indexerConfig = new SparkFlexConfig();
+        SparkFlexConfig kickerConfig = new SparkFlexConfig();
+        indexerConfig
             .idleMode(IdleMode.kBrake)
-            .smartCurrentLimit(50);
-        indexerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        kickerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            .smartCurrentLimit(50)
+            .inverted(true);
+        kickerConfig
+            .idleMode(IdleMode.kBrake)
+            .smartCurrentLimit(50)
+            .inverted(false);
+        indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        kickerMotor.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
     // updates the inputs
     @Override

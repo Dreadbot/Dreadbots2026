@@ -22,7 +22,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
-  public static final double maxSpeedMetersPerSec = 4.0;
+  public static final double maxSpeedMetersPerSec = 5.0;
   public static final double odometryFrequency = 200.0; // Hz
   public static final double trackWidth = 0.564769; // Distance between center of wheels - found in CAD
   public static final double wheelBase = 0.564769;
@@ -36,10 +36,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(1.11 + Math.PI);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(-2.461 + Math.PI);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(3.092 + Math.PI);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(0)); //new Rotation2d(2.155);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(89.49)); //new Rotation2d(1.11 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(-52.82)); //new Rotation2d(-2.461 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(-57.25)); //new Rotation2d(3.092 + Math.PI);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(55.28)); //new Rotation2d(2.155);
 
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 7;
@@ -51,10 +51,10 @@ public class DriveConstants {
   public static final int frontRightTurnCanId = 4;
   public static final int backRightTurnCanId = 6;
 
-  public static final int frontLeftCanCoderId = 9;
-  public static final int frontRightCanCoderId = 10;
-  public static final int backLeftCanCoderId = 12;
-  public static final int backRightCanCoderId = 11;
+  public static final int frontLeftCanCoderId = 21;
+  public static final int frontRightCanCoderId = 22;
+  public static final int backLeftCanCoderId = 24;
+  public static final int backRightCanCoderId = 23;
 
 
   // Drive motor configuration
@@ -82,7 +82,7 @@ public class DriveConstants {
   public static final double driveSimKv = 0.11202;
 
   // Turn motor configuration
-  public static final boolean turnInverted = true;
+  public static final boolean turnInverted = false;
   public static final int turnMotorCurrentLimit = 35;
   public static final double turnMotorReduction = 26.0; // From SDS Mk5i Website
   public static final DCMotor turnGearbox = DCMotor.getNeoVortex(1);

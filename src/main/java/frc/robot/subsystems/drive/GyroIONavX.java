@@ -24,7 +24,7 @@ import java.util.Queue;
 
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  private final Navx navX = new Navx(30, (int) odometryFrequency);
+  private final Navx navX = new Navx(0, (int) odometryFrequency);
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 
