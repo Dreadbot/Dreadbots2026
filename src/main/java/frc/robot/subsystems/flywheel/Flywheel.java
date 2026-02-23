@@ -11,11 +11,21 @@ import frc.robot.Constants.FlywheelConstants;
 public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
     private final FlywheelIO io;
-    private final PIDController pid = new PIDController(0.0002, 0, 0);
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
-    
-    private double storedVoltage = FlywheelConstants.SHOOT_VOLTAGE;
+
+    private double kP = 0.001;
+    private double kI = 0.0004;
+    private double kD = 0.0;
+    private double kS = 0.0;
+    private double kV = 0.0018;
+    private double kA = 0.0;
+    private PIDController pid = new PIDController(kP, kI, kD);
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+    private double increment = 0.1;
+    private String target = "kP";
+    private String system = "PID";
+
     private double goalRPM = 0.0;
+    private boolean stopping = false;
 
     public Flywheel(FlywheelIO io) {
         this.io = io;
@@ -28,16 +38,30 @@ public class Flywheel extends SubsystemBase {
         Logger.processInputs("Flywheel", inputs);
 
         double pidValue = pid.calculate(inputs.RPM, goalRPM);
-        if(goalRPM == 0){
-            pidValue = 0;    
-        }
         double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
-        io.setVoltage(pidValue + (goalRPM / 525));
+        if (!stopping) {
+            io.setVoltage(pidValue + feedforwardValue);
+        } else {
+            io.setVoltage(0.0);
+            goalRPM = inputs.RPM;
+        }
         // io.setRPM(goalRPM); // For sparkflex PID system
         Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
         Logger.recordOutput("Flywheel/PIDValue", pidValue);
         Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
         Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
+        Logger.recordOutput("Flywheel/System", system);
+        Logger.recordOutput("Flywheel/Target", target);
+        Logger.recordOutput("Flywheel/TargetValue", switch (target) {
+            case "kP" -> kP;
+            case "kI" -> kI;
+            case "kD" -> kD;
+            case "kS" -> kS;
+            case "kV" -> kV;
+            case "kA" -> kA;
+            default -> 0.0;
+        });
+        Logger.recordOutput("Flywheel/Increment", increment);
     }
 
     public double getRPM() {
@@ -50,34 +74,106 @@ public class Flywheel extends SubsystemBase {
 
     // These commands are for just starting and stopping at a set voltage
     public Command start() {
-        return startEnd(
-            () -> io.setVoltage(FlywheelConstants.SHOOT_VOLTAGE),
-            () -> io.setVoltage(0.0)
-        );
+        return runOnce(() -> {
+            if (goalRPM < 500) {
+                goalRPM = 500;
+            } else {
+                goalRPM = 3000;
+            }
+            stopping = false;
+        });
     }
 
     public Command stop() {
-        return startEnd(
-            () -> io.setVoltage(0.0),
-            () -> {}
-        );
+        return runOnce(() -> stopping = true);
     }
 
     // These commands work with the PID and feedforward to reach a set RPM
     public Command setRPM(double rpm) {
-        return runOnce(() -> goalRPM = rpm);
+        return runOnce(() -> {
+            goalRPM = rpm;
+            stopping = false;
+        });
     }
 
     public Command changeRPM(double rpm) {
-        return runOnce(() -> goalRPM += rpm);
+        return runOnce(() -> {
+            goalRPM += rpm;
+            stopping = false;
+        });
     }
 
-    // The increase / decrease flywheel speed/volts commands (intended for every click)
-    public Command increaseVolts() {
-        return runOnce(() -> io.setVoltage(storedVoltage += 1));
+    public Command changeOrderOfMagnitude(int change) {
+        return runOnce(() -> increment *= Math.pow(10, change));
     }
 
-    public Command decreaseVolts() {
-        return runOnce(() -> io.setVoltage(storedVoltage -= 1));
+    public Command changeNumber(double value) {
+        return runOnce(() -> {
+            switch (target) {
+                case "kP":
+                    kP += value * increment;
+                    pid.setP(kP);
+                    break;
+                case "kI":
+                    kI += value * increment;
+                    pid.setI(kI);
+                    break;
+                case "kD":
+                    kD += value * increment;
+                    pid.setD(kD);
+                    break;
+                case "kS":
+                    kS += value * increment;
+                    feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+                    break;
+                case "kV":
+                    kV += value * increment;
+                    feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+                    break;
+                case "kA":
+                    kA += value * increment;
+                    feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+            }
+        });
+    }
+
+    public Command changeTarget(String direction) {
+        return runOnce(() -> {
+            if (system == "PID") {
+                switch (direction) {
+                case "left":
+                    target = "kP";
+                    break;
+                case "up":
+                    target = "kI";
+                    break;
+                case "right":
+                    target = "kD";
+                    break;
+                }
+            } else {
+                switch (direction) {
+                    case "left":
+                        target = "kS";
+                        break;
+                    case "up":
+                        target = "kV";
+                        break;
+                    case "right":
+                        target = "kA";
+                        break;
+                }
+            }
+        });
+    }
+
+    public Command changeSystem() {
+        return runOnce(() -> {
+            if (system == "PID") {
+                system = "Feedforward";
+            } else {
+                system = "PID";
+            }
+        });
     }
 }

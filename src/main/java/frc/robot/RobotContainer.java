@@ -44,15 +44,12 @@ public class RobotContainer {
     private final Flywheel flywheel;
     private final Hood hood;
     private final Indexer indexer;
-    //private final AutoAim autoAim;
+    // private final AutoAim autoAim;
     private final Climb climb;
     private final Slapdown slapdown;
 
-
     public RobotContainer() {
         switch (Constants.currentMode) {
-
-
             case REAL:
                 drive = new Drive(
                     new GyroIONavX(),
@@ -70,21 +67,12 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 CameraServer.startAutomaticCapture(0);
 
-
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
-              
-             
                 break;
-
-
-
-
-
-
             case SIM:
                 drive = new Drive(
                     new GyroIO() {},
@@ -98,8 +86,6 @@ public class RobotContainer {
                     new VisionCamera(new VisionIOSim(drive::getPose), 1),
                     new VisionCamera(new VisionIOSim(drive::getPose), 2)
                 );
-
-
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSim(), drive);
                 flywheel = new Flywheel(new FlywheelIOSim());
@@ -107,15 +93,7 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
                 climb = new Climb(new ClimbIOSim());
-                
-               
                 break;
-
-
-
-
-
-
             default:
                drive = new Drive(
                     new GyroIONavX(),
@@ -136,17 +114,12 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
-               
-             
                 break;
         }
     }
 
-
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
-        VisionUtil.getApriltagPose(1);
-
         drive.setDefaultCommand(
             DriveCommands.joystickDrive(
                 drive,
@@ -178,7 +151,7 @@ public class RobotContainer {
 
 
 
-        //Turret Angle Controls
+        // Turret Angle Controls
         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
         primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
         primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
@@ -191,13 +164,29 @@ public class RobotContainer {
         //primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
 
        
-        //Flywheel  Controles
+        // Flywheel controls
         secondaryController.a().onTrue(flywheel.setRPM(3000));
-        secondaryController.b().onTrue(flywheel.setRPM(0));
+        // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
+        
+        // secondaryController.b().onTrue(flywheel.setRPM(0));
+        secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
+        
         secondaryController.y().onTrue(flywheel.changeRPM(100));
         secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
-        //Indexer and Kicker motors conrtlled by the second controller
+        // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
+        // primaryController.y().onTrue(flywheel.changeRPM(100));
+        // primaryController.x().onTrue(flywheel.changeRPM(-100));
+        // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
+        // primaryController.rightTrigger().onTrue(flywheel.changeOrderOfMagnitude(-1));
+        // primaryController.leftBumper().onTrue(flywheel.changeNumber(-1));
+        // primaryController.rightBumper().onTrue(flywheel.changeNumber(1));
+        // primaryController.povLeft().onTrue(flywheel.changeTarget("left"));
+        // primaryController.povUp().onTrue(flywheel.changeTarget("up"));
+        // primaryController.povRight().onTrue(flywheel.changeTarget("right"));
+        // primaryController.povDown().onTrue(flywheel.changeSystem());
+
+        // Indexer and Kicker motors controlled by the second controller
         secondaryController.povLeft().onTrue(indexer.startIndexer());
         secondaryController.povRight().onTrue(indexer.stopIndexer());
         secondaryController.povDown().onTrue(indexer.startKicker());

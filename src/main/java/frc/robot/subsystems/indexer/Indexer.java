@@ -52,12 +52,12 @@ public class Indexer extends SubsystemBase {
         }
     }
 
-    public void startKicker() {
-        kickerTargetRPM = IndexerConstants.KICKER_VOLTAGE; 
+    public Command startKicker() {
+        return runOnce(() -> kickerTargetRPM = IndexerConstants.KICKER_VOLTAGE);
     }
 
-    public void stopKicker() {
-        kickerTargetRPM = 0.0;
+    public Command stopKicker() {
+        return runOnce(() -> kickerTargetRPM = 0.0);
     }
 
     // The increase / decrease kicker speed/volts commands (intended for every click)
