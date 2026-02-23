@@ -150,7 +150,8 @@ public class RobotContainer {
         // Can be changed or refit for actual use
         // These were all used seperately so buttons may be used more than once
 
-
+        // Shooter controls
+        primaryController.rightBumper().whileTrue(indexer.runBoth());
 
         // Turret Angle Controls
         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));

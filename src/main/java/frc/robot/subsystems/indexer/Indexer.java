@@ -17,25 +17,12 @@ public class Indexer extends SubsystemBase {
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.001);
     private IndexerIO io;
     private double kickerTargetRPM = 0;
+    private boolean stoppingKicker = false;
     private double storedVoltage = IndexerConstants.KICKER_VOLTAGE;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
         this.io = io;
-    }
-
-
-    // runs the intake command
-    public Command startIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
-    }
-
-    public Command startReverseIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1));
-    }
-
-    public Command stopIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(0.0));
     }
 
     @Override
@@ -47,7 +34,10 @@ public class Indexer extends SubsystemBase {
         double currentRPM = kickerInputs.RPM;
         double output = feedforward.calculate(kickerTargetRPM);
         double pidOutput = pid.calculate(currentRPM, kickerTargetRPM);
-        
+        if (stoppingKicker) {
+            kickerTargetRPM = currentRPM;
+            stoppingKicker = false;
+        }
         if (kickerTargetRPM > 0) {
             io.runKickerVoltage(pidOutput + output);
         } else {
@@ -56,12 +46,52 @@ public class Indexer extends SubsystemBase {
         }
     }
 
+    public Command runBoth() {
+        return startEnd(() -> {
+            startIndexer();
+            startKicker();
+        }, 
+        () -> {
+            stopIndexer();
+            stopKicker();
+        });
+    }
+
+    public Command startBoth() {
+        return runOnce(() -> {
+            startIndexer();
+            startKicker();
+        });
+    }
+
+    public Command stopBoth() {
+        return runOnce(() -> {
+            stopIndexer();
+            stopKicker();
+        });
+    }
+
+    public Command startIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
+    }
+
+    public Command startReverseIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1));
+    }
+
+    public Command stopIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(0.0));
+    }
+    
     public Command startKicker() {
-        return runOnce(() -> kickerTargetRPM = IndexerConstants.KICKER_VOLTAGE);
+        return runOnce(() -> {
+            kickerTargetRPM = IndexerConstants.KICKER_VOLTAGE;
+            stoppingKicker = false;
+        });
     }
 
     public Command stopKicker() {
-        return runOnce(() -> kickerTargetRPM = 0.0);
+        return runOnce(() -> stoppingKicker = true);
     }
 
     // The increase / decrease kicker speed/volts commands (intended for every click)
