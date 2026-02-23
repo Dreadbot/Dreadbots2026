@@ -36,10 +36,10 @@ public class DriveConstants {
       };
 
   // Zeroed rotation values for each module, see setup instructions
-  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(89.49)); //new Rotation2d(1.11 + Math.PI);
-  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(-52.82)); //new Rotation2d(-2.461 + Math.PI);
-  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(-57.25)); //new Rotation2d(3.092 + Math.PI);
-  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(55.28)); //new Rotation2d(2.155);
+  public static final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(-90.79 + 180)); //new Rotation2d(1.11 + Math.PI);
+  public static final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(-53.00)); //new Rotation2d(-2.461 + Math.PI);
+  public static final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(121.82 + 180)); //new Rotation2d(3.092 + Math.PI);
+  public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(-124.28)); //new Rotation2d(2.155);
 
   public static final int frontLeftDriveCanId = 1;
   public static final int backLeftDriveCanId = 7;
@@ -71,7 +71,7 @@ public class DriveConstants {
       (2 * Math.PI) / 60.0 / driveMotorReduction; // Rotor RPM -> Wheel Rad/Sec
 
   // Drive PID configuration
-  public static final double driveKp = 0.02;
+  public static final double driveKp = 0.025;
   public static final double driveKd = 0.0;
   public static final double driveKs = 0.18703;
   public static final double driveKv = 0.11280;
@@ -93,7 +93,7 @@ public class DriveConstants {
   public static final double turnEncoderVelocityFactor = (2 * Math.PI) / 60.0 / turnMotorReduction; // RPM -> Rad/Sec
 
   // Turn PID configuration
-  public static final double turnKp = 3.0;
+  public static final double turnKp = 3.5;
   public static final double turnKd = 0.0;
   public static final double turnSimP = 8.0;
   public static final double turnSimD = 0.0;

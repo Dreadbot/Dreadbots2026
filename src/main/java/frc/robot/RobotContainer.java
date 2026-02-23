@@ -154,8 +154,8 @@ public class RobotContainer {
         // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
         // Climb controls
-        // primaryController.y().whileTrue(climb.testRaise());
-        // primaryController.a().whileTrue(climb.testLower());
+        primaryController.y().whileTrue(climb.testRaise());
+        primaryController.a().whileTrue(climb.testLower());
 
         // Flywheel Controles
         // secondaryController.a().onTrue(flywheel.setRPM(3000));

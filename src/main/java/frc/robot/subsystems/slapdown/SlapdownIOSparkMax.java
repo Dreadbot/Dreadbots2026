@@ -35,7 +35,7 @@ public class SlapdownIOSparkMax implements SlapdownIO {
             .inverted(true);
         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotConfig
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .inverted(false);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
