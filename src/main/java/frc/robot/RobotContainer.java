@@ -186,9 +186,9 @@ public class RobotContainer {
         // primaryController.povRight().onTrue(flywheel.changeTarget("right"));
         // primaryController.povDown().onTrue(flywheel.changeSystem());
 
-        // Indexer and Kicker motors controlled by the second controller
-        //secondaryController.getLeftX().onTrue(indexer.startIndexer());
-        //secondaryController.getRightX().onTrue(indexer.stopIndexer());
+            // Indexer and Kicker motors controlled by the second controller
+            //secondaryController.getLeftX().onTrue(indexer.startIndexer());
+            //secondaryController.getRightX().onTrue(indexer.stopIndexer());
         
         // primaryController.rightBumper().onTrue(hood.setAngle(4));
         // primaryController.leftBumper().onTrue(hood.setAngle(0));
@@ -214,6 +214,10 @@ public class RobotContainer {
         secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
         secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
         secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
+        // Pass Track
+        secondaryController.b().onTrue(turret.setAngleRad(Constants.TurretConstants.PASS_ANGLE));
+        // Hub Track
+        secondaryController.a().onTrue(turret.setAngleRad(Constants.TurretConstants.HUB_ANGLE));
     }
 
     public Command getAutonomousCommand() {

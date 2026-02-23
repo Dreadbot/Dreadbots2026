@@ -160,6 +160,12 @@ public class Constants {
         public static final double TURRET_Kp = 9.0;
         public static final double TURRET_Kd = 0.2;
         public static final double TURRET_Ks = 0.4;
+
+        public static final double TURRET_PRESET_ANGLE1 = 0;
+        public static final double TURRET_PRESET_ANGLE2 = 0;
+        public static final double TURRET_PRESET_ANGLE3 = 0;
+        public static final double PASS_ANGLE = 0;
+        public static final double HUB_ANGLE = 0;
     }
 
     public static class AutoAimConstants {
