@@ -162,6 +162,7 @@ public class RobotContainer {
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
         //primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
+        primaryController.leftBumper().onTrue(climb.climb());
 
        
         // Flywheel controls
