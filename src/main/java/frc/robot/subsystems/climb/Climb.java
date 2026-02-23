@@ -34,6 +34,7 @@ public class Climb extends SubsystemBase {
     public boolean isClimbed = false;
     public boolean raisingArm = false;
     public boolean loweringArm = false;
+    public boolean climbing = false;
 
     public Climb(ClimbIO io) {
         this.io = io;
@@ -63,6 +64,12 @@ public class Climb extends SubsystemBase {
         });
     }
 
+    public Command lowerClimbArm() {
+        return Commands.runOnce(() -> {
+            if (lowerSwitch.get()) loweringArm = true;
+        });
+    }
+
     public Command raiseRobotLevelOne() {
         return Commands.runOnce (() -> {
             if (lowerSwitch.get()) goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
@@ -75,6 +82,15 @@ public class Climb extends SubsystemBase {
             Commands.waitUntil(() -> raisingArm == false),
             raiseRobotLevelOne()
         );
+    }
+
+    public Command climb() {
+        return Commands.runOnce(() -> {
+            climbing = !climbing;
+            if (climbing) raisingArm = true;
+            else raisingArm = false;
+            loweringArm = false;
+        });
     }
 
     // Updates the inputs of ClimbIO perodic.
@@ -97,13 +113,15 @@ public class Climb extends SubsystemBase {
         setpoint = profile.calculate(0.02, setpoint, goal);
 
         // If upperSwitch is tripped
-        if(!upperSwitch.get()) {
+        if (!upperSwitch.get()) {
+            if (climbing) loweringArm = true;
             raisingArm = false;
             io.setPosition(0);
             goal = new TrapezoidProfile.State(setpoint.position, 0);
         }
         // If lowerSwitch is tripped
-        if(!lowerSwitch.get()) {
+        if (!lowerSwitch.get()) {
+            if (climbing) raisingArm = true;
             loweringArm = false;
             goal = new TrapezoidProfile.State(setpoint.position, 0);
         }
