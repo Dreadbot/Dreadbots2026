@@ -13,7 +13,7 @@ import frc.robot.Constants.FlywheelConstants;
 
 public class FlywheelIOSparkFlex implements FlywheelIO {
     private final SparkFlex motor1;
-    // private final SparkFlex motor2;
+    private final SparkFlex motor2;
     SparkClosedLoopController controller;
 
     public FlywheelIOSparkFlex() {
@@ -29,10 +29,10 @@ public class FlywheelIOSparkFlex implements FlywheelIO {
             .outputRange(0, 1);
         motor1.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         controller = motor1.getClosedLoopController();
-        // motor2 = new SparkFlex(FlywheelConstants.MOTOR_ID_2, MotorType.kBrushless);
-        // SparkFlexConfig config2 = new SparkFlexConfig();
-        // config2.follow(FlywheelConstants.MOTOR_ID_1, true);
-        // motor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motor2 = new SparkFlex(FlywheelConstants.MOTOR_ID_2, MotorType.kBrushless);
+        SparkFlexConfig config2 = new SparkFlexConfig();
+        config2.follow(FlywheelConstants.MOTOR_ID_1, true);
+        motor2.configure(config2, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override

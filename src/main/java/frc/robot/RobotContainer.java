@@ -174,7 +174,7 @@ public class RobotContainer {
         secondaryController.y().onTrue(flywheel.changeRPM(100));
         secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
-        // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
+        // PID and FF tuning controls
         // primaryController.y().onTrue(flywheel.changeRPM(100));
         // primaryController.x().onTrue(flywheel.changeRPM(-100));
         // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
