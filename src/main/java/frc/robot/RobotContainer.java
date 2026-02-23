@@ -174,7 +174,7 @@ public class RobotContainer {
         secondaryController.y().onTrue(flywheel.changeRPM(100));
         secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
-        // PID and FF tuning controls
+        // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
         // primaryController.y().onTrue(flywheel.changeRPM(100));
         // primaryController.x().onTrue(flywheel.changeRPM(-100));
         // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
@@ -187,16 +187,15 @@ public class RobotContainer {
         // primaryController.povDown().onTrue(flywheel.changeSystem());
 
         // Indexer and Kicker motors controlled by the second controller
-        secondaryController.povLeft().onTrue(indexer.startIndexer());
-        secondaryController.povRight().onTrue(indexer.stopIndexer());
-        secondaryController.povDown().onTrue(indexer.startKicker());
-        secondaryController.povUp().onTrue(indexer.stopKicker());
+        //secondaryController.getLeftX().onTrue(indexer.startIndexer());
+        //secondaryController.getRightX().onTrue(indexer.stopIndexer());
         
         // primaryController.rightBumper().onTrue(hood.setAngle(4));
         // primaryController.leftBumper().onTrue(hood.setAngle(0));
         // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.changeAngle(0.1));
         // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
+        //Slapdown
         secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
         secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
         primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
@@ -205,6 +204,16 @@ public class RobotContainer {
         // Double check with test
         secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
         secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
+
+        // Hood
+        secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
+        //secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
+    
+        // Turret Presets
+        secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
+        secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
+        secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
+        secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
     }
 
     public Command getAutonomousCommand() {
