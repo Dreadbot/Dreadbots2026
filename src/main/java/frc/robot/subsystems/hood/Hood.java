@@ -75,4 +75,6 @@ public class Hood extends SubsystemBase {
     public Command changeRotations(double rotations) {
         return runOnce(() -> goalRotations += rotations);
     }
+
+    
 }

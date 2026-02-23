@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -187,8 +188,14 @@ public class RobotContainer {
         // primaryController.povDown().onTrue(flywheel.changeSystem());
 
             // Indexer and Kicker motors controlled by the second controller
-            //secondaryController.getLeftX().onTrue(indexer.startIndexer());
-            //secondaryController.getRightX().onTrue(indexer.stopIndexer());
+
+            if (secondaryController.getRightX() > IndexerConstants.GUARD_BAND) {
+                indexer.startIndexer();
+            } else if (secondaryController.getRightX() < IndexerConstants.GUARD_BAND * -1) {
+                indexer.startReverseIndexer();
+            } else {
+                indexer.stopIndexer();
+            }
         
         // primaryController.rightBumper().onTrue(hood.setAngle(4));
         // primaryController.leftBumper().onTrue(hood.setAngle(0));

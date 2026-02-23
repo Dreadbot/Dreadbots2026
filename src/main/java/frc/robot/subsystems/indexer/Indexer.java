@@ -30,6 +30,10 @@ public class Indexer extends SubsystemBase {
         return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
     }
 
+    public Command startReverseIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1));
+    }
+
     public Command stopIndexer() {
         return runOnce(() -> io.runSpindexerVoltage(0.0));
     }

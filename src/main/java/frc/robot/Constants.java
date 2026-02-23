@@ -115,6 +115,7 @@ public class Constants {
         public static final double KICKER_VOLTAGE = 0.5;
         public static final int SPINDEXER_MOTOR_ID = 1;
         public static final int KICKER_MOTOR_ID = 2;
+        public static final double GUARD_BAND = 0.05;
     }
 
     public static class FlywheelConstants {
