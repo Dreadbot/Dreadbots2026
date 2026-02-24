@@ -42,8 +42,8 @@ public class RobotContainer {
     private final Vision vision;
     private final List<VisionCamera> cameras;
     private final Turret turret;
-    private final Flywheel flywheel;
-    private final Hood hood;
+    // private final Flywheel flywheel;
+    // private final Hood hood;
     private final Indexer indexer;
     // private final AutoAim autoAim;
     private final Climb climb;
@@ -53,113 +53,103 @@ public class RobotContainer {
         switch (Constants.currentMode) {
             case REAL:
                 drive = new Drive(
-                    new GyroIONavX(),
-                    new ModuleIOSpark(0),
-                    new ModuleIOSpark(1),
-                    new ModuleIOSpark(2),
-                    new ModuleIOSpark(3)
-                );
+                        new GyroIONavX(),
+                        new ModuleIOSpark(0),
+                        new ModuleIOSpark(1),
+                        new ModuleIOSpark(2),
+                        new ModuleIOSpark(3));
                 cameras = List.of(
-                    new VisionCamera(new VisionIOCamera(VisionConstants.frontRightCameraName), 0),
-                    new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
-                    new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2)
-                );
+                        new VisionCamera(new VisionIOCamera(VisionConstants.frontRightCameraName), 0),
+                        new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
+                        new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
-                CameraServer.startAutomaticCapture(0);
 
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                hood = new Hood(new HoodIOSparkMax());
+                // flywheel = new Flywheel(new FlywheelIOSparkFlex());
+                // hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
+
                 break;
             case SIM:
                 drive = new Drive(
-                    new GyroIO() {},
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim(),
-                    new ModuleIOSim()
-                );
+                        new GyroIO() {
+                        },
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new ModuleIOSim());
                 cameras = List.of(
-                    new VisionCamera(new VisionIOSim(drive::getPose), 0),
-                    new VisionCamera(new VisionIOSim(drive::getPose), 1),
-                    new VisionCamera(new VisionIOSim(drive::getPose), 2)
-                );
+                        new VisionCamera(new VisionIOSim(drive::getPose), 0),
+                        new VisionCamera(new VisionIOSim(drive::getPose), 1),
+                        new VisionCamera(new VisionIOSim(drive::getPose), 2));
+
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSim(), drive);
-                flywheel = new Flywheel(new FlywheelIOSim());
-                hood = new Hood(new HoodIOSim());
+                // flywheel = new Flywheel(new FlywheelIOSim());
+                // hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
                 climb = new Climb(new ClimbIOSim());
+
                 break;
             default:
-               drive = new Drive(
-                    new GyroIONavX(),
-                    new ModuleIOSpark(0),
-                    new ModuleIOSpark(1),
-                    new ModuleIOSpark(2),
-                    new ModuleIOSpark(3)
-                );
+                drive = new Drive(
+                        new GyroIONavX(),
+                        new ModuleIOSpark(0),
+                        new ModuleIOSpark(1),
+                        new ModuleIOSpark(2),
+                        new ModuleIOSpark(3));
                 cameras = List.of(
-                    new VisionCamera(new VisionIOCamera(VisionConstants.frontRightCameraName), 0),
-                    new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
-                    new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2)
-                );
+                        new VisionCamera(new VisionIOCamera(VisionConstants.frontRightCameraName), 0),
+                        new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
+                        new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                hood = new Hood(new HoodIOSparkMax());
+                // flywheel = new Flywheel(new FlywheelIOSparkFlex());
+                // hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
+
                 break;
         }
+        configureButtonBindings();
     }
 
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
         drive.setDefaultCommand(
-            DriveCommands.joystickDrive(
-                drive,
-                () -> -primaryController.getLeftY(),
-                () -> -primaryController.getLeftX(),
-                () -> -primaryController.getRightX()
-            )
-        );
+                DriveCommands.joystickDrive(
+                        drive,
+                        () -> -primaryController.getLeftY(),
+                        () -> -primaryController.getLeftX(),
+                        () -> -primaryController.getRightX()));
 
         primaryController.start().onTrue(
-            Commands.runOnce(
-                () -> drive.setPose(
-                    new Pose2d(
-                        vision.getLastVisionPose().getTranslation(),
-                        new Rotation2d()
-                    )
-                ),
-                drive
-            ).ignoringDisable(true)
-        );
+                Commands.runOnce(
+                        () -> drive.setPose(
+                                new Pose2d(
+                                        vision.getLastVisionPose().getTranslation(),
+                                        new Rotation2d())),
+                        drive).ignoringDisable(true));
 
         // autoAim.setDefaultCommand(
-        //     autoAim.trackTarget()
+        // autoAim.trackTarget()
         // );
 
         // Subsystem button bindings used for testing
         // Can be changed or refit for actual use
         // These were all used seperately so buttons may be used more than once
 
-        // Shooter controls
-        primaryController.rightBumper().whileTrue(indexer.runBoth());
-
         // Turret Angle Controls
-        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
-        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        //primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+//         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+//         primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
+//         primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+//         primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
-        //primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
@@ -189,15 +179,15 @@ public class RobotContainer {
         // primaryController.povRight().onTrue(flywheel.changeTarget("right"));
         // primaryController.povDown().onTrue(flywheel.changeSystem());
 
-            // Indexer and Kicker motors controlled by the second controller
+        // Indexer and Kicker motors controlled by the second controller
 
-            if (secondaryController.getRightX() > IndexerConstants.GUARD_BAND) {
-                indexer.startIndexer();
-            } else if (secondaryController.getRightX() < IndexerConstants.GUARD_BAND * -1) {
-                indexer.startReverseIndexer();
-            } else {
-                indexer.stopIndexer();
-            }
+        if (secondaryController.getRightX() > IndexerConstants.GUARD_BAND) {
+            indexer.startIndexer();
+        } else if (secondaryController.getRightX() < IndexerConstants.GUARD_BAND * -1) {
+            indexer.startReverseIndexer();
+        } else {
+            indexer.stopIndexer();
+        }
         
         // primaryController.rightBumper().onTrue(hood.setAngle(4));
         // primaryController.leftBumper().onTrue(hood.setAngle(0));
@@ -217,16 +207,13 @@ public class RobotContainer {
         // Hood
         secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
         //secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
-    
+   
         // Turret Presets
         secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
         secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
         secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
         secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
-        // Pass Track
-        secondaryController.b().onTrue(turret.setAngleRad(Constants.TurretConstants.PASS_ANGLE));
-        // Hub Track
-        secondaryController.a().onTrue(turret.setAngleRad(Constants.TurretConstants.HUB_ANGLE));
+        
         // Brace
         primaryController.a().onTrue(drive.BraceCommand());
     }
@@ -241,6 +228,6 @@ public class RobotContainer {
     }
 
     public void teleopInit() {
-        
+
     }
 }

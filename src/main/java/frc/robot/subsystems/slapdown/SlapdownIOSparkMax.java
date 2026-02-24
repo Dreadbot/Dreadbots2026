@@ -3,12 +3,13 @@ package frc.robot.subsystems.slapdown;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.SlapdownConstants;
@@ -21,18 +22,21 @@ public class SlapdownIOSparkMax implements SlapdownIO {
     private final DutyCycleEncoder absoluteEncoder;
 
     public SlapdownIOSparkMax() {
-        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownConstants.SLAPDOWN_DUTY_CYCLE_ENCODER), 360, 0); //Update code with the 0 and max angle
+        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownConstants.SLAPDOWN_DUTY_CYCLE_ENCODER), 360.0, 0.0); //Update code with the 0 and max angle
         absoluteEncoder.setAssumedFrequency(SlapdownConstants.ENCODER_FREQUENCY);
+        absoluteEncoder.setInverted(true);
         this.intakeMotor = new SparkMax(SlapdownConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
         this.pivotMotor = new SparkFlex(SlapdownConstants.PIVOT_MOTOR_ID, MotorType.kBrushless);
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
         intakeConfig
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(true);
         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         pivotConfig
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kBrake)
+            .inverted(false);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -49,7 +53,7 @@ public class SlapdownIOSparkMax implements SlapdownIO {
             inputs.pivotCurrentAmps = pivotMotor.getOutputCurrent();
             inputs.pivotTemperature = pivotMotor.getMotorTemperature();
 
-            inputs.pivotRotationDegrees = absoluteEncoder.get();
+            //inputs.pivotRotationDegrees = absoluteEncoder.get();
         }
 
         @Override

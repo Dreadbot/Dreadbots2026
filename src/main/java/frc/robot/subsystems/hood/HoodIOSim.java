@@ -21,9 +21,8 @@ public class HoodIOSim implements HoodIO {
     @Override
     public void updateInputs(HoodIOInputs inputs) {
         hood.update(0.02);
-        inputs.RPM = hood.getAngularVelocityRPM();
         inputs.appliedVolts = hood.getInputVoltage();
-        inputs.rotations = hood.getAngularPositionRad() / (2 * Math.PI);
+        inputs.rotations = hood.getAngularPositionRotations();
     }
 
     @Override 

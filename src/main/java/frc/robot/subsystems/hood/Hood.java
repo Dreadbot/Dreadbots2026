@@ -5,16 +5,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 import frc.robot.Constants.HoodConstants;
 
 public class Hood extends SubsystemBase {
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.15, 0, 0);
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.09, 0.15, 5.35, 0.15);
+    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, 0, 0);
     
     private double goalRotations = 0.0;
     private boolean calibrating = false;
@@ -39,13 +38,14 @@ public class Hood extends SubsystemBase {
         }
 
         double pidVoltage = pid.calculate(inputs.rotations, goalRotations);
-        double feedforwardVoltage = feedforward.calculate(inputs.RPM);
         if (pidVoltage > 0 && inputs.rotations >= HoodConstants.MAX_ROTATIONS) {
             pidVoltage = 0;
         }
+        pidVoltage = MathUtil.clamp(pidVoltage, -HoodConstants.MAX_VOLTAGE, HoodConstants.MAX_VOLTAGE);
+
         if (inputs.lowerSwitch) {
             io.setPosition(0);
-            goalRotations = 0;
+            //goalRotations = 0;
             if (pidVoltage < 0) pidVoltage = 0;
         }
         io.setVoltage(pidVoltage);
@@ -53,10 +53,6 @@ public class Hood extends SubsystemBase {
 
     public double getRotations() {
         return inputs.rotations;
-    }
-
-    public double getRPM() {
-        return inputs.RPM;
     }
 
     public Command calibrate() {
