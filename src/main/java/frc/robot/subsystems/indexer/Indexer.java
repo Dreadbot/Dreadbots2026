@@ -16,6 +16,7 @@ public class Indexer extends SubsystemBase {
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.0);
     private IndexerIO io;
     private double kickerTargetRPM = 0;
+    private double storedVoltage = IndexerConstants.KICKER_VOLTAGE;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
@@ -41,7 +42,7 @@ public class Indexer extends SubsystemBase {
         double currentRPM = kickerInputs.RPM;
         double output = feedforward.calculate(kickerTargetRPM);
         double pidOutput = pid.calculate(currentRPM, kickerTargetRPM);
-        
+
         if (kickerTargetRPM > 0) {
             io.runKickerVoltage(pidOutput + output);
         } else {
@@ -50,12 +51,38 @@ public class Indexer extends SubsystemBase {
         }
     }
 
-    public void startKicker() {
-        kickerTargetRPM = IndexerConstants.KICKER_RPM; 
+    public Command runBoth() {
+        return startEnd(() -> {
+            startIndexer();
+            startKicker();
+        }, 
+        () -> {
+            stopIndexer();
+            stopKicker();
+        });
     }
 
-    public void stopKicker() {
-        kickerTargetRPM = 0.0;
+    public Command startIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
+    }
+
+    public Command startReverseIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1));
+    }
+
+    public Command stopIndexer() {
+        return runOnce(() -> io.runSpindexerVoltage(0.0));
+    }
+    
+    public Command startKicker() {
+        return runOnce(() -> {
+            kickerTargetRPM = IndexerConstants.KICKER_RPM;
+        });
+    
+    public Command stopKicker() {
+         return runOnce(() -> {
+            kickerTargetRPM = 0.0;
+        });
     }
 
     // The increase / decrease kicker speed/volts commands (intended for every click)

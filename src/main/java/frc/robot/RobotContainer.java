@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -117,11 +118,8 @@ public class RobotContainer {
         configureButtonBindings();
     }
 
-    // This configures the button's bindings for the controller with the system for
-    // the robot
+    // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
-        VisionUtil.getApriltagPose(1);
-
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
@@ -146,42 +144,78 @@ public class RobotContainer {
         // These were all used seperately so buttons may be used more than once
 
         // Turret Angle Controls
-        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
-        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+//         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+//         primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
+//         primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+//         primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
         // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
         // Climb controls
-        // primaryController.y().whileTrue(climb.testRaise());
-        // primaryController.a().whileTrue(climb.testLower());
+        //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
+        //primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
+        primaryController.leftBumper().onTrue(climb.climb());
 
-        // Flywheel Controles
-        // secondaryController.a().onTrue(flywheel.setRPM(3000));
+       
+        // Flywheel controls
+        secondaryController.a().onTrue(flywheel.setRPM(3000));
+        // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
+        
         // secondaryController.b().onTrue(flywheel.setRPM(0));
-        // secondaryController.y().onTrue(flywheel.changeRPM(100));
-        // secondaryController.x().onTrue(flywheel.changeRPM(-100));
+        secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
+        
+        secondaryController.y().onTrue(flywheel.changeRPM(100));
+        secondaryController.x().onTrue(flywheel.changeRPM(-100));
+
+        // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
+        // primaryController.y().onTrue(flywheel.changeRPM(100));
+        // primaryController.x().onTrue(flywheel.changeRPM(-100));
+        // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
+        // primaryController.rightTrigger().onTrue(flywheel.changeOrderOfMagnitude(-1));
+        // primaryController.leftBumper().onTrue(flywheel.changeNumber(-1));
+        // primaryController.rightBumper().onTrue(flywheel.changeNumber(1));
+        // primaryController.povLeft().onTrue(flywheel.changeTarget("left"));
+        // primaryController.povUp().onTrue(flywheel.changeTarget("up"));
+        // primaryController.povRight().onTrue(flywheel.changeTarget("right"));
+        // primaryController.povDown().onTrue(flywheel.changeSystem());
 
         // Indexer and Kicker motors controlled by the second controller
-        // secondaryController.povLeft().onTrue(Commands.runOnce(() -> indexer.startIndexer()));
-        // secondaryController.povRight().onTrue(Commands.runOnce(() -> indexer.stopIndexer()));
-        // secondaryController.povDown().onTrue(Commands.runOnce(() -> indexer.startKicker()));
-        // secondaryController.povUp().onTrue(Commands.runOnce(() -> indexer.stopKicker()));
 
+        if (secondaryController.getRightX() > IndexerConstants.GUARD_BAND) {
+            indexer.startIndexer();
+        } else if (secondaryController.getRightX() < IndexerConstants.GUARD_BAND * -1) {
+            indexer.startReverseIndexer();
+        } else {
+            indexer.stopIndexer();
+        }
+        
         // primaryController.rightBumper().onTrue(hood.setAngle(4));
         // primaryController.leftBumper().onTrue(hood.setAngle(0));
         // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.changeAngle(0.1));
         // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
-        // primaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        // primaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        // primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        // primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        //Slapdown
+        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
 
-        // // Double check with test
-        // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
-        // secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
+        // Double check with test
+        secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
+        secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
+
+        // Hood
+        secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
+        //secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
+   
+        // Turret Presets
+        secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
+        secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
+        secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
+        secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
+        
+        // Brace
+        primaryController.a().onTrue(drive.BraceCommand());
     }
 
     public Command getAutonomousCommand() {
