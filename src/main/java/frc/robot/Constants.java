@@ -34,12 +34,13 @@ public class Constants {
 
   public static class HoodConstants {
     public static final int MOTOR_ID = 15;
-    public static final int LOWER_LIMIT_SWITCH_ID = 1;
+    public static final int LOWER_LIMIT_SWITCH_ID = 3;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
-    public static final double HOOD_KP = 0.1;
-    public static final double MAX_VOLTAGE = 0.5;
-    public static final double MAX_ROTATIONS = 50; // Placeholder value
+    public static final double HOOD_KP = 0.7;
+    public static final double MAX_VOLTAGE = 2.0;
+    public static final double MAX_ROTATIONS = 10.8;
+    public static final double HOOD_KS = 0.75;
   }
 
   public static final class AutoAlignConstants {

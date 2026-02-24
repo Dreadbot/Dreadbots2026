@@ -41,14 +41,19 @@ public class Hood extends SubsystemBase {
         if (pidVoltage > 0 && inputs.rotations >= HoodConstants.MAX_ROTATIONS) {
             pidVoltage = 0;
         }
+        if (Math.abs(pidVoltage) > 1e-2) {
+            pidVoltage += Math.copySign(HoodConstants.HOOD_KS, pidVoltage);
+        }
         pidVoltage = MathUtil.clamp(pidVoltage, -HoodConstants.MAX_VOLTAGE, HoodConstants.MAX_VOLTAGE);
 
         if (inputs.lowerSwitch) {
             io.setPosition(0);
-            //goalRotations = 0;
             if (pidVoltage < 0) pidVoltage = 0;
         }
         io.setVoltage(pidVoltage);
+
+        Logger.recordOutput("Hood/Voltage", pidVoltage);
+        Logger.recordOutput("Hood/Setpoint", goalRotations);
     }
 
     public double getRotations() {
@@ -71,6 +76,4 @@ public class Hood extends SubsystemBase {
     public Command changeRotations(double rotations) {
         return runOnce(() -> goalRotations += rotations);
     }
-
-    
 }

@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,13 +42,13 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private final List<VisionCamera> cameras;
-    private final Turret turret;
+    //private final Turret turret;
     // private final Flywheel flywheel;
-    // private final Hood hood;
-    private final Indexer indexer;
+    private final Hood hood;
+    //private final Indexer indexer;
     // private final AutoAim autoAim;
-    private final Climb climb;
-    private final Slapdown slapdown;
+    //private final Climb climb;
+    //private final Slapdown slapdown;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -63,13 +64,13 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                turret = new Turret(new TurretIOSparkMax(), drive);
+                //turret = new Turret(new TurretIOSparkMax(), drive);
 
                 // flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
-                indexer = new Indexer(new IndexerIOSparkFlex());
-                slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
+                hood = new Hood(new HoodIOSparkMax());
+                // indexer = new Indexer(new IndexerIOSparkFlex());
+                // slapdown = new Slapdown(new SlapdownIOSparkMax());
+                // climb = new Climb(new ClimbIOSparkFlex());
 
                 break;
             case SIM:
@@ -86,12 +87,12 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOSim(drive::getPose), 2));
 
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                turret = new Turret(new TurretIOSim(), drive);
+                //turret = new Turret(new TurretIOSim(), drive);
                 // flywheel = new Flywheel(new FlywheelIOSim());
-                // hood = new Hood(new HoodIOSim());
-                indexer = new Indexer(new IndexerIOSim());
-                slapdown = new Slapdown(new SlapdownIOSim());
-                climb = new Climb(new ClimbIOSim());
+                hood = new Hood(new HoodIOSim());
+                // indexer = new Indexer(new IndexerIOSim());
+                // slapdown = new Slapdown(new SlapdownIOSim());
+                // climb = new Climb(new ClimbIOSim());
 
                 break;
             default:
@@ -106,12 +107,12 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                turret = new Turret(new TurretIOSparkMax(), drive);
+                //turret = new Turret(new TurretIOSparkMax(), drive);
                 // flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
-                indexer = new Indexer(new IndexerIOSparkFlex());
-                slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
+                hood = new Hood(new HoodIOSparkMax());
+                // indexer = new Indexer(new IndexerIOSparkFlex());
+                // slapdown = new Slapdown(new SlapdownIOSparkMax());
+                // climb = new Climb(new ClimbIOSparkFlex());
 
                 break;
         }
@@ -181,35 +182,34 @@ public class RobotContainer {
 
         // Indexer and Kicker motors controlled by the second controller
 
-        if (secondaryController.getRightX() > IndexerConstants.DEAD_BAND) {
-            indexer.startIndexer();
-        } else if (secondaryController.getRightX() < IndexerConstants.DEAD_BAND * -1) {
-            indexer.startReverseIndexer();
-        } else {
-            indexer.stopIndexer();
-        }
+        // if (secondaryController.getRightX() > IndexerConstants.DEAD_BAND) {
+        //     indexer.startIndexer();
+        // } else if (secondaryController.getRightX() < IndexerConstants.DEAD_BAND * -1) {
+        //     indexer.startReverseIndexer();
+        // } else {
+        //     indexer.stopIndexer();
+        // }
         
-        // primaryController.rightBumper().onTrue(hood.setAngle(4));
-        // primaryController.leftBumper().onTrue(hood.setAngle(0));
-        // primaryController.povLeft().onTrue(hood.calibrate());
-        // primaryController.povUp().onTrue(hood.changeAngle(0.1));
-        // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
+        primaryController.povLeft().onTrue(hood.calibrate());
+        primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
+        primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
+        primaryController.povDown().onTrue(hood.setRotations(0.0));
         //Slapdown
-        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        // secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        // secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        // primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        // primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
 
-        // Double check with test
-        secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
-        secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
+        // // Double check with test
+        // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
+        // secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // Hood
         // secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
         // secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
    
         // Turret Presets
-        secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
+        //secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
         // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
         // secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
         // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
