@@ -27,7 +27,7 @@ public class Turret extends SubsystemBase {
         this.io = io;
         this.voltage = 0;
         io.updateInputs(inputs);
-        pid.setTolerance(Units.degreesToRadians(5));
+        pid.setTolerance(Units.degreesToRadians(1));
         this.drive = drive;
     }
 
@@ -37,15 +37,16 @@ public class Turret extends SubsystemBase {
         Logger.processInputs("Turret", inputs);
 
         double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
+        double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
         
-        voltage = pid.calculate(inputs.turretRotationRad, wrappedSetpoint);
+        voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
         if (Math.abs(voltage) > 1e-5) {
             voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
         }
         
-        if (inputs.turretRotationRad >= TurretConstants.MAX_ANGLE_RAD && voltage > 0) {
+        if (turretRotationRelative >= TurretConstants.MAX_ANGLE_RAD && voltage > 0) {
             voltage = 0.0;
-        } else if (inputs.turretRotationRad <= TurretConstants.MIN_ANGLE_RAD && voltage < 0) {
+        } else if (turretRotationRelative <= TurretConstants.MIN_ANGLE_RAD && voltage < 0) {
             voltage = 0.0;
         }
 
@@ -53,18 +54,20 @@ public class Turret extends SubsystemBase {
         io.runTurretVoltage(voltage);
 
         Logger.recordOutput("Turret/SetpointRelativeRadians", wrappedSetpoint);
-        Logger.recordOutput("Turret/CurrentPositionRadians", inputs.turretRotationRad);
-        Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - inputs.turretRotationRad));
+        Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
+        Logger.recordOutput("Turret/CurrentTurretRotationRadians", turretRotationRelative);
+        Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
         Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
         Logger.recordOutput("Turret/Voltage", voltage);
         Logger.recordOutput("Turret/FieldPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
                 drive.getPose()), 
-                new Rotation2d(inputs.turretRotationRad).plus(drive.getPose().getRotation().plus(new Rotation2d(TurretConstants.TURRET_ZERO_ROBOT_RELATIVE)))));
+                new Rotation2d(inputs.turretRotationRad).plus(drive.getPose().getRotation())));
         Logger.recordOutput("Turret/SetpointPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
                 drive.getPose()), 
-                new Rotation2d(wrappedSetpoint).plus(drive.getPose().getRotation().plus(new Rotation2d(TurretConstants.TURRET_ZERO_ROBOT_RELATIVE)))));
+                new Rotation2d(wrappedSetpoint).plus(drive.getPose().getRotation())));
+        Logger.recordOutput("turretRelativeRotation", robotRelativeToTurretRelative(inputs.turretRotationRad));
     }   
     
     public Command setAngleRad(double angleRad) {

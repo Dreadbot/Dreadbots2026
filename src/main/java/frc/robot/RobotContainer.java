@@ -40,7 +40,7 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private final List<VisionCamera> cameras;
-    // private final Turret turret;
+    private final Turret turret;
     // private final Flywheel flywheel;
     // private final Hood hood;
     private final Indexer indexer;
@@ -62,7 +62,7 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                // turret = new Turret(new TurretIOSparkMax(), drive);
+                turret = new Turret(new TurretIOSparkMax(), drive);
 
                 // flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 // hood = new Hood(new HoodIOSparkMax());
@@ -85,7 +85,7 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOSim(drive::getPose), 2));
 
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                // turret = new Turret(new TurretIOSim(), drive);
+                turret = new Turret(new TurretIOSim(), drive);
                 // flywheel = new Flywheel(new FlywheelIOSim());
                 // hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
@@ -105,7 +105,7 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                // turret = new Turret(new TurretIOSparkMax(), drive);
+                turret = new Turret(new TurretIOSparkMax(), drive);
                 // flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 // hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
@@ -146,16 +146,16 @@ public class RobotContainer {
         // These were all used seperately so buttons may be used more than once
 
         // Turret Angle Controls
-        // primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-        // primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
-        // primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        // primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
+        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
         // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
         // Climb controls
-        primaryController.y().whileTrue(climb.testRaise());
-        primaryController.a().whileTrue(climb.testLower());
+        // primaryController.y().whileTrue(climb.testRaise());
+        // primaryController.a().whileTrue(climb.testLower());
 
         // Flywheel Controles
         // secondaryController.a().onTrue(flywheel.setRPM(3000));
@@ -174,10 +174,10 @@ public class RobotContainer {
         // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.changeAngle(0.1));
         // primaryController.povDown().onTrue(hood.changeAngle(-0.1));
-        primaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        primaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        // primaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        // primaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        // primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        // primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // // Double check with test
         // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());

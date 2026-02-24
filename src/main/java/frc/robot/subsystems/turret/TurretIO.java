@@ -14,8 +14,6 @@ public interface TurretIO {
         //Rotating By Degrees
         public double turretRotationRad = 0.0;
         
-        //RPM
-        public double turretRPM = 0.0;
         public double absolutePosition = 0.0;
     }
 

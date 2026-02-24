@@ -31,11 +31,11 @@ public class TurretIOSparkMax implements TurretIO {
         this.volts = 0.0;
         
         SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kBrake);
+        config.idleMode(IdleMode.kCoast);
 
         turretMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        double absoluteRad = MathUtil.angleModulus(absoluteEncoder.get() - TurretConstants.TURRET_ENCODER_OFFSET_RAD);
+        double absoluteRad = MathUtil.angleModulus(absoluteEncoder.get() - Math.PI - TurretConstants.TURRET_ENCODER_OFFSET_RAD);
         System.out.println("ABSOLUTE ENCODER" + absoluteRad);
         double motorRotations = Units.radiansToRotations(absoluteRad) * TurretConstants.GEAR_REDUCTION;
         turretMotor.getEncoder().setPosition(motorRotations);
@@ -46,6 +46,7 @@ public class TurretIOSparkMax implements TurretIO {
         inputs.turretAppliedVolts = turretMotor.getAppliedOutput() * turretMotor.getBusVoltage();
         inputs.turretCurrentAmps = turretMotor.getOutputCurrent();
         inputs.turretRotationRad = Units.rotationsToRadians(turretMotor.getEncoder().getPosition()) / TurretConstants.GEAR_REDUCTION;
+        inputs.absolutePosition = absoluteEncoder.get() - Math.PI;
     }
 
     @Override
