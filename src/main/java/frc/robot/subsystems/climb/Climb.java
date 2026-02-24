@@ -78,22 +78,26 @@ public class Climb extends SubsystemBase {
     //     );
     // }
 
-    public Command testRaise() {
-        return Commands.startEnd(
-            () -> io.runVoltage(ClimbConstants.RAISE_VOLTAGE),
-            () -> io.runVoltage(0.0),
-            this);
-    public Command lowerClimbArm() {
-        return Commands.runOnce(() -> {
-            if (lowerSwitch.get()) loweringArm = true;
-        });
-    }
+    // public Command lowerClimbArm() {
+    //     return Commands.runOnce(() -> {
+    //         if (lowerSwitch.get()) loweringArm = true;
+    //     });
+    // }
 
-    public Command raiseRobotLevelOne() {
-        return Commands.runOnce (() -> {
-            if (lowerSwitch.get()) goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
-        });
-    }
+    // public Command raiseRobotLevelOne() {
+    //     return Commands.runOnce (() -> {
+    //         if (lowerSwitch.get()) goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
+    //     });
+    // }
+
+    // public Command climb() {
+    //     return Commands.runOnce(() -> {
+    //         climbing = !climbing;
+    //         if (climbing) raisingArm = true;
+    //         else raisingArm = false;
+    //         loweringArm = false;
+    //     });
+    // }
 
     public Command testLower() {
         return Commands.startEnd(
@@ -102,14 +106,13 @@ public class Climb extends SubsystemBase {
             this);
     }
 
-    public Command climb() {
-        return Commands.runOnce(() -> {
-            climbing = !climbing;
-            if (climbing) raisingArm = true;
-            else raisingArm = false;
-            loweringArm = false;
-        });
+    public Command testRaise() {
+        return Commands.startEnd(
+            () -> io.runVoltage(ClimbConstants.RAISE_VOLTAGE),
+            () -> io.runVoltage(0.0),
+            this);
     }
+    
 
     // Updates the inputs of ClimbIO perodic.
     // ClimbIO takes the inputs and outputs of Climb from the contorller

@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -16,21 +17,10 @@ public class Indexer extends SubsystemBase {
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.0);
     private IndexerIO io;
     private double kickerTargetRPM = 0;
-    private double storedVoltage = IndexerConstants.KICKER_VOLTAGE;
 
     // gets io from IndexerIO.java
     public Indexer(IndexerIO io) {
         this.io = io;
-    }
-
-
-    // runs the intake command
-    public void startIndexer() {
-        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
-    }
-
-    public void stopIndexer() {
-        io.runSpindexerVoltage(0.0);
     }
 
     @Override
@@ -51,17 +41,6 @@ public class Indexer extends SubsystemBase {
         }
     }
 
-    public Command runBoth() {
-        return startEnd(() -> {
-            startIndexer();
-            startKicker();
-        }, 
-        () -> {
-            stopIndexer();
-            stopKicker();
-        });
-    }
-
     public Command startIndexer() {
         return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
     }
@@ -78,7 +57,7 @@ public class Indexer extends SubsystemBase {
         return runOnce(() -> {
             kickerTargetRPM = IndexerConstants.KICKER_RPM;
         });
-    
+    }
     public Command stopKicker() {
          return runOnce(() -> {
             kickerTargetRPM = 0.0;

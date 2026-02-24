@@ -154,18 +154,18 @@ public class RobotContainer {
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
         //primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
-        primaryController.leftBumper().onTrue(climb.climb());
+        //primaryController.leftBumper().onTrue(climb.climb());
 
        
         // Flywheel controls
-        secondaryController.a().onTrue(flywheel.setRPM(3000));
-        // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
+        // secondaryController.a().onTrue(flywheel.setRPM(3000));
+        // // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
         
-        // secondaryController.b().onTrue(flywheel.setRPM(0));
-        secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
+        // // secondaryController.b().onTrue(flywheel.setRPM(0));
+        // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
         
-        secondaryController.y().onTrue(flywheel.changeRPM(100));
-        secondaryController.x().onTrue(flywheel.changeRPM(-100));
+        // secondaryController.y().onTrue(flywheel.changeRPM(100));
+        // secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
         // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
         // primaryController.y().onTrue(flywheel.changeRPM(100));
@@ -181,9 +181,9 @@ public class RobotContainer {
 
         // Indexer and Kicker motors controlled by the second controller
 
-        if (secondaryController.getRightX() > IndexerConstants.GUARD_BAND) {
+        if (secondaryController.getRightX() > IndexerConstants.DEAD_BAND) {
             indexer.startIndexer();
-        } else if (secondaryController.getRightX() < IndexerConstants.GUARD_BAND * -1) {
+        } else if (secondaryController.getRightX() < IndexerConstants.DEAD_BAND * -1) {
             indexer.startReverseIndexer();
         } else {
             indexer.stopIndexer();
@@ -205,14 +205,14 @@ public class RobotContainer {
         secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // Hood
-        secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
-        //secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
+        // secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
+        // secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
    
         // Turret Presets
         secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
-        secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
-        secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
-        secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
+        // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
+        // secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
+        // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
         
         // Brace
         primaryController.a().onTrue(drive.BraceCommand());

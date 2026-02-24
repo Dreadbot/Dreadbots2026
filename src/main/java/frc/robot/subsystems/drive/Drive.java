@@ -387,11 +387,11 @@ public class Drive extends SubsystemBase {
           gyroInputs.yawVelocityRadPerSec);
   }
   public Command BraceCommand() {
-        return Commands.runOnce(() -> {
-          final Rotation2d frontLeftZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(1.11 + Math.PI);
-          final Rotation2d frontRightZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(-2.461 + Math.PI);
-          final Rotation2d backLeftZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(3.092 + Math.PI);
-          final Rotation2d backRightZeroRotation = new Rotation2d(Math.toRadians(45)); //new Rotation2d(2.155);
-                });
-    }
+    return Commands.runOnce(() -> {
+      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
+      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
+      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
+      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
+    }, this);
+  }
 }
