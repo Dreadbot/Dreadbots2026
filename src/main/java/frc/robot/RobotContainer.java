@@ -44,8 +44,8 @@ public class RobotContainer {
     private final List<VisionCamera> cameras;
     //private final Turret turret;
     // private final Flywheel flywheel;
-    private final Hood hood;
-    //private final Indexer indexer;
+    //private final Hood hood;
+    private final Indexer indexer;
     // private final AutoAim autoAim;
     //private final Climb climb;
     //private final Slapdown slapdown;
@@ -67,8 +67,8 @@ public class RobotContainer {
                 //turret = new Turret(new TurretIOSparkMax(), drive);
 
                 // flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                hood = new Hood(new HoodIOSparkMax());
-                // indexer = new Indexer(new IndexerIOSparkFlex());
+                // hood = new Hood(new HoodIOSparkMax());
+                indexer = new Indexer(new IndexerIOSparkFlex());
                 // slapdown = new Slapdown(new SlapdownIOSparkMax());
                 // climb = new Climb(new ClimbIOSparkFlex());
 
@@ -89,8 +89,8 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 //turret = new Turret(new TurretIOSim(), drive);
                 // flywheel = new Flywheel(new FlywheelIOSim());
-                hood = new Hood(new HoodIOSim());
-                // indexer = new Indexer(new IndexerIOSim());
+                // hood = new Hood(new HoodIOSim());
+                indexer = new Indexer(new IndexerIOSim());
                 // slapdown = new Slapdown(new SlapdownIOSim());
                 // climb = new Climb(new ClimbIOSim());
 
@@ -109,8 +109,8 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 //turret = new Turret(new TurretIOSparkMax(), drive);
                 // flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                hood = new Hood(new HoodIOSparkMax());
-                // indexer = new Indexer(new IndexerIOSparkFlex());
+                // hood = new Hood(new HoodIOSparkMax());
+                indexer = new Indexer(new IndexerIOSparkFlex());
                 // slapdown = new Slapdown(new SlapdownIOSparkMax());
                 // climb = new Climb(new ClimbIOSparkFlex());
 
@@ -182,18 +182,17 @@ public class RobotContainer {
 
         // Indexer and Kicker motors controlled by the second controller
 
-        // if (secondaryController.getRightX() > IndexerConstants.DEAD_BAND) {
-        //     indexer.startIndexer();
-        // } else if (secondaryController.getRightX() < IndexerConstants.DEAD_BAND * -1) {
-        //     indexer.startReverseIndexer();
-        // } else {
-        //     indexer.stopIndexer();
-        // }
+        secondaryController.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
+                .onTrue(indexer.startIndexer().alongWith(indexer.startKicker()));
+        secondaryController.axisLessThan(4, -IndexerConstants.DEAD_BAND)
+                .onTrue(indexer.startReverseIndexer().alongWith(indexer.stopKicker()));
+        secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
+                .onFalse(indexer.stopIndexer().alongWith(indexer.stopKicker()));
         
-        primaryController.povLeft().onTrue(hood.calibrate());
-        primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
-        primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
-        primaryController.povDown().onTrue(hood.setRotations(0.0));
+        // primaryController.povLeft().onTrue(hood.calibrate());
+        // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
+        // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
+        // primaryController.povDown().onTrue(hood.setRotations(0.0));
         //Slapdown
         // secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
         // secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
