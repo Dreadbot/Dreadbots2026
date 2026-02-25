@@ -17,8 +17,8 @@ public class Constants {
     }
 
   public static class IndexerConstants {
-    public static final double SPINDEXER_VOLTAGE = 0.5;
-    public static final double KICKER_RPM = 200;
+    public static final double SPINDEXER_VOLTAGE = 12.0;
+    public static final double KICKER_RPM = 3000;
     public static final int SPINDEXER_MOTOR_ID = 11;
     public static final int KICKER_MOTOR_ID = 12;
     public static final double DEAD_BAND = 0.5;

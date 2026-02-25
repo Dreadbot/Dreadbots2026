@@ -42,8 +42,8 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private final List<VisionCamera> cameras;
-    //private final Turret turret;
-    // private final Flywheel flywheel;
+    private final Turret turret;
+    private final Flywheel flywheel;
     //private final Hood hood;
     private final Indexer indexer;
     // private final AutoAim autoAim;
@@ -64,9 +64,9 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                //turret = new Turret(new TurretIOSparkMax(), drive);
+                turret = new Turret(new TurretIOSparkMax(), drive);
 
-                // flywheel = new Flywheel(new FlywheelIOSparkFlex());
+                flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 // hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 // slapdown = new Slapdown(new SlapdownIOSparkMax());
@@ -87,8 +87,8 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOSim(drive::getPose), 2));
 
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                //turret = new Turret(new TurretIOSim(), drive);
-                // flywheel = new Flywheel(new FlywheelIOSim());
+                turret = new Turret(new TurretIOSim(), drive);
+                flywheel = new Flywheel(new FlywheelIOSim());
                 // hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 // slapdown = new Slapdown(new SlapdownIOSim());
@@ -107,8 +107,8 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                //turret = new Turret(new TurretIOSparkMax(), drive);
-                // flywheel = new Flywheel(new FlywheelIOSparkFlex());
+                turret = new Turret(new TurretIOSparkMax(), drive);
+                flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 // hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 // slapdown = new Slapdown(new SlapdownIOSparkMax());
@@ -145,10 +145,10 @@ public class RobotContainer {
         // These were all used seperately so buttons may be used more than once
 
         // Turret Angle Controls
-//         primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-//         primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
-//         primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-//         primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
+        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
         // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
@@ -159,10 +159,10 @@ public class RobotContainer {
 
        
         // Flywheel controls
-        // secondaryController.a().onTrue(flywheel.setRPM(3000));
+        secondaryController.a().onTrue(flywheel.setRPM(1500));
         // // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
         
-        // // secondaryController.b().onTrue(flywheel.setRPM(0));
+        secondaryController.b().onTrue(flywheel.setRPM(0));
         // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
         
         // secondaryController.y().onTrue(flywheel.changeRPM(100));
@@ -183,11 +183,11 @@ public class RobotContainer {
         // Indexer and Kicker motors controlled by the second controller
 
         secondaryController.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
-                .onTrue(indexer.startIndexer().alongWith(indexer.startKicker()));
+                .onTrue(indexer.startIndexer().andThen(indexer.startKicker()));
         secondaryController.axisLessThan(4, -IndexerConstants.DEAD_BAND)
-                .onTrue(indexer.startReverseIndexer().alongWith(indexer.stopKicker()));
+                .onTrue(indexer.startReverseIndexer().andThen(indexer.stopKicker()));
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
-                .onFalse(indexer.stopIndexer().alongWith(indexer.stopKicker()));
+                .onFalse(indexer.stopIndexer().andThen(indexer.stopKicker()));
         
         // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
@@ -214,7 +214,7 @@ public class RobotContainer {
         // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
         
         // Brace
-        primaryController.a().onTrue(drive.BraceCommand());
+        //primaryController.a().onTrue(drive.BraceCommand());
     }
 
     public Command getAutonomousCommand() {

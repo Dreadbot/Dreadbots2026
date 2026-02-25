@@ -13,7 +13,7 @@ public class Indexer extends SubsystemBase {
     // sets up private variables
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(0.001, 0.0, 0);
+    private final PIDController pid = new PIDController(0.006, 0.0, 0);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.0);
     private IndexerIO io;
     private double kickerTargetRPM = 0;
@@ -23,23 +23,26 @@ public class Indexer extends SubsystemBase {
         this.io = io;
     }
 
-    @Override
-    public void periodic() {
-        io.updateInputs(inputs, kickerInputs);
-        Logger.processInputs("Indexer", inputs);
-        Logger.processInputs("IndexerKicker", kickerInputs);
+    // @Override
+    // public void periodic() {
+    //     io.updateInputs(inputs, kickerInputs);
+    //     Logger.processInputs("Indexer", inputs);
+    //     Logger.processInputs("IndexerKicker", kickerInputs);
         
-        double currentRPM = kickerInputs.RPM;
-        double output = feedforward.calculate(kickerTargetRPM);
-        double pidOutput = pid.calculate(currentRPM, kickerTargetRPM);
+    //     double currentRPM = kickerInputs.RPM;
+    //     double output = feedforward.calculate(kickerTargetRPM);
+    //     double pidOutput = pid.calculate(currentRPM, kickerTargetRPM);
+    //     if (pidOutput < 0) {
+    //         pidOutput = 0;
+    //     }
 
-        if (kickerTargetRPM > 0) {
-            io.runKickerVoltage(pidOutput + output);
-        } else {
-            io.runKickerVoltage(0.0);
-            pid.reset(); 
-        }
-    }
+    //     if (kickerTargetRPM > 0) {
+    //         io.runKickerVoltage(pidOutput + output);
+    //     } else {
+    //         io.runKickerVoltage(0.0);
+    //         pid.reset(); 
+    //     }
+    // }
 
     public Command startIndexer() {
         return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
@@ -55,12 +58,12 @@ public class Indexer extends SubsystemBase {
     
     public Command startKicker() {
         return runOnce(() -> {
-            kickerTargetRPM = IndexerConstants.KICKER_RPM;
+            io.runKickerVoltage(12);//kickerTargetRPM = IndexerConstants.KICKER_RPM;
         });
     }
     public Command stopKicker() {
          return runOnce(() -> {
-            kickerTargetRPM = 0.0;
+            io.runKickerVoltage(0);//kickerTargetRPM = 0.0;
         });
     }
 
