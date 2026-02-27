@@ -29,6 +29,7 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         pid.setTolerance(Units.degreesToRadians(1));
         this.drive = drive;
+        setCorrectAngleRad(0.0);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Turret extends SubsystemBase {
         double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
         
         voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
-        if (Math.abs(voltage) > 1e-5) {
+        if (Math.abs(voltage) > 1e-2) {
             voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
         }
         

@@ -37,7 +37,7 @@ public class Constants {
     public static final int LOWER_LIMIT_SWITCH_ID = 3;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
-    public static final double HOOD_KP = 0.7;
+    public static final double HOOD_KP = 0.5;
     public static final double MAX_VOLTAGE = 2.0;
     public static final double MAX_ROTATIONS = 10.8;
     public static final double HOOD_KS = 0.75;
@@ -58,7 +58,7 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = 1.169;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = -1.25;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.661; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 6.0;
@@ -81,12 +81,12 @@ public class Constants {
 
   public static class ClimbConstants {
     public static final double RAISE_VOLTAGE = 2;
-    public static final double LOWER_VOLTAGE = -20;
+    public static final double LOWER_VOLTAGE = -12;
     public static final double LEVEL_ONE_CLIMB_POSITION = -1.0; // Placeholder value, should be calibrated based on the actual climb mechanism
     public static final double HOOK_DISENGAGE_POSITION = -2.0; // Value where the hooks go in
     public static final int MOTOR_ID = 17;
-    public static final int LOWER_LIMIT_SWITCH_ID = 2;
-    public static final int UPPER_LIMIT_SWITCH_ID = 3;
+    public static final int LOWER_LIMIT_SWITCH_ID = 6;
+    public static final int UPPER_LIMIT_SWITCH_ID = 7;
     public static final double PIDCONTROLLER_KP = 0.013;
     public static final double PIDCONTROLLER_KD = 0.00;
     public static final double ARMFEEDFORWARD_KS = 0.00;
@@ -98,7 +98,7 @@ public class Constants {
   }
 
   public static class SlapdownConstants {
-    public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 1;
+    public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
     public static final double ENCODER_OFFSET = 60;
     public static final double HOME_ANGLE_DEGREES = 0;
     public static final double INTAKE_ANGLE_DEGREES = 130;
@@ -106,7 +106,7 @@ public class Constants {
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 9;
+    public static final double INTAKE_VOLTAGE = 6;
     public static final double KP = 0.1;
     public static final double KD = 0;
     public static final double KS = 0;

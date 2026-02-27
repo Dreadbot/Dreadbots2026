@@ -44,11 +44,11 @@ public class RobotContainer {
     private final List<VisionCamera> cameras;
     private final Turret turret;
     private final Flywheel flywheel;
-    //private final Hood hood;
+    private final Hood hood;
     private final Indexer indexer;
-    // private final AutoAim autoAim;
-    //private final Climb climb;
-    //private final Slapdown slapdown;
+    private final AutoAim autoAim;
+    private final Climb climb;
+    private final Slapdown slapdown;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -67,10 +67,10 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
 
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
+                hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                // slapdown = new Slapdown(new SlapdownIOSparkMax());
-                // climb = new Climb(new ClimbIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                climb = new Climb(new ClimbIOSparkFlex());
 
                 break;
             case SIM:
@@ -89,10 +89,10 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSim(), drive);
                 flywheel = new Flywheel(new FlywheelIOSim());
-                // hood = new Hood(new HoodIOSim());
+                hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
-                // slapdown = new Slapdown(new SlapdownIOSim());
-                // climb = new Climb(new ClimbIOSim());
+                slapdown = new Slapdown(new SlapdownIOSim());
+                climb = new Climb(new ClimbIOSim());
 
                 break;
             default:
@@ -109,13 +109,14 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
+                hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                // slapdown = new Slapdown(new SlapdownIOSparkMax());
-                // climb = new Climb(new ClimbIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                climb = new Climb(new ClimbIOSparkFlex());
 
                 break;
         }
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
         configureButtonBindings();
     }
 
@@ -136,21 +137,22 @@ public class RobotContainer {
                                         new Rotation2d())),
                         drive).ignoringDisable(true));
 
-        // autoAim.setDefaultCommand(
-        // autoAim.trackTarget()
-        // );
+        //autoAim.setDefaultCommand(autoAim.trackTarget());
 
         // Subsystem button bindings used for testing
         // Can be changed or refit for actual use
         // These were all used seperately so buttons may be used more than once
 
         // Turret Angle Controls
-        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
-        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+        primaryController.y().whileTrue(climb.testRaise());
+        primaryController.a().whileTrue(climb.testLower());
+        primaryController.b().whileTrue(turret.setAngleRad(0 * Math.PI));
+        // primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+        // primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
-        // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        primaryController.rightBumper().whileTrue(autoAim.prepShot());
+        primaryController.rightTrigger().whileTrue(autoAim.shoot());
 
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
@@ -159,18 +161,18 @@ public class RobotContainer {
 
        
         // Flywheel controls
-        secondaryController.a().onTrue(flywheel.setRPM(1500));
+        secondaryController.y().onTrue(flywheel.setRPM(3000));
         // // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
         
-        secondaryController.b().onTrue(flywheel.setRPM(0));
+        secondaryController.a().onTrue(flywheel.setRPM(0));
         // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
         
         // secondaryController.y().onTrue(flywheel.changeRPM(100));
-        // secondaryController.x().onTrue(flywheel.changeRPM(-100));
+        // secondaryCo0.80.ntroller.x().onTrue(flywheel.changeRPM(-100));
 
         // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
-        // primaryController.y().onTrue(flywheel.changeRPM(100));
-        // primaryController.x().onTrue(flywheel.changeRPM(-100));
+        secondaryController.b().onTrue(flywheel.changeRPM(100));
+        secondaryController.x().onTrue(flywheel.changeRPM(-100));
         // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
         // primaryController.rightTrigger().onTrue(flywheel.changeOrderOfMagnitude(-1));
         // primaryController.leftBumper().onTrue(flywheel.changeNumber(-1));
@@ -189,23 +191,23 @@ public class RobotContainer {
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(indexer.stopIndexer().andThen(indexer.stopKicker()));
         
-        // primaryController.povLeft().onTrue(hood.calibrate());
+        secondaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
         // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
         // primaryController.povDown().onTrue(hood.setRotations(0.0));
         //Slapdown
-        // secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        // secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        // primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        // primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // // Double check with test
         // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
         // secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // Hood
-        // secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
-        // secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
+        secondaryController.povDown().onTrue(hood.changeRotations(-0.5));
+        secondaryController.povUp().onTrue(hood.changeRotations(0.5));
    
         // Turret Presets
         //secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));

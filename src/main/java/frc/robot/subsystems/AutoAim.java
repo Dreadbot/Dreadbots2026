@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class AutoAim extends SubsystemBase{
+public class AutoAim extends SubsystemBase {
     private final InterpolatingMatrixTreeMap<Double, N3, N1> firingTable = new InterpolatingMatrixTreeMap<Double, N3, N1>();
     private final Hood hood;
     private final Flywheel flywheel;
@@ -39,37 +39,47 @@ public class AutoAim extends SubsystemBase{
         this.flywheel = flywheel;
         this.indexer = indexer;
         this.drive = drive;
-        //              Distance (m)
-        firingTable.put(0.0,    getMatrix(0.0, 0.0, 0.0));
-        firingTable.put(10.0,   getMatrix(5.0, 10.0, 1.0));
+        // Distance (m)
+        firingTable.put(1.20, getMatrix(0.0, 2900, 1.24));
+        firingTable.put(2.65, getMatrix(4.0, 3000, 1.24));
+        firingTable.put(3.49, getMatrix(5.0, 3400, 1.38));
+        firingTable.put(4.43, getMatrix(6.0, 3600, 1.40));
+        firingTable.put(5.96, getMatrix(8.0, 3800, 1.45));
     }
 
     public Command shoot() {
-        return prepShot().andThen(() -> startFeeding()).andThen(Commands.runEnd(() -> setSetpoints(true), () -> stopShooting()));
+        return prepShot().until(flywheel::atRPM)
+                .andThen(startFeeding())
+                .andThen(Commands.runEnd(
+                        () -> setSetpoints(true),
+                        this::stopShooting));
     }
 
     public Command prepShot() {
-        return Commands.runOnce(() -> setSetpoints(true)).andThen(Commands.waitUntil(flywheel::atRPM));
+        return Commands.run(
+                () -> setSetpoints(true),
+                turret,
+                hood,
+                flywheel,
+                this);
     }
 
-    public void startFeeding() {
-        indexer.startIndexer();
-        indexer.startKicker();
+    public Command startFeeding() {
+        return indexer.startIndexer()
+                .andThen(indexer.startKicker());
     }
 
-    public void stopShooting() {
-        flywheel.setRPM(0);
-        indexer.stopIndexer();
-        indexer.stopKicker();
+    public Command stopShooting() {
+        return flywheel.setRPM(0)
+                .andThen(indexer.stopIndexer())
+                .andThen(indexer.stopKicker());
     }
 
     public Command trackTarget() {
         return Commands.run(
-            () -> setSetpoints(false),
-            turret,
-            hood,
-            this
-        );
+                () -> setSetpoints(false),
+                turret,
+                this);
     }
 
     public Translation2d getTargetTranslation() {
@@ -82,30 +92,29 @@ public class AutoAim extends SubsystemBase{
         return turretTranslation.getDistance(getTargetTranslation());
     }
 
-    public void setSetpoints(boolean setFlywheel) {
+    public void setSetpoints(boolean primingShot) {
         double phaseDelay = AutoAimConstants.PHASE_DELAY;
 
         Pose2d estimatedPose = drive.getPose();
         ChassisSpeeds robotRelativeVelocity = drive.getChassisSpeeds();
 
-        estimatedPose =
-            estimatedPose.exp(
+        estimatedPose = estimatedPose.exp(
                 new Twist2d(
-                    robotRelativeVelocity.vxMetersPerSecond * phaseDelay,
-                    robotRelativeVelocity.vyMetersPerSecond * phaseDelay,
-                    robotRelativeVelocity.omegaRadiansPerSecond * phaseDelay));
+                        robotRelativeVelocity.vxMetersPerSecond * phaseDelay,
+                        robotRelativeVelocity.vyMetersPerSecond * phaseDelay,
+                        robotRelativeVelocity.omegaRadiansPerSecond * phaseDelay));
 
         Translation2d target = getTargetTranslation();
 
         double timeOfFlight = 0;
         Pose2d lookaheadPose = drive.getPose();
         double lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(estimatedPose);
-        
+
         for (int i = 0; i < 20; i++) {
             timeOfFlight = firingTable.get(lookaheadTurretToTargetDistance).get(2, 0);
             ChassisSpeeds robotDelta = robotRelativeVelocity.times(timeOfFlight);
-            lookaheadPose =
-                estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond, robotDelta.vyMetersPerSecond, new Rotation2d(robotDelta.omegaRadiansPerSecond)));
+            lookaheadPose = estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond,
+                    robotDelta.vyMetersPerSecond, new Rotation2d(robotDelta.omegaRadiansPerSecond)));
             lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(lookaheadPose);
         }
 
@@ -113,24 +122,27 @@ public class AutoAim extends SubsystemBase{
 
         Pose2d robotPoseForTurret = new Pose2d(lookaheadPose.getX(), lookaheadPose.getY(), estimatedPose.getRotation());
 
-        Pose2d turretPose = new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret), robotPoseForTurret.getRotation());
+        Pose2d turretPose = new Pose2d(AimUtil.getTurretTranslationFromRobotPose(robotPoseForTurret),
+                robotPoseForTurret.getRotation());
 
         turret.setSetpointFromTurretPose(turretPose, target);
-        hood.setRotations(firingValues.get(0, 0));
-        if (setFlywheel) {
+        if (primingShot) {
+            hood.setRotations(firingValues.get(0, 0));
             flywheel.setRPM(firingValues.get(1, 0));
         }
 
+        Logger.recordOutput("AutoAim/DistanceToTarget", lookaheadTurretToTargetDistance);
         Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
         Logger.recordOutput("AutoAim/TurretPose", turretPose);
         Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
-    }   
+    }
 
     public Matrix<N3, N1> getFiringTableValues(double distance) {
         return firingTable.get(distance);
     }
 
     public static Matrix<N3, N1> getMatrix(double hoodSetpoint, double flywheelSetpoint, double flightTimeSeconds) {
-        return new Matrix<>(new SimpleMatrix(3, 1, true, new double[]{hoodSetpoint, flywheelSetpoint, flightTimeSeconds}));
+        return new Matrix<>(
+                new SimpleMatrix(3, 1, true, new double[] { hoodSetpoint, flywheelSetpoint, flightTimeSeconds }));
     }
 }

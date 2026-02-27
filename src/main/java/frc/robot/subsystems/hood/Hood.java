@@ -34,6 +34,7 @@ public class Hood extends SubsystemBase {
                 calibrating = false;
                 io.setVoltage(0);
             }
+            io.setVoltage(-1.5);
             return;
         }
 
@@ -41,7 +42,7 @@ public class Hood extends SubsystemBase {
         if (pidVoltage > 0 && inputs.rotations >= HoodConstants.MAX_ROTATIONS) {
             pidVoltage = 0;
         }
-        if (Math.abs(pidVoltage) > 1e-2) {
+        if (Math.abs(pidVoltage) > 1e-1) {
             pidVoltage += Math.copySign(HoodConstants.HOOD_KS, pidVoltage);
         }
         pidVoltage = MathUtil.clamp(pidVoltage, -HoodConstants.MAX_VOLTAGE, HoodConstants.MAX_VOLTAGE);
@@ -64,7 +65,6 @@ public class Hood extends SubsystemBase {
         return runOnce(() -> {
             if (!inputs.lowerSwitch) {
                 calibrating = true;
-                io.setVoltage(-0.2);
             }
         });
     }
