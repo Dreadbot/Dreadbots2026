@@ -6,6 +6,7 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.slapdown.Slapdown;
 import frc.robot.subsystems.AutoAim;
@@ -18,11 +19,13 @@ public class AutoCommands {
     public Indexer indexer;
     public Climb climb;
     public AutoAim aim;
+    public Flywheel flywheel;
    
-    public AutoCommands(Drive drive, Slapdown slapdown, Indexer indexer, AutoFactory factory, Climb climb, AutoAim aim) {
+    public AutoCommands(Drive drive, Slapdown slapdown, Indexer indexer, AutoFactory factory, Climb climb, Flywheel flywheel, AutoAim aim) {
         this.drive = drive;
         this.slapdown = slapdown;
         this.indexer = indexer;
+        this.flywheel = flywheel;
         this.factory = new AutoFactory(
             drive::getPose,
             drive::setPose,
@@ -48,14 +51,17 @@ public class AutoCommands {
         AutoTrajectory climb1 = routine.trajectory("segment8", 7);
 
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
+            aim.shoot().alongWith(flywheel.start()).andThen(
+                startIntake1.cmd().alongWith(flywheel.stop()).alongWith(
+                    slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand()))),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
-            fire1.cmd().alongWith(aim.shoot()),
-            startIntake2.cmd().alongWith(slapdown.intakeCommand()),
+            fire1.cmd().alongWith(aim.shoot().alongWith(flywheel.start())),
+            flywheel.stop().andThen(startIntake2.cmd().alongWith(slapdown.intakeCommand())),
             stopIntake2.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire2.cmd().alongWith(aim.shoot()),
-            stopFire2.cmd().alongWith(aim.shoot()),
+            stopFire2.cmd().alongWith(aim.shoot())/*. 
             climb1.cmd().alongWith(climb.levelOneClimb())
+            */
         ));
         return routine;
     }
@@ -76,4 +82,7 @@ public class AutoCommands {
         return routine;
     }
 
+    public AutoRoutine centerFireClimb() {
+
+    }
 }
