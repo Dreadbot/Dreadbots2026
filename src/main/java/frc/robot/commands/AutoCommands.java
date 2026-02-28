@@ -63,8 +63,6 @@ public class AutoCommands {
         ));
         return routine;
     }
-<<<<<<< HEAD
-=======
 
 
     //number 2
@@ -86,7 +84,6 @@ public class AutoCommands {
 
 
 
->>>>>>> 844dc20811f0afddae8605b746d5691679d6d75d
 
     //number 4 NOT FINISHED
     public AutoRoutine centerDepotClimb() {
@@ -103,9 +100,6 @@ public class AutoCommands {
             segment4.cmd()
         ));
             return routine;
-<<<<<<< HEAD
-    }
-=======
         }
 
 
@@ -118,16 +112,6 @@ public class AutoCommands {
             AutoTrajectory startFire = routine.trajectory("segment3", 2);
             AutoTrajectory stopFire = routine.trajectory("segment4", 3);
             //AutoTrajectory climb = routine.trajectory("segment8", 7);
->>>>>>> 844dc20811f0afddae8605b746d5691679d6d75d
-
-    //number 6
-    public AutoRoutine RightDepotOutpostClimbOutline() {
-        AutoRoutine routine = factory.newRoutine("RightDepotOutpostClimbOutline");
-        AutoTrajectory startIntake1 = routine.trajectory("segment2", 0);
-        AutoTrajectory stopIntake1 = routine.trajectory("segment4", 1);
-        AutoTrajectory startFire = routine.trajectory("segment7", 2);
-        AutoTrajectory stopFire = routine.trajectory("segment8", 3);
-        //AutoTrajectory climb = routine.trajectory("segment8", 7);
 
         routine.active().onTrue(Commands.sequence(
             startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
