@@ -2,12 +2,15 @@ package frc.robot;
 
 import java.util.List;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -34,6 +37,7 @@ import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.indexer.*;
 import frc.robot.subsystems.vision.*;
+import choreo.auto.AutoChooser.*;
 
 public class RobotContainer {
 
@@ -49,6 +53,8 @@ public class RobotContainer {
     // private final AutoAim autoAim;
     //private final Climb climb;
     //private final Slapdown slapdown;
+    private final AutoChooser choreoAutoChooser;
+    //private final AutoCommands autos;
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -116,6 +122,25 @@ public class RobotContainer {
 
                 break;
         }
+
+        //autos = new AutoCommands(drive, slapdown, indexer, factory, climb, flywheel, autoAim);
+
+        // Set up auto routines
+        // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+        choreoAutoChooser = new AutoChooser();
+        // 1
+        //choreoAutoChooser.addCmd("Center Center Climb", autos::centerCenterClimb);
+        // 2
+        //choreoAutoChooser.addCmd("Depot Climb", autos::depotClimb);
+        // 3
+        //choreoAutoChooser.addCmd("Outpost Climb", autos::outpostClimb);
+        // 4
+        //choreoAutoChooser.addCmd("Center Outpost Climb", autos::centerOutpostClimb);
+        // 5
+        //choreoAutoChooser.addCmd("Center Fire", autos::centerFire);
+        // 6 needs to be done
+        //choreoAutoChooser.addCmd("", autos::);
+    SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
         configureButtonBindings();
     }
 
@@ -218,7 +243,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null; // choreoAutoChooser.selectedCommand();
+        return choreoAutoChooser.selectedCommand();
 
     }
 
