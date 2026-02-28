@@ -5,6 +5,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.slapdown.Slapdown;
@@ -54,11 +55,29 @@ public class AutoCommands {
             startIntake2.cmd().alongWith(slapdown.intakeCommand()),
             stopIntake2.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire2.cmd().alongWith(aim.shoot()),
-            stopFire2.cmd().alongWith(aim.shoot()),
-            climb1.cmd().alongWith(climb.levelOneClimb())
+            stopFire2.cmd().alongWith(aim.shoot())//,
+            //climb1.cmd().alongWith(climb.levelOneClimb())
         ));
         return routine;
     }
+
+    //number 2
+    public AutoRoutine depotClimb() {
+        AutoRoutine routine = factory.newRoutine("depotClimb");
+        AutoTrajectory startIntake1 = routine.trajectory("segment1", 0);
+        AutoTrajectory stopIntakeAndStartFire1 = routine.trajectory("segment2", 1);
+        AutoTrajectory stopFire1 = routine.trajectory("segment3", 2);
+        AutoTrajectory climb1 = routine.trajectory("segment4", 3);
+        
+        routine.active().onTrue(Commands.sequence(
+            startIntake1.cmd().alongWith(slapdown.intakeCommand()),
+            stopIntakeAndStartFire1.cmd().alongWith(slapdown.stopIntakeCommand().andThen(aim.shoot())),
+            stopFire1.cmd().alongWith(aim.stopShooting())//,
+            //climb1.cmd().alongWith(climb.levelOneClimb())
+        ));
+        return routine;
+    }
+
 
     //number 4 NOT FINISHED
     public AutoRoutine centerDepotClimb() {
