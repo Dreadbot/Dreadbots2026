@@ -64,6 +64,7 @@ public class AutoCommands {
         return routine;
     }
 
+
     //number 2
     public AutoRoutine depotClimb() {
         AutoRoutine routine = factory.newRoutine("depotClimb");
@@ -82,6 +83,8 @@ public class AutoCommands {
     }
 
 
+
+
         //number 4 NOT FINISHED
         public AutoRoutine centerDepotClimb() {
             AutoRoutine routine = factory.newRoutine("centerDepotClimb");
@@ -98,13 +101,16 @@ public class AutoCommands {
             ));
             return routine;
         }
+
+
+        
         //number 6
         public AutoRoutine RightDepotOutpostClimbOutline() {
             AutoRoutine routine = factory.newRoutine("RightDepotOutpostClimbOutline");
-            AutoTrajectory startIntake1 = routine.trajectory("segment2", 0);
-            AutoTrajectory stopIntake1 = routine.trajectory("segment4", 1);
-            AutoTrajectory startFire = routine.trajectory("segment7", 2);
-            AutoTrajectory stopFire = routine.trajectory("segment8", 3);
+            AutoTrajectory startIntake1 = routine.trajectory("segment1", 0);
+            AutoTrajectory stopIntake1 = routine.trajectory("segment2", 1);
+            AutoTrajectory startFire = routine.trajectory("segment3", 2);
+            AutoTrajectory stopFire = routine.trajectory("segment4", 3);
             //AutoTrajectory climb = routine.trajectory("segment8", 7);
 
             routine.active().onTrue(Commands.sequence(
