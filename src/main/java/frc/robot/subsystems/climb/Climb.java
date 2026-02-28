@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.subsystems.slapdown.Slapdown;
+import frc.robot.subsystems.slapdown.SlapdownIO;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -27,6 +29,8 @@ public class Climb extends SubsystemBase {
     public final ArmFeedforward feedforward = new ArmFeedforward(ClimbConstants.ARMFEEDFORWARD_KS, 0.0, ClimbConstants.ARMFEEDFORWARD_KV);
     // private DigitalInput lowerSwitch = new DigitalInput(ClimbConstants.LOWER_LIMIT_SWITCH_ID);
     // private DigitalInput upperSwitch = new DigitalInput(ClimbConstants.UPPER_LIMIT_SWITCH_ID);
+    private SlapdownIO slapIo;
+    private Slapdown pivotMotor = new Slapdown(null);
 
     @AutoLogOutput
     // Setting up the boolean Varible, which is for right now isClimbed (Basic will
@@ -35,9 +39,11 @@ public class Climb extends SubsystemBase {
     public boolean raisingArm = false;
     public boolean loweringArm = false;
     public boolean climbing = false;
+    public boolean isSlapdownExtended = false;
 
     public Climb(ClimbIO io) {
         this.io = io;
+        // this.slapIo = new SlapdownIO;
     }
     
     // public Command motorForward() {
@@ -101,9 +107,10 @@ public class Climb extends SubsystemBase {
 
     public Command testLower() {
         return Commands.startEnd(
-            () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
-            () -> io.runVoltage(0.0),
-            this);
+                    () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
+                    () -> io.runVoltage(0.0),
+                    this);
+
     }
 
     public Command testRaise() {
@@ -116,8 +123,9 @@ public class Climb extends SubsystemBase {
 
     // Updates the inputs of ClimbIO perodic.
     // ClimbIO takes the inputs and outputs of Climb from the contorller
-//     @Override
-//     public void periodic() {
+    // @Override
+    // public void periodic() {
+
 //         io.updateInputs(inputs);
 //         Logger.processInputs("Climb", inputs);
 //         if (DriverStation.isDisabled()) {
