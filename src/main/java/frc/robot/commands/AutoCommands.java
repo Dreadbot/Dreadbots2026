@@ -51,11 +51,11 @@ public class AutoCommands {
         AutoTrajectory climb1 = routine.trajectory("segment8", 7);
 
         routine.active().onTrue(Commands.sequence(
-            aim.shoot().alongWith(flywheel.start()).andThen(
-                startIntake1.cmd().alongWith(flywheel.stop()).alongWith(
+            aim.shoot().andThen(
+                startIntake1.cmd().alongWith(
                     slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand()))),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
-            fire1.cmd().alongWith(aim.shoot().alongWith(flywheel.start())),
+            fire1.cmd().alongWith(aim.shoot()),
             flywheel.stop().andThen(startIntake2.cmd().alongWith(slapdown.intakeCommand())),
             stopIntake2.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire2.cmd().alongWith(aim.shoot()),
@@ -82,7 +82,7 @@ public class AutoCommands {
         return routine;
     }
 
-    public AutoRoutine centerFireClimb() {
+    // public AutoRoutine centerFireClimb() {
 
-    }
+    // }
 }
