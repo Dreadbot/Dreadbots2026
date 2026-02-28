@@ -22,7 +22,7 @@ public class AutoCommands {
     public AutoAim aim;
     public Flywheel flywheel;
    
-    public AutoCommands(Drive drive, Slapdown slapdown, Indexer indexer, AutoFactory factory, Climb climb, Flywheel flywheel, AutoAim aim) {
+    public AutoCommands(Drive drive, Slapdown slapdown, Indexer indexer, Climb climb, Flywheel flywheel, AutoAim aim) {
         this.drive = drive;
         this.slapdown = slapdown;
         this.indexer = indexer;

@@ -15,6 +15,7 @@ import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -48,13 +49,14 @@ public class RobotContainer {
     private final List<VisionCamera> cameras;
     private final Turret turret;
     private final Flywheel flywheel;
-    //private final Hood hood;
+    private final Hood hood;
     private final Indexer indexer;
-    // private final AutoAim autoAim;
-    //private final Climb climb;
-    //private final Slapdown slapdown;
+    private final AutoAim autoAim;
+    private final Climb climb;
+    private final Slapdown slapdown;
     private final AutoChooser choreoAutoChooser;
-    //private final AutoCommands autos;
+    private final AutoCommands autos;
+
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -73,10 +75,11 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
 
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
+                hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                // slapdown = new Slapdown(new SlapdownIOSparkMax());
-                // climb = new Climb(new ClimbIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                climb = new Climb(new ClimbIOSparkFlex());
+                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
             case SIM:
@@ -95,10 +98,11 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSim(), drive);
                 flywheel = new Flywheel(new FlywheelIOSim());
-                // hood = new Hood(new HoodIOSim());
+                hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
-                // slapdown = new Slapdown(new SlapdownIOSim());
-                // climb = new Climb(new ClimbIOSim());
+                slapdown = new Slapdown(new SlapdownIOSim());
+                climb = new Climb(new ClimbIOSim());
+                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
             default:
@@ -115,21 +119,21 @@ public class RobotContainer {
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                // hood = new Hood(new HoodIOSparkMax());
+                hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                // slapdown = new Slapdown(new SlapdownIOSparkMax());
-                // climb = new Climb(new ClimbIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                climb = new Climb(new ClimbIOSparkFlex());
+                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
         }
 
-        //autos = new AutoCommands(drive, slapdown, indexer, factory, climb, flywheel, autoAim);
+        autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
 
         // Set up auto routines
-        // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
         choreoAutoChooser = new AutoChooser();
         // 1
-        //choreoAutoChooser.addCmd("Center Center Climb", autos::centerCenterClimb);
+        choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
         // 2
         //choreoAutoChooser.addCmd("Depot Climb", autos::depotClimb);
         // 3
@@ -140,10 +144,11 @@ public class RobotContainer {
         //choreoAutoChooser.addCmd("Center Fire", autos::centerFire);
         // 6 needs to be done
         //choreoAutoChooser.addCmd("", autos::);
-    SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+        SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+
         configureButtonBindings();
     }
-
+ 
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
         drive.setDefaultCommand(
@@ -244,6 +249,9 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return choreoAutoChooser.selectedCommand();
+        //return RobotModeTriggers.autonomous.whileTrue(choreoAutoChooser.selectedCommand());
+
+
 
     }
 
