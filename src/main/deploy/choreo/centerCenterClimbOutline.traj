@@ -14,7 +14,7 @@
     {"x":6.115475177764893, "y":6.754119873046875, "heading":0.0, "intervals":34, "split":true, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
     {"x":2.9503958225250244, "y":7.311724662780762, "heading":0.0, "intervals":30, "split":true, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
     {"x":2.859842300415039, "y":4.509552955627441, "heading":0.0, "intervals":27, "split":true, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
-    {"x":2.3690452575683594, "y":3.823612689971924, "heading":0.0, "intervals":20, "split":true, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
+    {"x":2.3690452575683594, "y":3.823612689971924, "heading":0.0, "intervals":20, "split":false, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
     {"x":1.5483129024505615, "y":3.7894153594970703, "heading":0.0, "intervals":40, "split":true, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false}],
   "constraints":[
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
@@ -445,7 +445,7 @@
     {"t":10.18864, "x":1.58326, "y":3.79037, "heading":-0.01684, "vx":-0.79344, "vy":-0.02163, "omega":-0.00034, "ax":9.00342, "ay":0.24547, "alpha":0.00455, "fx":[153.14484,153.14617,153.14633,153.14501], "fy":[4.20077,4.15203,4.14989,4.19862]},
     {"t":10.23268, "x":1.55705, "y":3.78965, "heading":-0.01686, "vx":-0.39694, "vy":-0.01082, "omega":-0.00014, "ax":9.01342, "ay":0.24573, "alpha":0.00326, "fx":[153.31512,153.31607,153.31615,153.3152], "fy":[4.1981,4.16314,4.1616,4.19655]},
     {"t":10.27672, "x":1.54831, "y":3.78942, "heading":-0.01686, "vx":0.0, "vy":0.0, "omega":0.0, "ax":0.0, "ay":0.0, "alpha":0.0, "fx":[0.0,0.0,0.0,0.0], "fy":[0.0,0.0,0.0,0.0]}],
-  "splits":[0,63,116,151,186,238,272,302,329]
+  "splits":[0,63,116,151,186,238,272,302]
  },
  "events":[]
 }
