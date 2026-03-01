@@ -73,7 +73,7 @@ public class AutoCommands {
         routine.active().onTrue(Commands.sequence(
             startIntake1.cmd().alongWith(slapdown.intakeCommand()),
             stopIntakeAndStartFire1.cmd().alongWith(slapdown.stopIntakeCommand().andThen(aim.shoot())),
-            stopFire1.cmd().alongWith(aim.stopShooting())//,
+            stopFire1.cmd().alongWith(Commands.runOnce(() -> aim.stopShooting()))//,
             //climb1.cmd().alongWith(climb.levelOneClimb())
         ));
         return routine;
