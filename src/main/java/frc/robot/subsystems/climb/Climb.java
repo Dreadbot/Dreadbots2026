@@ -133,8 +133,8 @@ public class Climb extends SubsystemBase {
         Logger.recordOutput("Climb/GoalPosition", goal.position);
         Logger.recordOutput("Climb/LowerSwitch", !lowerSwitch.get());
         Logger.recordOutput("Climb/UpperSwitch", !upperSwitch.get());
-        Logger.recordOutput("Climb/RaisingArm", raisingArm);
-        Logger.recordOutput("Climb/LoweringArm", loweringArm);
+        // Logger.recordOutput("Climb/RaisingArm", raisingArm);
+        // Logger.recordOutput("Climb/LoweringArm", loweringArm);
         // setpoint = profile.calculate(0.02, setpoint, goal);
 
         // // If upperSwitch is tripped

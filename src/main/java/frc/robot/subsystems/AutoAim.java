@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import org.ejml.simple.SimpleMatrix;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,6 +23,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -33,13 +36,17 @@ public class AutoAim extends SubsystemBase {
     private final Turret turret;
     private final Indexer indexer;
     private final Drive drive;
+    private final DoubleSupplier xSupplier;
+    private final DoubleSupplier ySupplier;
 
-    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive) {
+    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
         this.indexer = indexer;
         this.drive = drive;
+        this.xSupplier = xSupplier;
+        this.ySupplier = ySupplier;
         // Distance (m)
         firingTable.put(1.20, getMatrix(0.0, 2900, 1.24));
         firingTable.put(2.16, getMatrix(2.92, 2960, 1.24));
@@ -52,14 +59,15 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Command shoot() {
-        return (prepShot().until(flywheel::atRPM))
+        return prepShot()
+                .alongWith(Commands.waitUntil(turret::atSetpoint)
                 .andThen(Commands.runOnce(
                         () -> startFeeding(), 
                         indexer))
                 .andThen(Commands.runEnd(
                         () -> setSetpoints(true),
-                        () -> stopShooting(),
-                        flywheel, turret, hood));
+                        () -> stopShooting()
+                        )));
     }
 
     public Command prepShot() {
@@ -88,8 +96,7 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Translation2d getTargetTranslation() {
-        // Add joystick manipulation
-        return AimUtil.getHubTranslation();
+        return AimUtil.getHubTranslation().plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
     }
 
     public double getDistanceToTargetFromRobotPose(Pose2d robotPose) {

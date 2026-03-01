@@ -25,10 +25,6 @@ public interface SlapdownIO {
         public double intakeRPM = 0.0;
         public double absolutePosition = 0.0;
 
-        //Temp
-        public double intakeTemperature = 0.0;
-        public double pivotTemperature = 0.0;
-
     }
 
 

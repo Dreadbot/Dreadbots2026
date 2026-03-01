@@ -47,11 +47,9 @@ public class SlapdownIOSparkMax implements SlapdownIO {
 
             inputs.intakeAppliedVolts = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
             inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
-            inputs.intakeTemperature = intakeMotor.getMotorTemperature();
 
             inputs.pivotAppliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
             inputs.pivotCurrentAmps = pivotMotor.getOutputCurrent();
-            inputs.pivotTemperature = pivotMotor.getMotorTemperature();
 
             //inputs.pivotRotationDegrees = absoluteEncoder.get();
         }

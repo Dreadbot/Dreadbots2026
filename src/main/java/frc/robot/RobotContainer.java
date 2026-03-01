@@ -79,7 +79,6 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
-                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
             case SIM:
@@ -102,7 +101,6 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
                 climb = new Climb(new ClimbIOSim());
-                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
             default:
@@ -123,10 +121,11 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
-                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
+                
 
                 break;
         }
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, secondaryController::getLeftX, secondaryController::getLeftY);
 
         autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
 
@@ -158,9 +157,9 @@ public class RobotContainer {
                         () -> -primaryController.getLeftX(),
                         () -> -primaryController.getRightX()));
 
-        // hood.setDefaultCommand(
-        //         hood.run(() -> hood.setGoalRotations(0))
-        // );
+        hood.setDefaultCommand(
+                hood.run(() -> hood.setGoalRotations(0))
+        );
 
         primaryController.start().onTrue(
                 Commands.runOnce(
@@ -225,7 +224,7 @@ public class RobotContainer {
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         
-        primaryController.povLeft().onTrue(hood.calibrate());
+        primaryController.povLeft().onTrue(Commands.runOnce(() -> hood.calibrate()));
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
         // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
         // primaryController.povDown().onTrue(hood.setRotations(0.0));

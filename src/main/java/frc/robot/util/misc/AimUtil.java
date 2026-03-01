@@ -1,10 +1,13 @@
 package frc.robot.util.misc;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.TurretConstants;
 
@@ -24,6 +27,14 @@ public class AimUtil {
         Translation2d offset = TurretConstants.TURRET_OFFSET.rotateBy(robotRotation);
 
         return robotTranslation.plus(offset);
+    }
+
+    public static Translation2d getFieldShiftFromJoystick(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            return new Translation2d(-ySupplier.getAsDouble(), -xSupplier.getAsDouble());
+        } else {
+            return new Translation2d(ySupplier.getAsDouble(), xSupplier.getAsDouble());
+        }
     }
 
 }

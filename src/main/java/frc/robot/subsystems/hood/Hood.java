@@ -61,12 +61,8 @@ public class Hood extends SubsystemBase {
         return inputs.rotations;
     }
 
-    public Command calibrate() {
-        return runOnce(() -> {
-            if (!inputs.lowerSwitch) {
-                calibrating = true;
-            }
-        });
+    public void calibrate() {
+        calibrating = true;
     }
 
     public void setRotations(double rotations) {

@@ -48,11 +48,11 @@ public class Flywheel extends SubsystemBase {
         }
         // io.setRPM(goalRPM); // For sparkflex PID system
         Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
-        Logger.recordOutput("Flywheel/PIDValue", pidValue);
-        Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
+        // Logger.recordOutput("Flywheel/PIDValue", pidValue);
+        // Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
         Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
-        Logger.recordOutput("Flywheel/System", system);
-        Logger.recordOutput("Flywheel/Target", target);
+        // Logger.recordOutput("Flywheel/System", system);
+        // Logger.recordOutput("Flywheel/Target", target);
         Logger.recordOutput("Flywheel/TargetValue", switch (target) {
             case "kP" -> kP;
             case "kI" -> kI;
