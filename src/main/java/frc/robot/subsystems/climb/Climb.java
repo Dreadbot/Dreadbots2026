@@ -29,8 +29,6 @@ public class Climb extends SubsystemBase {
     public final ArmFeedforward feedforward = new ArmFeedforward(ClimbConstants.ARMFEEDFORWARD_KS, 0.0, ClimbConstants.ARMFEEDFORWARD_KV);
     // private DigitalInput lowerSwitch = new DigitalInput(ClimbConstants.LOWER_LIMIT_SWITCH_ID);
     // private DigitalInput upperSwitch = new DigitalInput(ClimbConstants.UPPER_LIMIT_SWITCH_ID);
-    private SlapdownIO slapIo;
-    private Slapdown pivotMotor = new Slapdown(null);
 
     @AutoLogOutput
     // Setting up the boolean Varible, which is for right now isClimbed (Basic will
@@ -43,7 +41,6 @@ public class Climb extends SubsystemBase {
 
     public Climb(ClimbIO io) {
         this.io = io;
-        // this.slapIo = new SlapdownIO;
     }
     
     // public Command motorForward() {
@@ -124,8 +121,8 @@ public class Climb extends SubsystemBase {
     // Updates the inputs of ClimbIO perodic.
     // ClimbIO takes the inputs and outputs of Climb from the contorller
     // @Override
-    // public void periodic() {
-
+    public void periodic() {
+        io.canClimb();
 //         io.updateInputs(inputs);
 //         Logger.processInputs("Climb", inputs);
 //         if (DriverStation.isDisabled()) {
@@ -169,5 +166,5 @@ public class Climb extends SubsystemBase {
 //             // use acutal position degrees to make sure that we always apply the correct
 //             // gravity feed forward.
 //         );
-//     }
+    }
 }
