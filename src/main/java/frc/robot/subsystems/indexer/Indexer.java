@@ -27,7 +27,7 @@ public class Indexer extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Indexer/", inputs);
+        //Logger.processInputs("Indexer", inputs);
         //Logger.processInputs("IndexerKicker", kickerInputs);
         
         // double currentRPM = kickerInputs.RPM;

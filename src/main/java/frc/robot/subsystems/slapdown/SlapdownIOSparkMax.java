@@ -45,11 +45,11 @@ public class SlapdownIOSparkMax implements SlapdownIO {
             inputs.absolutePosition = absoluteEncoder.get() - SlapdownConstants.ENCODER_OFFSET;
             inputs.intakeRPM = intakeMotor.getEncoder().getVelocity();
 
-            inputs.intakeAppliedVolts = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
-            inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
+            // inputs.intakeAppliedVolts = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
+            // inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
 
             inputs.pivotAppliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();
-            inputs.pivotCurrentAmps = pivotMotor.getOutputCurrent();
+            //inputs.pivotCurrentAmps = pivotMotor.getOutputCurrent();
 
             //inputs.pivotRotationDegrees = absoluteEncoder.get();
         }

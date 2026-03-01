@@ -35,7 +35,7 @@ public class Turret extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Turret", inputs);
+        //Logger.processInputs("Turret", inputs);
 
         double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
         double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
@@ -56,9 +56,9 @@ public class Turret extends SubsystemBase {
 
         Logger.recordOutput("Turret/SetpointRelativeRadians", wrappedSetpoint);
         // Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
-        // Logger.recordOutput("Turret/CurrentTurretRotationRadians", turretRotationRelative);
+        Logger.recordOutput("Turret/CurrentTurretRotationRadians", turretRotationRelative);
         // Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
-        Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
+        // Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
         // Logger.recordOutput("Turret/Voltage", voltage);
         Logger.recordOutput("Turret/FieldPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
@@ -86,13 +86,6 @@ public class Turret extends SubsystemBase {
 
     public double robotRelativeToTurretRelative(double angleRad) {
         return MathUtil.angleModulus(angleRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE);
-    }
-
-    public Command setAtZero() {
-        return runOnce(
-            () -> {
-                setpointRelativeRad = 0.0;
-            } );
     }
 
     public static double wrapToLimits(double angleRad) {

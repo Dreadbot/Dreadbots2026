@@ -41,6 +41,8 @@ public class AutoAim extends SubsystemBase {
     private final DoubleSupplier xSupplier;
     private final DoubleSupplier ySupplier;
 
+    private boolean passing = false;
+
     public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
         this.turret = turret;
         this.hood = hood;
@@ -58,6 +60,22 @@ public class AutoAim extends SubsystemBase {
         firingTable.put(4.43, getMatrix(6.0, 3600, 1.40));
         firingTable.put(5.08, getMatrix(9.67, 3867, 1.40));
         firingTable.put(5.67, getMatrix(10.0, 3921, 1.45));
+    }
+
+    public Command targetPassing() {
+        return Commands.runOnce(
+            () -> {
+                passing = true;
+            }
+        );
+    }
+
+    public Command targetHub() {
+        return Commands.runOnce(
+            () -> {
+                passing = false;
+            }
+        );
     }
 
     public Command shoot() {
@@ -103,7 +121,10 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Translation2d getTargetTranslation() {
-        return AimUtil.getHubTranslation().plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
+        if (!passing) {
+            return AimUtil.getHubTranslation().plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
+        }
+        return AimUtil.getPassTranslation(drive.getPose()).plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
     }
 
     public double getDistanceToTargetFromRobotPose(Pose2d robotPose) {
@@ -146,14 +167,14 @@ public class AutoAim extends SubsystemBase {
 
         turret.setSetpointFromTurretPose(turretPose, target);
         if (primingShot) {
-            hood.setRotations(firingValues.get(0, 0));
+            hood.setSetpoint(firingValues.get(0, 0));
             flywheel.setRPM(firingValues.get(1, 0));
         }
 
         Logger.recordOutput("AutoAim/DistanceToTarget", lookaheadTurretToTargetDistance);
-        Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
-        Logger.recordOutput("AutoAim/TurretPose", turretPose);
-        Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
+        // Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
+        // Logger.recordOutput("AutoAim/TurretPose", turretPose);
+        // Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
     }
 
     public Matrix<N3, N1> getFiringTableValues(double distance) {

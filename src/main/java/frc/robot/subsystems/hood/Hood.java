@@ -26,7 +26,7 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Hood", inputs);
+        //Logger.processInputs("Hood", inputs);
         
         if (calibrating) {
             if (inputs.lowerSwitch) {
@@ -56,6 +56,7 @@ public class Hood extends SubsystemBase {
 
         Logger.recordOutput("Hood/Voltage", pidVoltage);
         Logger.recordOutput("Hood/Setpoint", goalRotations);
+        Logger.recordOutput("Hood/LimitSwitch", inputs.lowerSwitch);
     }
 
     public double getRotations() {
@@ -66,7 +67,7 @@ public class Hood extends SubsystemBase {
         calibrating = true;
     }
 
-    public void setRotations(double rotations) {
+    public void setSetpoint(double rotations) {
         goalRotations = rotations;
     }
 
@@ -76,9 +77,5 @@ public class Hood extends SubsystemBase {
 
     public Command changeRotations(double rotations) {
         return runOnce(() -> goalRotations += rotations);
-    }
-
-    public void setGoalRotations(double rotations) {
-        goalRotations = rotations;
     }
 }

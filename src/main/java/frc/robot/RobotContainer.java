@@ -42,8 +42,8 @@ import choreo.auto.AutoChooser.*;
 
 public class RobotContainer {
 
-    private final CommandXboxController primaryController = new CommandXboxController(0);
-    private final CommandXboxController secondaryController = new CommandXboxController(1);
+    private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController operator = new CommandXboxController(1);
     private final Drive drive;
     private final Vision vision;
     private final List<VisionCamera> cameras;
@@ -79,7 +79,6 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
-
                 break;
             case SIM:
                 drive = new Drive(
@@ -101,7 +100,6 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
                 climb = new Climb(new ClimbIOSim());
-
                 break;
             default:
                 drive = new Drive(
@@ -121,11 +119,9 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
-                
-
                 break;
         }
-        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, secondaryController::getLeftX, secondaryController::getLeftY);
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
 
         autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
 
@@ -153,111 +149,68 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -primaryController.getLeftY(),
-                        () -> -primaryController.getLeftX(),
-                        () -> -primaryController.getRightX()));
+                        () -> -driver.getLeftY(),
+                        () -> -driver.getLeftX(),
+                        () -> -driver.getRightX()));
 
-        hood.setDefaultCommand(
-                hood.run(() -> hood.setGoalRotations(0))
-        );
-
-        primaryController.start().onTrue(
+        driver.start().onTrue(
                 Commands.runOnce(
                         () -> drive.setPose(
                                 new Pose2d(
                                         vision.getLastVisionPose().getTranslation(),
                                         new Rotation2d())),
                         drive).ignoringDisable(true));
-
-        // autoAim.setDefaultCommand(
-        // autoAim.trackTarget()
-        // );
-
-        // Subsystem button bindings used for testing
-        // Can be changed or refit for actual use
-        // These were all used seperately so buttons may be used more than once
-
-        // Turret Angle Controls
-        // primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-        primaryController.b().onTrue(turret.setAngleRad(0 * Math.PI));
-        // primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        // primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
-
-        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
-        primaryController.rightBumper().whileTrue(autoAim.prepShot());
-        primaryController.x().whileTrue(autoAim.shoot());
-
-        // Climb controls
-        //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
-        //primaryController.leftTrigger().whileTrue(climb.unClimbSequence());
-        //primaryController.leftBumper().onTrue(climb.climb());
-
-       
-        // Flywheel controls
-        secondaryController.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
-        // // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
         
-        secondaryController.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
-        // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
+        // autoAim.setDefaultCommand(autoAim.trackTarget());
         
-        secondaryController.b().onTrue(flywheel.changeRPM(100));
-        secondaryController.x().onTrue(flywheel.changeRPM(-100));
+        driver.b().onTrue(turret.setAngleRad(0 * Math.PI));
+        driver.a().whileTrue(drive.brace());
 
-        // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
-        // primaryController.y().onTrue(flywheel.changeRPM(100));
-        // primaryController.x().onTrue(flywheel.changeRPM(-100));
-        // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
-        // primaryController.rightTrigger().onTrue(flywheel.changeOrderOfMagnitude(-1));
-        // primaryController.leftBumper().onTrue(flywheel.changeNumber(-1));
-        // primaryController.rightBumper().onTrue(flywheel.changeNumber(1));
-        // primaryController.povLeft().onTrue(flywheel.changeTarget("left"));
-        // primaryController.povUp().onTrue(flywheel.changeTarget("up"));
-        // primaryController.povRight().onTrue(flywheel.changeTarget("right"));
-        // primaryController.povDown().onTrue(flywheel.changeSystem());
+        driver.leftTrigger().whileTrue(slapdown.intakeCommand());
+        driver.leftBumper().whileTrue(autoAim.trackTarget());
+        // driver.leftBumper().onTrue(climb.climb());
+        
+        driver.rightTrigger().whileTrue(autoAim.shoot());
+        driver.rightBumper().whileTrue(autoAim.prepShot());
 
-        // Indexer and Kicker motors controlled by the second controller
+        hood.setDefaultCommand(hood.run(() -> hood.setSetpoint(0)));
 
-        secondaryController.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
+        // Final Operator Controls
+        operator.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        operator.leftBumper().onTrue(slapdown.goToHomeCommand());
+        operator.leftTrigger().whileTrue(hood.run(() -> hood.setSetpoint(0)));
+        operator.rightTrigger().whileTrue(slapdown.agitateCommand());
+
+        operator.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onTrue(Commands.runOnce(() -> indexer.startIndexing()));
-        secondaryController.axisLessThan(4, -IndexerConstants.DEAD_BAND)
+        operator.axisLessThan(4, -IndexerConstants.DEAD_BAND)
                 .onTrue(Commands.runOnce(() -> indexer.startReverseIndexing()));
-        secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
+        operator.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
-        
-        secondaryController.povLeft().onTrue(Commands.runOnce(() -> hood.calibrate()));
-        // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
-        // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
-        // primaryController.povDown().onTrue(hood.setRotations(0.0));
-        //Slapdown
-        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        operator.start().onTrue(Commands.runOnce(() -> hood.calibrate()));
 
-        // // Double check with test
-        // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
-        // secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
+        // operator.a().onTrue(autoAim.targetPassing());
+        // operator.b().onTrue(autoAim.targetHub());
+        // operator.y().onTrue(climb.prep);
+        // operator.x().onTrue(climb.stow);
 
-        // Hood
-        secondaryController.povDown().whileTrue(hood.changeRotations(-0.5));
-        secondaryController.povUp().whileFalse(hood.changeRotations(0.5));
-   
         // Turret Presets
-        //secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
         // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
-        // secondaryController.povLeft().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
+        // secondaryController.povRight().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
         // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
-        
-        // Brace
-        //primaryController.a().onTrue(drive.BraceCommand());
+
+        // Tuning Operator Controls
+        operator.povUp().onTrue(hood.changeRotations(0.5));
+        operator.povDown().onTrue(hood.changeRotations(-0.5));
+        operator.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
+        operator.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
+        operator.b().onTrue(flywheel.changeRPM(100));
+        operator.x().onTrue(flywheel.changeRPM(-100));
     }
 
     public Command getAutonomousCommand() {
         return choreoAutoChooser.selectedCommand();
         //return RobotModeTriggers.autonomous.whileTrue(choreoAutoChooser.selectedCommand());
-
-
-
     }
 
     public void autonomousInit() {

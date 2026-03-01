@@ -2,6 +2,7 @@ package frc.robot.util.misc;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -35,6 +36,28 @@ public class AimUtil {
         } else {
             return new Translation2d(ySupplier.getAsDouble(), xSupplier.getAsDouble());
         }
+    }
+
+    public static Translation2d getPassTranslation(Pose2d pose2d) {
+        double x;
+        double y;
+        boolean rightSide = pose2d.getY() < 4.02;
+
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            x = 2.0;
+        } else {
+            x = 14.5;
+        }
+        
+        if (rightSide) {
+            y = 2.0;
+        } else {
+            y = 6.04;
+        }
+
+        Translation2d passTranslation = new Translation2d(x, y);
+
+        return passTranslation;
     }
 
 }

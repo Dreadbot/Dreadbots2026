@@ -42,10 +42,7 @@ public class SlapdownIOSim implements SlapdownIO {
         intakeMotor.update(0.02);
 
         inputs.pivotAppliedVolts = pivotVolts;
-        inputs.intakeAppliedVolts = intakeVolts;
-       
-        inputs.pivotCurrentAmps = slapdown.getCurrentDrawAmps();
-        inputs.intakeCurrentAmps = intakeMotor.getCurrentDrawAmps();
+        //inputs.intakeAppliedVolts = intakeVolts;
 
         inputs.absolutePosition = Units.radiansToDegrees(slapdown.getAngleRads());
 

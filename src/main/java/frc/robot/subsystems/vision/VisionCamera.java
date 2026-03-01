@@ -49,7 +49,7 @@ public class VisionCamera {
 
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("VisionCam" + Integer.toString(index), inputs);
+        //Logger.processInputs("VisionCam" + Integer.toString(index), inputs);
 
         ArrayList<Pose3d> tagPoses = new ArrayList<>();
 		ArrayList<Pose2d> rejectedPoses = new ArrayList<>();
@@ -64,11 +64,7 @@ public class VisionCamera {
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
-				|| detection.pose().getTranslation().getDistance(supplier.getPose().getTranslation()) > 1.5;
-
-			// if (RobotState.getInstance().getCurrentAction() == CurrentAction.AUTO_ALIGN || index == 2) { // If we are auto aligning, or this cam is the back cam, reject every non barge tags 
-			// 	shouldRejectTag = shouldRejectTag || VisionUtil.isNotReefId(detection.id());
-			// }
+				|| Math.abs(detection.pose().getRotation().minus(supplier.getPose().getRotation()).getDegrees()) > 30;
 			
 			if (shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
@@ -85,8 +81,8 @@ public class VisionCamera {
 
 			consumer.accept(detection.pose(), (detection.timestamp() / 1_000_000.0) - (inputs.visionDelay + VisionConstants.DELAY_OFFSET), VecBuilder.fill(linearStdDev * stdDevFactor, linearStdDev * stdDevFactor, angularStdDev * stdDevFactor));
 		}
-		Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
-		Logger.recordOutput("Vision/Cam" + Integer.toString(index)  + "/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
+		// Logger.recordOutput("Vision/Cam" + Integer.toString(index) + "/TagPoses", tagPoses.toArray(new Pose3d[tagPoses.size()]));
+		// Logger.recordOutput("Vision/Cam" + Integer.toString(index)  + "/RejectedPoses", rejectedPoses.toArray(new Pose2d[rejectedPoses.size()]));
     }
 
 	@FunctionalInterface

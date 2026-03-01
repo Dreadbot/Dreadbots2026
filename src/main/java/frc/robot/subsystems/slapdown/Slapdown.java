@@ -39,9 +39,12 @@ public class Slapdown extends SubsystemBase {
     }
 
     public Command intakeCommand() {
-        return Commands.run(
+        return Commands.runEnd(
             () -> {
                 io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE);
+            },
+            () -> {
+                io.runIntakeVoltage(0);
             }
         );
     }
@@ -56,10 +59,10 @@ public class Slapdown extends SubsystemBase {
 
     // Double check with test
     public Command agitateCommand() {
-        return Commands.sequence(
-            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE * -1)),
-            Commands.waitSeconds(0.2),
-            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE)),
+        return Commands.repeatingSequence(
+            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE * -1), this),
+            Commands.waitSeconds(0.1),
+            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE), this),
             Commands.waitSeconds(0.2)
         );    
     }
@@ -69,25 +72,21 @@ public class Slapdown extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("SlapdownIntake", inputs);
+        //Logger.processInputs("SlapdownIntake", inputs);
+
         if (DriverStation.isDisabled()) {
             setpoint = new TrapezoidProfile.State(inputs.absolutePosition, 0);
             goal = setpoint;
         }
 
-        
-        
-       
+        setpoint = profile.calculate(0.02, setpoint, goal);
+        double voltage = pid.calculate(inputs.absolutePosition, setpoint.position) + 
+            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity);
+
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);
-        setpoint = profile.calculate(0.02, setpoint, goal);
-        double voltage = MathUtil.clamp(pid.calculate(inputs.absolutePosition, setpoint.position) + 
-            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity), -8, 8);
-        Logger.recordOutput("Slapdown/voltage", voltage);
-        io.runPivotVoltage(
-            voltage
-            // use acutal position degrees to make sure that we always apply the correct gravity feed forward.
-        ); 
+        Logger.recordOutput("Slapdown/Voltage", voltage);
+        io.runPivotVoltage(voltage); 
     }
 
     public Command setAngleDegrees(double angle) {
