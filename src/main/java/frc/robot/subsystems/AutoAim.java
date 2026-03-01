@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import static frc.robot.subsystems.drive.DriveConstants.turnEncoderInverted;
+
 import java.util.function.DoubleSupplier;
 
 import org.ejml.simple.SimpleMatrix;
@@ -59,15 +61,20 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Command shoot() {
-        return prepShot()
-                .alongWith(Commands.waitUntil(turret::atSetpoint)
-                .andThen(Commands.runOnce(
-                        () -> startFeeding(), 
-                        indexer))
-                .andThen(Commands.runEnd(
-                        () -> setSetpoints(true),
-                        () -> stopShooting()
-                        )));
+        return Commands.sequence(
+            Commands.runOnce(() -> 
+                setSetpoints(true), 
+                flywheel, turret, hood, this),
+
+            prepShot().alongWith(
+                Commands.waitUntil(this::isReady)
+                .andThen(Commands.runOnce(this::startFeeding, indexer)))
+
+        ).finallyDo(interrupted -> stopShooting());
+    }
+
+    public boolean isReady() {
+        return flywheel.atRPM() && turret.atSetpoint() && hood.atSetpoint();
     }
 
     public Command prepShot() {

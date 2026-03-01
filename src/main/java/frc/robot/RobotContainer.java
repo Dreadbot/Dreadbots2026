@@ -185,7 +185,7 @@ public class RobotContainer {
 
         primaryController.leftBumper().whileTrue(autoAim.trackTarget());
         primaryController.rightBumper().whileTrue(autoAim.prepShot());
-        primaryController.rightTrigger().whileTrue(autoAim.shoot());
+        primaryController.x().whileTrue(autoAim.shoot());
 
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
@@ -224,7 +224,7 @@ public class RobotContainer {
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         
-        primaryController.povLeft().onTrue(Commands.runOnce(() -> hood.calibrate()));
+        secondaryController.povLeft().onTrue(Commands.runOnce(() -> hood.calibrate()));
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
         // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
         // primaryController.povDown().onTrue(hood.setRotations(0.0));

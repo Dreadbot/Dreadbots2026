@@ -20,6 +20,7 @@ public class Hood extends SubsystemBase {
 
     public Hood(HoodIO io) {
         this.io = io;
+        pid.setTolerance(0.1);
     }
 
     @Override
@@ -67,6 +68,10 @@ public class Hood extends SubsystemBase {
 
     public void setRotations(double rotations) {
         goalRotations = rotations;
+    }
+
+    public boolean atSetpoint() {
+        return pid.atSetpoint();
     }
 
     public Command changeRotations(double rotations) {
