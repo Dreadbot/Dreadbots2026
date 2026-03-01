@@ -50,7 +50,7 @@ public class AutoCommands {
         //AutoTrajectory climb1 = routine.trajectory("segment8", 7);
 
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
+            aim.shoot().andThen(startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand()))),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
             fire1.cmd().alongWith(aim.shoot()),
             startIntake2.cmd().alongWith(slapdown.intakeCommand()),
@@ -71,7 +71,7 @@ public class AutoCommands {
         AutoTrajectory climb1 = routine.trajectory("segment4", 3);
         
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.intakeCommand()),
+            aim.shoot().andThen(startIntake1.cmd().alongWith(slapdown.intakeCommand())),
             stopIntakeAndStartFire1.cmd().alongWith(slapdown.stopIntakeCommand().andThen(aim.shoot())),
             stopFire1.cmd().alongWith(aim.stopShooting())//,
             //climb1.cmd().alongWith(climb.levelOneClimb())
@@ -115,6 +115,30 @@ public class AutoCommands {
         ));
             return routine;
         }
+
+    //number 5 
+    public AutoRoutine centerFireCenterFire() {
+        AutoRoutine routine = factory.newRoutine("centerFireCenterFire");
+        AutoTrajectory shoot1 = routine.trajectory("segment1", 0);
+        AutoTrajectory intake1 = routine.trajectory("segment2", 1);
+        AutoTrajectory stopIntake1 = routine.trajectory("segment3", 2);
+        AutoTrajectory shoot2 = routine.trajectory("segment4", 3);
+        AutoTrajectory intake2 = routine.trajectory("segment5", 4);
+        AutoTrajectory stopIntake2 = routine.trajectory("segment6", 5);
+        //doesn't move, here to show the final segement
+        AutoTrajectory shoot3 = routine.trajectory("segment6", 6);
+
+        routine.active().onTrue(Commands.sequence(
+            aim.shoot().andThen(shoot1.cmd()),
+            intake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
+            stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
+            aim.shoot().andThen(shoot2.cmd()),
+            intake2.cmd().alongWith(slapdown.intakeCommand()),
+            stopIntake2.cmd().alongWith(slapdown.stopIntakeCommand()),
+            aim.shoot()
+        ));
+            return routine;
+    }
         
     //number 6
     public AutoRoutine RightDepotOutpostClimbOutline() {
@@ -126,7 +150,7 @@ public class AutoCommands {
         //AutoTrajectory climb = routine.trajectory("segment8", 7);
 
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
+            aim.shoot().andThen(startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand()))),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire.cmd().alongWith(aim.shoot()),
             stopFire.cmd().alongWith(aim.shoot())//,
