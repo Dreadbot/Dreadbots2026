@@ -42,14 +42,17 @@ public class AutoAim extends SubsystemBase {
         this.drive = drive;
         // Distance (m)
         firingTable.put(1.20, getMatrix(0.0, 2900, 1.24));
-        firingTable.put(2.65, getMatrix(4.0, 3000, 1.24));
-        firingTable.put(3.49, getMatrix(5.0, 3400, 1.38));
+        firingTable.put(2.16, getMatrix(2.92, 2960, 1.24));
+        firingTable.put(2.64, getMatrix(6.3, 3173, 1.3));
+        firingTable.put(2.98, getMatrix(5.4, 3161, 1.35));
+        firingTable.put(3.80, getMatrix(5.83, 3450, 1.31));
         firingTable.put(4.43, getMatrix(6.0, 3600, 1.40));
-        firingTable.put(5.96, getMatrix(8.0, 3800, 1.45));
+        firingTable.put(5.08, getMatrix(9.67, 3867, 1.40));
+        firingTable.put(5.67, getMatrix(10.0, 3921, 1.45));
     }
 
     public Command shoot() {
-        return prepShot().until(flywheel::atRPM)
+        return (prepShot().until(flywheel::atRPM))
                 .andThen(Commands.runOnce(
                         () -> startFeeding(), 
                         indexer))

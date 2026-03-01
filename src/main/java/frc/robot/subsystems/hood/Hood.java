@@ -16,7 +16,7 @@ public class Hood extends SubsystemBase {
     private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, 0);
     
     private double goalRotations = 0.0;
-    private boolean calibrating = false;
+    private boolean calibrating = true;
 
     public Hood(HoodIO io) {
         this.io = io;

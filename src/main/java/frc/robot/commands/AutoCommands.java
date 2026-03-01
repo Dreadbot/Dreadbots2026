@@ -65,19 +65,38 @@ public class AutoCommands {
     //number 2
     public AutoRoutine depotClimb() {
         AutoRoutine routine = factory.newRoutine("depotClimb");
-        AutoTrajectory startIntake1 = routine.trajectory("segment1", 0);
-        AutoTrajectory stopIntakeAndStartFire1 = routine.trajectory("segment2", 1);
-        AutoTrajectory stopFire1 = routine.trajectory("segment3", 2);
-        AutoTrajectory climb1 = routine.trajectory("segment4", 3);
+        AutoTrajectory startIntake1 = routine.trajectory("depotClimbOutline", 0);
+        AutoTrajectory stopIntakeAndStartFire1 = routine.trajectory("depotClimbOutline", 1);
+        AutoTrajectory stopFire1 = routine.trajectory("depotClimbOutline", 2);
+        //AutoTrajectory climb1 = routine.trajectory("depotClimbOutline", 3);
         
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.intakeCommand()),
+            factory.resetOdometry("depotClimbOutline"),
+            startIntake1.cmd().alongWith(slapdown.goToIntakeCommand()).alongWith(slapdown.intakeCommand()),
             stopIntakeAndStartFire1.cmd().alongWith(slapdown.stopIntakeCommand().andThen(aim.shoot())),
             stopFire1.cmd().alongWith(Commands.runOnce(() -> aim.stopShooting()))//,
             //climb1.cmd().alongWith(climb.levelOneClimb())
         ));
         return routine;
     }
+
+
+    public AutoRoutine leftCenter() {
+        AutoRoutine routine = factory.newRoutine("LeftCenter");
+        AutoTrajectory leftCenter = routine.trajectory("LeftCenter", 0);
+        
+        routine.active().onTrue(Commands.sequence(
+            factory.resetOdometry("LeftCenter"),
+            leftCenter.cmd()
+        ));
+
+        leftCenter.atTime("startIntake").onTrue(slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()));
+        leftCenter.atTime("stopIntake").onTrue(slapdown.stopIntakeCommand());
+        leftCenter.atTime("shoot").onTrue(aim.shoot());
+
+        return routine;
+    }
+
 
     //number 3 
     public AutoRoutine centerFireClimb() {

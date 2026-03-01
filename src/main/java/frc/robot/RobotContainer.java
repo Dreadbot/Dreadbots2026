@@ -135,7 +135,7 @@ public class RobotContainer {
         // 1
         choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
         // 2
-        //choreoAutoChooser.addCmd("Depot Climb", autos::depotClimb);
+        choreoAutoChooser.addRoutine("Left Center Sweep", autos::leftCenter);
         // 3
         //choreoAutoChooser.addCmd("Outpost Climb", autos::outpostClimb);
         // 4
@@ -158,9 +158,9 @@ public class RobotContainer {
                         () -> -primaryController.getLeftX(),
                         () -> -primaryController.getRightX()));
 
-        hood.setDefaultCommand(
-                hood.run(() -> hood.setGoalRotations(0))
-        );
+        // hood.setDefaultCommand(
+        //         hood.run(() -> hood.setGoalRotations(0))
+        // );
 
         primaryController.start().onTrue(
                 Commands.runOnce(
@@ -179,12 +179,14 @@ public class RobotContainer {
         // These were all used seperately so buttons may be used more than once
 
         // Turret Angle Controls
-        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
-        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
-        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+        // primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+        primaryController.b().onTrue(turret.setAngleRad(0 * Math.PI));
+        // primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+        // primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
-        // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
+        primaryController.rightBumper().whileTrue(autoAim.prepShot());
+        primaryController.rightTrigger().whileTrue(autoAim.shoot());
 
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
@@ -199,8 +201,8 @@ public class RobotContainer {
         secondaryController.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
         // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
         
-        // secondaryController.y().onTrue(flywheel.changeRPM(100));
-        // secondaryController.x().onTrue(flywheel.changeRPM(-100));
+        secondaryController.b().onTrue(flywheel.changeRPM(100));
+        secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
         // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
         // primaryController.y().onTrue(flywheel.changeRPM(100));
@@ -223,23 +225,23 @@ public class RobotContainer {
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         
-        // primaryController.povLeft().onTrue(hood.calibrate());
+        primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
         // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
         // primaryController.povDown().onTrue(hood.setRotations(0.0));
         //Slapdown
-        // secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        // secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        // primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        // primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // // Double check with test
         // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
         // secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // Hood
-        // secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
-        // secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
+        secondaryController.povDown().whileTrue(hood.changeRotations(-0.5));
+        secondaryController.povUp().whileFalse(hood.changeRotations(0.5));
    
         // Turret Presets
         //secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
