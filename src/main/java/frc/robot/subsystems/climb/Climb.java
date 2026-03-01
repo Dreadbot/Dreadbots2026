@@ -41,7 +41,6 @@ public class Climb extends SubsystemBase {
 
     public Climb(ClimbIO io) {
         this.io = io;
-        // this.slapIo = new SlapdownIO;
     }
     
     // public Command motorForward() {

@@ -158,6 +158,10 @@ public class RobotContainer {
                         () -> -primaryController.getLeftX(),
                         () -> -primaryController.getRightX()));
 
+        hood.setDefaultCommand(
+                hood.run(() -> hood.setGoalRotations(0))
+        );
+
         primaryController.start().onTrue(
                 Commands.runOnce(
                         () -> drive.setPose(
