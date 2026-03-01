@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.subsystems.slapdown.Slapdown;
+import frc.robot.subsystems.slapdown.SlapdownIO;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -35,9 +37,11 @@ public class Climb extends SubsystemBase {
     public boolean raisingArm = false;
     public boolean loweringArm = false;
     public boolean climbing = false;
+    public boolean isSlapdownExtended = false;
 
     public Climb(ClimbIO io) {
         this.io = io;
+        // this.slapIo = new SlapdownIO;
     }
     
     // public Command motorForward() {
@@ -101,9 +105,10 @@ public class Climb extends SubsystemBase {
 
     public Command testLower() {
         return Commands.startEnd(
-            () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
-            () -> io.runVoltage(0.0),
-            this);
+                    () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
+                    () -> io.runVoltage(0.0),
+                    this);
+
     }
 
     public Command testRaise() {

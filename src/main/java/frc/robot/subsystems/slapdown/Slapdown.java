@@ -64,6 +64,8 @@ public class Slapdown extends SubsystemBase {
         );    
     }
 
+
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);
@@ -72,6 +74,9 @@ public class Slapdown extends SubsystemBase {
             setpoint = new TrapezoidProfile.State(inputs.absolutePosition, 0);
             goal = setpoint;
         }
+
+        
+        
        
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);

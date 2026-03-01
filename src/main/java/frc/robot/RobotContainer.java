@@ -2,16 +2,20 @@ package frc.robot;
 
 import java.util.List;
 
+import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IndexerConstants;
+import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -34,6 +38,7 @@ import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.indexer.*;
 import frc.robot.subsystems.vision.*;
+import choreo.auto.AutoChooser.*;
 
 public class RobotContainer {
 
@@ -49,6 +54,9 @@ public class RobotContainer {
     private final AutoAim autoAim;
     private final Climb climb;
     private final Slapdown slapdown;
+    private final AutoChooser choreoAutoChooser;
+    private final AutoCommands autos;
+
 
     public RobotContainer() {
         switch (Constants.currentMode) {
@@ -71,6 +79,7 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
+                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
             case SIM:
@@ -93,6 +102,7 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
                 climb = new Climb(new ClimbIOSim());
+                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
             default:
@@ -113,13 +123,32 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex());
+                autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
         }
-        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
+
+        autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
+
+        // Set up auto routines
+        choreoAutoChooser = new AutoChooser();
+        // 1
+        choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
+        // 2
+        //choreoAutoChooser.addCmd("Depot Climb", autos::depotClimb);
+        // 3
+        //choreoAutoChooser.addCmd("Outpost Climb", autos::outpostClimb);
+        // 4
+        //choreoAutoChooser.addCmd("Center Outpost Climb", autos::centerOutpostClimb);
+        // 5
+        //choreoAutoChooser.addCmd("Center Fire", autos::centerFire);
+        // 6 needs to be done
+        //choreoAutoChooser.addCmd("", autos::);
+        SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+
         configureButtonBindings();
     }
-
+ 
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
         drive.setDefaultCommand(
@@ -137,22 +166,21 @@ public class RobotContainer {
                                         new Rotation2d())),
                         drive).ignoringDisable(true));
 
-        //autoAim.setDefaultCommand(autoAim.trackTarget());
+        // autoAim.setDefaultCommand(
+        // autoAim.trackTarget()
+        // );
 
         // Subsystem button bindings used for testing
         // Can be changed or refit for actual use
         // These were all used seperately so buttons may be used more than once
 
         // Turret Angle Controls
-        primaryController.y().whileTrue(climb.testRaise());
-        primaryController.a().whileTrue(climb.testLower());
-        primaryController.b().whileTrue(turret.setAngleRad(0 * Math.PI));
-        // primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
-        // primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
+        primaryController.x().onTrue(turret.setAngleRad(0.5 * Math.PI));
+        primaryController.y().onTrue(turret.setAngleRad(0 * Math.PI));
+        primaryController.b().onTrue(turret.setAngleRad(-0.5 * Math.PI));
+        primaryController.a().onTrue(turret.setAngleRad(1 * Math.PI));
 
-        primaryController.leftBumper().whileTrue(autoAim.trackTarget());
-        primaryController.rightBumper().whileTrue(autoAim.prepShot());
-        primaryController.rightTrigger().whileTrue(autoAim.shoot());
+        // primaryController.leftBumper().whileTrue(autoAim.trackTarget());
 
         // Climb controls
         //primaryController.rightTrigger().whileTrue(climb.doClimbSequence());
@@ -168,11 +196,11 @@ public class RobotContainer {
         // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
         
         // secondaryController.y().onTrue(flywheel.changeRPM(100));
-        // secondaryCo0.80.ntroller.x().onTrue(flywheel.changeRPM(-100));
+        // secondaryController.x().onTrue(flywheel.changeRPM(-100));
 
         // PID and FF tuning controls, wouldn't recommend using since it's been tuned already
-        secondaryController.b().onTrue(flywheel.changeRPM(100));
-        secondaryController.x().onTrue(flywheel.changeRPM(-100));
+        // primaryController.y().onTrue(flywheel.changeRPM(100));
+        // primaryController.x().onTrue(flywheel.changeRPM(-100));
         // primaryController.leftTrigger().onTrue(flywheel.changeOrderOfMagnitude(1));
         // primaryController.rightTrigger().onTrue(flywheel.changeOrderOfMagnitude(-1));
         // primaryController.leftBumper().onTrue(flywheel.changeNumber(-1));
@@ -191,23 +219,23 @@ public class RobotContainer {
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         
-        secondaryController.povLeft().onTrue(hood.calibrate());
+        // primaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));
         // primaryController.povRight().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS / 2));
         // primaryController.povDown().onTrue(hood.setRotations(0.0));
         //Slapdown
-        secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
-        secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
-        primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
-        primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
+        // secondaryController.rightBumper().onTrue(slapdown.goToIntakeCommand());
+        // secondaryController.leftBumper().onTrue(slapdown.goToHomeCommand());
+        // primaryController.leftTrigger().whileTrue(slapdown.intakeCommand());
+        // primaryController.leftTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // // Double check with test
         // secondaryController.rightTrigger().whileTrue(slapdown.agitateCommand());
         // secondaryController.rightTrigger().onFalse(slapdown.stopIntakeCommand());
 
         // Hood
-        secondaryController.povDown().onTrue(hood.changeRotations(-0.5));
-        secondaryController.povUp().onTrue(hood.changeRotations(0.5));
+        // secondaryController.leftTrigger().whileTrue(hood.changeRotations(-0.1));
+        // secondaryController.leftTrigger().whileFalse(hood.changeRotations(1));
    
         // Turret Presets
         //secondaryController.povRight().onTrue(turret.setAtZero().andThen(turret.setAngleRad(0)));
@@ -220,7 +248,10 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return null; // choreoAutoChooser.selectedCommand();
+        return choreoAutoChooser.selectedCommand();
+        //return RobotModeTriggers.autonomous.whileTrue(choreoAutoChooser.selectedCommand());
+
+
 
     }
 
