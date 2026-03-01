@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -44,27 +45,19 @@ public class Indexer extends SubsystemBase {
     //     }
     // }
 
-    public Command startIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE));
+    public void startIndexing() {
+        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
+        io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE);
     }
 
-    public Command startReverseIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1));
+    public void startReverseIndexing() {
+        io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1);
+        io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE * -1);
     }
 
-    public Command stopIndexer() {
-        return runOnce(() -> io.runSpindexerVoltage(0.0));
-    }
-    
-    public Command startKicker() {
-        return runOnce(() -> {
-            io.runKickerVoltage(12);//kickerTargetRPM = IndexerConstants.KICKER_RPM;
-        });
-    }
-    public Command stopKicker() {
-         return runOnce(() -> {
-            io.runKickerVoltage(0);//kickerTargetRPM = 0.0;
-        });
+    public void stopIndexing() {
+        io.runSpindexerVoltage(0.0);
+        io.runKickerVoltage(0.0);
     }
 
     // The increase / decrease kicker speed/volts commands (intended for every click)

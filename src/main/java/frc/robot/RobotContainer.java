@@ -161,10 +161,10 @@ public class RobotContainer {
 
        
         // Flywheel controls
-        secondaryController.y().onTrue(flywheel.setRPM(3000));
+        secondaryController.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
         // // secondaryController.a().onTrue(flywheel.start()); // Start method used for testing, 1 press for 500 rpm, another press for 3000 rpm
         
-        secondaryController.a().onTrue(flywheel.setRPM(0));
+        secondaryController.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
         // secondaryController.b().onTrue(flywheel.stop()); // Doesn't stop immediately, just sends 0 voltage
         
         // secondaryController.y().onTrue(flywheel.changeRPM(100));
@@ -185,11 +185,11 @@ public class RobotContainer {
         // Indexer and Kicker motors controlled by the second controller
 
         secondaryController.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
-                .onTrue(indexer.startIndexer().andThen(indexer.startKicker()));
+                .onTrue(Commands.runOnce(() -> indexer.startIndexing()));
         secondaryController.axisLessThan(4, -IndexerConstants.DEAD_BAND)
-                .onTrue(indexer.startReverseIndexer().andThen(indexer.stopKicker()));
+                .onTrue(Commands.runOnce(() -> indexer.startReverseIndexing()));
         secondaryController.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
-                .onFalse(indexer.stopIndexer().andThen(indexer.stopKicker()));
+                .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         
         secondaryController.povLeft().onTrue(hood.calibrate());
         // primaryController.povUp().onTrue(hood.setRotations(HoodConstants.MAX_ROTATIONS));

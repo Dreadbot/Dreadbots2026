@@ -12,11 +12,11 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
     private final FlywheelIO io;
 
-    private double kP = 0.001;
+    private double kP = 0.0015;
     private double kI = 0.0004;
     private double kD = 0.0;
     private double kS = 0.0;
-    private double kV = 0.0018;
+    private double kV = 0.0016;
     private double kA = 0.0;
     private PIDController pid = new PIDController(kP, kI, kD);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
@@ -44,6 +44,7 @@ public class Flywheel extends SubsystemBase {
         } else {
             io.setVoltage(0.0);
             goalRPM = inputs.RPM;
+            return;
         }
         // io.setRPM(goalRPM); // For sparkflex PID system
         Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
@@ -89,11 +90,9 @@ public class Flywheel extends SubsystemBase {
     }
 
     // These commands work with the PID and feedforward to reach a set RPM
-    public Command setRPM(double rpm) {
-        return runOnce(() -> {
-            goalRPM = rpm;
-            stopping = false;
-        });
+    public void setRPM(double rpm) {
+        goalRPM = rpm;
+        stopping = goalRPM == 0;
     }
 
     public Command changeRPM(double rpm) {

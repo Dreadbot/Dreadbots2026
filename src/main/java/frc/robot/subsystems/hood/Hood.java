@@ -13,7 +13,7 @@ import frc.robot.Constants.HoodConstants;
 public class Hood extends SubsystemBase {
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, 0, 0);
+    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, 0);
     
     private double goalRotations = 0.0;
     private boolean calibrating = false;
@@ -69,8 +69,8 @@ public class Hood extends SubsystemBase {
         });
     }
 
-    public Command setRotations(double rotations) {
-        return runOnce(() -> goalRotations = rotations);
+    public void setRotations(double rotations) {
+        goalRotations = rotations;
     }
 
     public Command changeRotations(double rotations) {

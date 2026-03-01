@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -49,10 +50,13 @@ public class AutoAim extends SubsystemBase {
 
     public Command shoot() {
         return prepShot().until(flywheel::atRPM)
-                .andThen(startFeeding())
+                .andThen(Commands.runOnce(
+                        () -> startFeeding(), 
+                        indexer))
                 .andThen(Commands.runEnd(
                         () -> setSetpoints(true),
-                        this::stopShooting));
+                        () -> stopShooting(),
+                        flywheel, turret, hood));
     }
 
     public Command prepShot() {
@@ -64,15 +68,13 @@ public class AutoAim extends SubsystemBase {
                 this);
     }
 
-    public Command startFeeding() {
-        return indexer.startIndexer()
-                .andThen(indexer.startKicker());
+    public void startFeeding() {
+        indexer.startIndexing();
     }
 
-    public Command stopShooting() {
-        return flywheel.setRPM(0)
-                .andThen(indexer.stopIndexer())
-                .andThen(indexer.stopKicker());
+    public void stopShooting() {
+        flywheel.setRPM(0);
+        indexer.stopIndexing();
     }
 
     public Command trackTarget() {
