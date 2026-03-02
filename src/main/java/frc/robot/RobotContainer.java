@@ -78,7 +78,9 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
+                climb = new Climb(new ClimbIOSparkFlex(), slapdown);
+                
+
                 break;
             case SIM:
                 drive = new Drive(
@@ -99,7 +101,9 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
-                climb = new Climb(new ClimbIOSim());
+                climb = new Climb(new ClimbIOSim(), slapdown);
+                
+
                 break;
             default:
                 drive = new Drive(
@@ -118,7 +122,9 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
+                climb = new Climb(new ClimbIOSparkFlex(), slapdown);
+             
+
                 break;
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);

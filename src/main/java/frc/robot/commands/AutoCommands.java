@@ -141,22 +141,44 @@ public class AutoCommands {
             return routine;
         }
         
-    //number 6
+
+
+    //number 4
     public AutoRoutine RightDepotOutpostClimbOutline() {
         AutoRoutine routine = factory.newRoutine("RightDepotOutpostClimbOutline");
-        AutoTrajectory startIntake1 = routine.trajectory("segment2", 0);
-        AutoTrajectory stopIntake1 = routine.trajectory("segment4", 1);
-        AutoTrajectory startFire = routine.trajectory("segment7", 2);
-        AutoTrajectory stopFire = routine.trajectory("segment8", 3);
-        AutoTrajectory climb = routine.trajectory("segment8", 7);
+        AutoTrajectory trajectory = routine.trajectory("RightDepotOutpostClimbOutline");
+        
+        routine.active().onTrue(
+        Commands.sequence(
+            trajectory.resetOdometry(),
+            trajectory.cmd()
+        )
+    );
+        // Starting at the event marker named "intake", run the intake 
+        //slapdown intake and start intaking
+        trajectory.atTime("intake").onTrue(slapdown.goToIntakeCommand());
+        trajectory.atTime("intake").onTrue(slapdown.intakeCommand());
 
+<<<<<<< HEAD
+        //Stop intaking
+        trajectory.atTime("stopIntake").onTrue(slapdown.stopIntakeCommand());
+        
+        //Start Shooting/Autoaiming and shooting
+        trajectory.atTime("shoot").onTrue(aim.shoot());
+
+        // Slapup the intake
+        trajectory.atTime("slapup").onTrue(slapdown.goToHomeCommand());
+
+        trajectory.atTime("climb").onTrue(climb.testRaise());
+       
+=======
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
+            aim.shoot().andThen(startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand()))),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire.cmd().alongWith(aim.shoot()),
-            stopFire.cmd().alongWith(aim.shoot()),
-            climb.cmd()
+            stopFire.cmd().alongWith(aim.shoot())//,
         ));
+>>>>>>> 6b9917c4af6be4a4a28a79892929dcdad9c40c83
             return routine;
         }
 }

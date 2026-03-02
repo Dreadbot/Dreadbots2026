@@ -23,13 +23,19 @@ public class Climb extends SubsystemBase {
     private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
     // PID work?
-    private final PIDController pid = new PIDController(ClimbConstants.PIDCONTROLLER_KP, 0.0, ClimbConstants.PIDCONTROLLER_KD);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(ClimbConstants.TRAPEZOID_CONSTRAINTS_MAX_VELOCITY, ClimbConstants.TRAPEZOID_CONSTRAINTS_MAX_ACCELERATION));
-    private TrapezoidProfile.State goal = new TrapezoidProfile.State(ClimbConstants.TRAPEZOID_STATE_POSITION, ClimbConstants.TRAPEZOID_STATE_VELOCITY);
+    private final PIDController pid = new PIDController(ClimbConstants.PIDCONTROLLER_KP, 0.0,
+            ClimbConstants.PIDCONTROLLER_KD);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+            ClimbConstants.TRAPEZOID_CONSTRAINTS_MAX_VELOCITY, ClimbConstants.TRAPEZOID_CONSTRAINTS_MAX_ACCELERATION));
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State(ClimbConstants.TRAPEZOID_STATE_POSITION,
+            ClimbConstants.TRAPEZOID_STATE_VELOCITY);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    public final ArmFeedforward feedforward = new ArmFeedforward(ClimbConstants.ARMFEEDFORWARD_KS, 0.0, ClimbConstants.ARMFEEDFORWARD_KV);
-    // private DigitalInput lowerSwitch = new DigitalInput(ClimbConstants.LOWER_LIMIT_SWITCH_ID);
-    // private DigitalInput upperSwitch = new DigitalInput(ClimbConstants.UPPER_LIMIT_SWITCH_ID);
+    public final ArmFeedforward feedforward = new ArmFeedforward(ClimbConstants.ARMFEEDFORWARD_KS, 0.0,
+            ClimbConstants.ARMFEEDFORWARD_KV);
+    // private DigitalInput lowerSwitch = new
+    // DigitalInput(ClimbConstants.LOWER_LIMIT_SWITCH_ID);
+    // private DigitalInput upperSwitch = new
+    // DigitalInput(ClimbConstants.UPPER_LIMIT_SWITCH_ID);
 
     @AutoLogOutput
     // Setting up the boolean Varible, which is for right now isClimbed (Basic will
@@ -39,82 +45,87 @@ public class Climb extends SubsystemBase {
     public boolean loweringArm = false;
     public boolean climbing = false;
 
-    public Climb(ClimbIO io) {
+    private Slapdown slapdown;
+
+    public Climb(ClimbIO io, Slapdown slapdown) {
         this.io = io;
+        this.slapdown = slapdown;
     }
-    
+
     // public Command motorForward() {
-    //     return Commands.startEnd(
-    //         () -> {
-    //             if (upperSwitch.get()) raisingArm = true;
-    //         },
-    //         () -> raisingArm = false
-    //     );
+    // return Commands.startEnd(
+    // () -> {
+    // if (upperSwitch.get()) raisingArm = true;
+    // },
+    // () -> raisingArm = false
+    // );
     // }
 
     // public Command motorBackward() {
-    //     return Commands.startEnd(
-    //         () -> {
-    //             if (lowerSwitch.get()) loweringArm = true;
-    //         },
-    //         () -> loweringArm = false
-    //     );
+    // return Commands.startEnd(
+    // () -> {
+    // if (lowerSwitch.get()) loweringArm = true;
+    // },
+    // () -> loweringArm = false
+    // );
     // }
 
     // public Command raiseClimbArm() {
-    //     return Commands.runOnce(() -> {
-    //         if (upperSwitch.get()) raisingArm = true;
-    //     });
+    // return Commands.runOnce(() -> {
+    // if (upperSwitch.get()) raisingArm = true;
+    // });
     // }
 
     // public Command raiseRobotLevelOne() {
-    //     return Commands.runOnce (() -> {
-    //         if (lowerSwitch.get()) goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
-    //     });
+    // return Commands.runOnce (() -> {
+    // if (lowerSwitch.get()) goal = new
+    // TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
+    // });
     // }
 
     // public Command levelOneClimb() {
-    //     return Commands.sequence(
-    //         raiseClimbArm(),
-    //         Commands.waitUntil(() -> raisingArm == false),
-    //         raiseRobotLevelOne()
-    //     );
+    // return Commands.sequence(
+    // raiseClimbArm(),
+    // Commands.waitUntil(() -> raisingArm == false),
+    // raiseRobotLevelOne()
+    // );
     // }
 
     // public Command lowerClimbArm() {
-    //     return Commands.runOnce(() -> {
-    //         if (lowerSwitch.get()) loweringArm = true;
-    //     });
+    // return Commands.runOnce(() -> {
+    // if (lowerSwitch.get()) loweringArm = true;
+    // });
     // }
 
     // public Command raiseRobotLevelOne() {
-    //     return Commands.runOnce (() -> {
-    //         if (lowerSwitch.get()) goal = new TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
-    //     });
+    // return Commands.runOnce (() -> {
+    // if (lowerSwitch.get()) goal = new
+    // TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
+    // });
     // }
 
     // public Command climb() {
-    //     return Commands.runOnce(() -> {
-    //         climbing = !climbing;
-    //         if (climbing) raisingArm = true;
-    //         else raisingArm = false;
-    //         loweringArm = false;
-    //     });
+    // return Commands.runOnce(() -> {
+    // climbing = !climbing;
+    // if (climbing) raisingArm = true;
+    // else raisingArm = false;
+    // loweringArm = false;
+    // });
     // }
 
     public Command testLower() {
         return Commands.startEnd(
-                    () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
-                    () -> io.runVoltage(0.0),
-                    this);
+                () -> io.runVoltage(ClimbConstants.LOWER_VOLTAGE),
+                () -> io.runVoltage(0.0),
+                this);
 
     }
 
     public Command testRaise() {
         return Commands.startEnd(
-            () -> io.runVoltage(ClimbConstants.RAISE_VOLTAGE),
-            () -> io.runVoltage(0.0),
-            this);
+                () -> io.runVoltage(ClimbConstants.RAISE_VOLTAGE),
+                () -> io.runVoltage(0.0),
+                this);
     }
     
     // public Command extentionChecker() {
