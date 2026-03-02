@@ -35,6 +35,12 @@ public class AutoCommands {
         );
         this.climb = climb;
         this.aim = aim;
+
+        factory
+            .bind("intake", slapdown.intakeCommand())
+            .bind("stopIntake", slapdown.stopIntakeCommand())
+            .bind("slapdown", slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()))
+            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
     }
 
     //number 1
@@ -65,19 +71,38 @@ public class AutoCommands {
     //number 2
     public AutoRoutine depotClimb() {
         AutoRoutine routine = factory.newRoutine("depotClimb");
-        AutoTrajectory startIntake1 = routine.trajectory("segment1", 0);
-        AutoTrajectory stopIntakeAndStartFire1 = routine.trajectory("segment2", 1);
-        AutoTrajectory stopFire1 = routine.trajectory("segment3", 2);
-        AutoTrajectory climb1 = routine.trajectory("segment4", 3);
+        AutoTrajectory startIntake1 = routine.trajectory("depotClimbOutline", 0);
+        AutoTrajectory stopIntakeAndStartFire1 = routine.trajectory("depotClimbOutline", 1);
+        AutoTrajectory stopFire1 = routine.trajectory("depotClimbOutline", 2);
+        //AutoTrajectory climb1 = routine.trajectory("depotClimbOutline", 3);
         
         routine.active().onTrue(Commands.sequence(
-            startIntake1.cmd().alongWith(slapdown.intakeCommand()),
+            factory.resetOdometry("depotClimbOutline"),
+            startIntake1.cmd().alongWith(slapdown.goToIntakeCommand()).alongWith(slapdown.intakeCommand()),
             stopIntakeAndStartFire1.cmd().alongWith(slapdown.stopIntakeCommand().andThen(aim.shoot())),
-            stopFire1.cmd().alongWith(aim.stopShooting())//,
+            stopFire1.cmd().alongWith(Commands.runOnce(() -> aim.stopShooting()))//,
             //climb1.cmd().alongWith(climb.levelOneClimb())
         ));
         return routine;
     }
+
+
+    public AutoRoutine leftCenter() {
+        AutoRoutine routine = factory.newRoutine("LeftCenter");
+        AutoTrajectory leftCenter = routine.trajectory("LCProtect");
+        
+        routine.active().onTrue(
+            Commands.sequence(
+                leftCenter.resetOdometry(),
+                leftCenter.cmd(),
+                drive.stopDrive(),
+                aim.shoot().withTimeout(5.0)
+            )
+        );
+
+        return routine;
+    }
+
 
     //number 3 
     public AutoRoutine centerFireClimb() {
@@ -96,19 +121,22 @@ public class AutoCommands {
         return routine;
     }
 
-    //number 4 NOT FINISHED
+    //number 4 
     public AutoRoutine centerOutpostClimb() {
         AutoRoutine routine = factory.newRoutine("centerOutpostClimb");
-        AutoTrajectory segment1 = routine.trajectory("segment1", 0);
-        AutoTrajectory segment2 = routine.trajectory("segment2", 1);
-        AutoTrajectory segment3 = routine.trajectory("segment3", 2);
-        AutoTrajectory segment4 = routine.trajectory("segment4", 3);
+        AutoTrajectory shoot1 = routine.trajectory("segment1", 0);
+        AutoTrajectory intake1 = routine.trajectory("segment2", 1);
+        AutoTrajectory stopSlapdown1 = routine.trajectory("segment3", 2);
+        AutoTrajectory shoot2 = routine.trajectory("segment4", 3);
+        AutoTrajectory climb1 = routine.trajectory("segement5", 4);
             
         routine.active().onTrue(Commands.sequence(
-            segment1.cmd(),
-            segment2.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
-            segment3.cmd(),
-            segment4.cmd()
+            aim.shoot().andThen(shoot1.cmd()),
+            intake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
+            slapdown.stopIntakeCommand().alongWith(stopSlapdown1.cmd()),
+            shoot2.cmd().alongWith(aim.shoot()),
+            climb1.cmd()
+            /* .andThen(climb.levelOneClimb()) */
         ));
             return routine;
         }

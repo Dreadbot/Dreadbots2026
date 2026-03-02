@@ -386,11 +386,11 @@ public class Drive extends SubsystemBase {
           linearFieldVelocity.getY(),
           gyroInputs.yawVelocityRadPerSec);
   }
-  public Command BraceCommand() {
+  public Command brace() {
     return Commands.runOnce(() -> {
+      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(-45))), 0.0);
       modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
-      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
-      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
+      modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(-45))), 0.0);
       modules[0].runSetpoint(new SwerveModuleState(0.0, new Rotation2d(Math.toRadians(45))), 0.0);
     }, this);
   }

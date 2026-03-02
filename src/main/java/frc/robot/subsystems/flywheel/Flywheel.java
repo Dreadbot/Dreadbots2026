@@ -12,11 +12,11 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
     private final FlywheelIO io;
 
-    private double kP = 0.001;
+    private double kP = 0.0015;
     private double kI = 0.0004;
     private double kD = 0.0;
     private double kS = 0.0;
-    private double kV = 0.0018;
+    private double kV = 0.0016;
     private double kA = 0.0;
     private PIDController pid = new PIDController(kP, kI, kD);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
@@ -24,7 +24,6 @@ public class Flywheel extends SubsystemBase {
     private String target = "kP";
     private String system = "PID";
 
-    private double goalRPM = 0.0;
     private boolean stopping = false;
 
     public Flywheel(FlywheelIO io) {
@@ -35,23 +34,19 @@ public class Flywheel extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Flywheel", inputs);
+        //Logger.processInputs("Flywheel", inputs);
 
-        double pidValue = pid.calculate(inputs.RPM, goalRPM);
-        double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
-        if (!stopping) {
-            io.setVoltage(pidValue + feedforwardValue);
-        } else {
-            io.setVoltage(0.0);
-            goalRPM = inputs.RPM;
-        }
+        double pidValue = pid.calculate(inputs.RPM);
+        double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, pid.getSetpoint());
+        
         // io.setRPM(goalRPM); // For sparkflex PID system
-        Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
-        Logger.recordOutput("Flywheel/PIDValue", pidValue);
-        Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
+        Logger.recordOutput("Flywheel/GoalRPM", pid.getSetpoint());
+        Logger.recordOutput("Flywheel/atRPM", atRPM());
+        // Logger.recordOutput("Flywheel/PIDValue", pidValue);
+        // Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
         Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
-        Logger.recordOutput("Flywheel/System", system);
-        Logger.recordOutput("Flywheel/Target", target);
+        // Logger.recordOutput("Flywheel/System", system);
+        // Logger.recordOutput("Flywheel/Target", target);
         Logger.recordOutput("Flywheel/TargetValue", switch (target) {
             case "kP" -> kP;
             case "kI" -> kI;
@@ -62,6 +57,13 @@ public class Flywheel extends SubsystemBase {
             default -> 0.0;
         });
         Logger.recordOutput("Flywheel/Increment", increment);
+
+        if (!stopping) {
+            io.setVoltage(pidValue + feedforwardValue);
+        } else {
+            io.setVoltage(0.0);
+            return;
+        }
     }
 
     public double getRPM() {
@@ -72,34 +74,19 @@ public class Flywheel extends SubsystemBase {
         return pid.atSetpoint();
     }
 
-    // These commands are for just starting and stopping at a set voltage
-    public Command start() {
-        return runOnce(() -> {
-            if (goalRPM < 500) {
-                goalRPM = 500;
-            } else {
-                goalRPM = 3000;
-            }
-            stopping = false;
-        });
-    }
-
     public Command stop() {
         return runOnce(() -> stopping = true);
     }
 
     // These commands work with the PID and feedforward to reach a set RPM
-    public Command setRPM(double rpm) {
-        return runOnce(() -> {
-            goalRPM = rpm;
-            stopping = false;
-        });
+    public void setRPM(double rpm) {
+        stopping = rpm == 0;
+        pid.setSetpoint(rpm);
     }
 
     public Command changeRPM(double rpm) {
         return runOnce(() -> {
-            goalRPM += rpm;
-            stopping = false;
+            setRPM(pid.getSetpoint() + rpm);
         });
     }
 

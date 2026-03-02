@@ -8,6 +8,8 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.subsystems.slapdown.Slapdown;
+import frc.robot.subsystems.slapdown.SlapdownIOSparkMax;
 
 public class ClimbIOSparkFlex implements ClimbIO {
     private SparkFlex motor;
@@ -32,5 +34,12 @@ public class ClimbIOSparkFlex implements ClimbIO {
 
     public void runVoltage(double volts) {
         motor.setVoltage(volts);
+    }
+
+    public void canClimb() {
+        // if (slapdown.getAngle() > 0) {
+        //     setPosition(0);
+        //     runVoltage(0);
+        // }
     }
 }

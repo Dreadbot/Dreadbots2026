@@ -8,27 +8,13 @@ public interface SlapdownIO {
     
     @AutoLog
     public static class SlapdownIOInputs {
-
-
         //The Volts
         public double pivotAppliedVolts = 0.0;
-        public double intakeAppliedVolts = 0.0;
-
-        //Current
-        public double pivotCurrentAmps = 0.0;
-        public double intakeCurrentAmps = 0.0;
-
-        //Rotating By Degrees
-        //public double pivotRotationDegrees = 0.0;
+        //public double intakeAppliedVolts = 0.0;
         
         //RPM
         public double intakeRPM = 0.0;
         public double absolutePosition = 0.0;
-
-        //Temp
-        public double intakeTemperature = 0.0;
-        public double pivotTemperature = 0.0;
-
     }
 
 
