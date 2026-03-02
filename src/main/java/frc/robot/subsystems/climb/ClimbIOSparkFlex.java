@@ -13,7 +13,7 @@ import frc.robot.subsystems.slapdown.SlapdownIOSparkMax;
 
 public class ClimbIOSparkFlex implements ClimbIO {
     private SparkFlex motor;
-    private Slapdown slapdown = new Slapdown(new SlapdownIOSparkMax());
+    private Slapdown slapdown;
 
     public ClimbIOSparkFlex() {
         motor = new SparkFlex(ClimbConstants.MOTOR_ID, MotorType.kBrushless);
@@ -37,10 +37,4 @@ public class ClimbIOSparkFlex implements ClimbIO {
         motor.setVoltage(volts);
     }
 
-    public void canClimb() {
-        if (slapdown.getAngle() > 0) {
-            setPosition(0);
-            runVoltage(0);
-        }
-    }
 }
