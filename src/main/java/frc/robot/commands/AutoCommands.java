@@ -35,6 +35,12 @@ public class AutoCommands {
         );
         this.climb = climb;
         this.aim = aim;
+
+        factory
+            .bind("intake", slapdown.intakeCommand())
+            .bind("stopIntake", slapdown.stopIntakeCommand())
+            .bind("slapdown", slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()))
+            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
     }
 
     //number 1
@@ -83,16 +89,16 @@ public class AutoCommands {
 
     public AutoRoutine leftCenter() {
         AutoRoutine routine = factory.newRoutine("LeftCenter");
-        AutoTrajectory leftCenter = routine.trajectory("LeftCenter", 0);
+        AutoTrajectory leftCenter = routine.trajectory("LCProtect");
         
-        routine.active().onTrue(Commands.sequence(
-            factory.resetOdometry("LeftCenter"),
-            leftCenter.cmd()
-        ));
-
-        leftCenter.atTime("startIntake").onTrue(slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()));
-        leftCenter.atTime("stopIntake").onTrue(slapdown.stopIntakeCommand());
-        leftCenter.atTime("shoot").onTrue(aim.shoot());
+        routine.active().onTrue(
+            Commands.sequence(
+                leftCenter.resetOdometry(),
+                leftCenter.cmd(),
+                drive.stopDrive(),
+                aim.shoot().withTimeout(5.0)
+            )
+        );
 
         return routine;
     }

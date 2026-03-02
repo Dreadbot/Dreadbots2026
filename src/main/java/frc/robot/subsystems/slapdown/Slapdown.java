@@ -72,7 +72,7 @@ public class Slapdown extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        //Logger.processInputs("SlapdownIntake", inputs);
+        Logger.processInputs("SlapdownIntake", inputs);
 
         if (DriverStation.isDisabled()) {
             setpoint = new TrapezoidProfile.State(inputs.absolutePosition, 0);
