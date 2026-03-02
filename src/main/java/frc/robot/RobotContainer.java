@@ -78,7 +78,7 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
+                climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
@@ -101,7 +101,7 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
-                climb = new Climb(new ClimbIOSim());
+                climb = new Climb(new ClimbIOSim(), slapdown);
                 autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
@@ -122,7 +122,7 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
-                climb = new Climb(new ClimbIOSparkFlex());
+                climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 autoAim = new AutoAim(turret, hood, flywheel, indexer, drive);
 
                 break;
