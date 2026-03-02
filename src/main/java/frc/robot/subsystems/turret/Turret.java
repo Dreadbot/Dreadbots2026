@@ -3,6 +3,7 @@ package frc.robot.subsystems.turret;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.SlapdownConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.misc.AimUtil;
@@ -10,13 +11,19 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
     private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, 0, TurretConstants.TURRET_Kd);
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(300, 300));
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+
     private final Drive drive;
 
     private double setpointRelativeRad;
@@ -37,7 +44,15 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
 
-        double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
+        if (DriverStation.isDisabled()) {
+            setpoint = new TrapezoidProfile.State(inputs.turretRotationRad, 0);
+            goal = setpoint;
+        }
+
+        // goal = new TrapezoidProfile.State();
+        setpoint = profile.calculate(0.02, setpoint, goal);
+        //double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
+        double wrappedSetpoint = wrapToLimits(setpoint.position);
         double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
         
         voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
@@ -79,9 +94,16 @@ public class Turret extends SubsystemBase {
     }
 
     public void setCorrectAngleRad(double angleRad) {
-        double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
-        double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
-        setpointRelativeRad = wrapToLimits(robotRelativeToTurretRelative(inputs.turretRotationRad + delta)); 
+        // double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
+        // double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
+        // setpointRelativeRad = wrapToLimits(robotRelativeToTurretRelative(inputs.turretRotationRad + delta)); 
+
+        double currentPositionWrapped = robotRelativeToTurretRelative(inputs.turretRotationRad);
+        double delta = MathUtil.angleModulus(angleRad - currentPositionWrapped);
+        double value = currentPositionWrapped + delta;
+        value = MathUtil.clamp(value, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD);
+        double relativeValue = value + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
+        goal = new TrapezoidProfile.State(relativeValue, 0);
     }
 
     public double robotRelativeToTurretRelative(double angleRad) {
