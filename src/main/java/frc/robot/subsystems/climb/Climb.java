@@ -83,13 +83,17 @@ public class Climb extends SubsystemBase {
     // });
     // }
 
-    // public Command levelOneClimb() {
-    // return Commands.sequence(
-    // raiseClimbArm(),
-    // Commands.waitUntil(() -> raisingArm == false),
-    // raiseRobotLevelOne()
-    // );
-    // }
+    public Command levelOneClimb() {
+        return Commands.startEnd(
+        () -> {
+            io.runVoltage(ClimbConstants.RAISE_VOLTAGE);
+            },
+        
+       () ->  io.runVoltage(0.0),
+                this
+            
+        );
+    }
 
     // public Command lowerClimbArm() {
     // return Commands.runOnce(() -> {
@@ -127,61 +131,60 @@ public class Climb extends SubsystemBase {
                 () -> io.runVoltage(0.0),
                 this);
     }
-    
+
     // public Command extentionChecker() {
-    //     return Commands.runOnce(() -> {
-    //         io.isSlapdownExtended();
-    //     });
+    // return Commands.runOnce(() -> {
+    // io.isSlapdownExtended();
+    // });
     // }
 
-    
     // Updates the inputs of ClimbIO perodic.
     // ClimbIO takes the inputs and outputs of Climb from the contorller
     // @Override
     // public void periodic() {
 
-//         io.updateInputs(inputs);
-//         Logger.processInputs("Climb", inputs);
-//         if (DriverStation.isDisabled()) {
-//             setpoint = new TrapezoidProfile.State(inputs.absolutePosition, 0);
-//             goal = setpoint;
-//         }
+    // io.updateInputs(inputs);
+    // Logger.processInputs("Climb", inputs);
+    // if (DriverStation.isDisabled()) {
+    // setpoint = new TrapezoidProfile.State(inputs.absolutePosition, 0);
+    // goal = setpoint;
+    // }
 
-//         Logger.recordOutput("Climb/SetpointPosition", setpoint.position);
-//         Logger.recordOutput("Climb/GoalPosition", goal.position);
-//         Logger.recordOutput("Climb/LowerSwitch", lowerSwitch.get());
-//         Logger.recordOutput("Climb/UpperSwitch", upperSwitch.get());
-//         Logger.recordOutput("Climb/RaisingArm", raisingArm);
-//         Logger.recordOutput("Climb/LoweringArm", loweringArm);
-//         setpoint = profile.calculate(0.02, setpoint, goal);
+    // Logger.recordOutput("Climb/SetpointPosition", setpoint.position);
+    // Logger.recordOutput("Climb/GoalPosition", goal.position);
+    // Logger.recordOutput("Climb/LowerSwitch", lowerSwitch.get());
+    // Logger.recordOutput("Climb/UpperSwitch", upperSwitch.get());
+    // Logger.recordOutput("Climb/RaisingArm", raisingArm);
+    // Logger.recordOutput("Climb/LoweringArm", loweringArm);
+    // setpoint = profile.calculate(0.02, setpoint, goal);
 
-//         // If upperSwitch is tripped
-//         if (!upperSwitch.get()) {
-//             if (climbing) loweringArm = true;
-//             raisingArm = false;
-//             io.setPosition(0);
-//             goal = new TrapezoidProfile.State(setpoint.position, 0);
-//         }
-//         // If lowerSwitch is tripped
-//         if (!lowerSwitch.get()) {
-//             if (climbing) raisingArm = true;
-//             loweringArm = false;
-//             goal = new TrapezoidProfile.State(setpoint.position, 0);
-//         }
+    // // If upperSwitch is tripped
+    // if (!upperSwitch.get()) {
+    // if (climbing) loweringArm = true;
+    // raisingArm = false;
+    // io.setPosition(0);
+    // goal = new TrapezoidProfile.State(setpoint.position, 0);
+    // }
+    // // If lowerSwitch is tripped
+    // if (!lowerSwitch.get()) {
+    // if (climbing) raisingArm = true;
+    // loweringArm = false;
+    // goal = new TrapezoidProfile.State(setpoint.position, 0);
+    // }
 
-//         if (raisingArm) {
-//             io.runVoltage(ClimbConstants.RAISE_VOLTAGE);
-//             return;
-//         }
-//         if (loweringArm) {
-//             io.runVoltage(ClimbConstants.LOWER_VOLTAGE);
-//             return;
-//         }
-//         io.runVoltage(
-//             pid.calculate(inputs.absolutePosition, setpoint.position) +
-//             feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
-//             // use acutal position degrees to make sure that we always apply the correct
-//             // gravity feed forward.
-//         );
-//     }
+    // if (raisingArm) {
+    // io.runVoltage(ClimbConstants.RAISE_VOLTAGE);
+    // return;
+    // }
+    // if (loweringArm) {
+    // io.runVoltage(ClimbConstants.LOWER_VOLTAGE);
+    // return;
+    // }
+    // io.runVoltage(
+    // pid.calculate(inputs.absolutePosition, setpoint.position) +
+    // feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity)
+    // // use acutal position degrees to make sure that we always apply the correct
+    // // gravity feed forward.
+    // );
+    // }
 }
