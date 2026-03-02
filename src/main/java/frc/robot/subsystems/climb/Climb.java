@@ -117,11 +117,11 @@ public class Climb extends SubsystemBase {
             this);
     }
     
-    public Command extentionChecker() {
-        return Commands.runOnce(() -> {
-            io.isSlapdownExtended();
-        });
-    }
+    // public Command extentionChecker() {
+    //     return Commands.runOnce(() -> {
+    //         io.isSlapdownExtended();
+    //     });
+    // }
 
     
     // Updates the inputs of ClimbIO perodic.
