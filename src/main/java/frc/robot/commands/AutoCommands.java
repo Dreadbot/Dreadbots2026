@@ -50,9 +50,7 @@ public class AutoCommands {
         routine.active().onTrue(
                 Commands.sequence(
                     leftCenterCenterClimb.resetOdometry(),
-                    leftCenterCenterClimb.cmd(),
-                    drive.stopDrive(),
-                    aim.shoot().withTimeout(5.0)
+                    leftCenterCenterClimb.cmd()
             )
         );
 
@@ -61,33 +59,15 @@ public class AutoCommands {
 
     // number 2
     public AutoRoutine depotClimb() {
-        AutoRoutine routine = factory.newRoutine("depotClimb");
-        AutoTrajectory startIntake1 = routine.trajectory("depotClimbOutline", 0);
-        AutoTrajectory stopIntakeAndStartFire1 = routine.trajectory("depotClimbOutline", 1);
-        AutoTrajectory stopFire1 = routine.trajectory("depotClimbOutline", 2);
-        // AutoTrajectory climb1 = routine.trajectory("depotClimbOutline", 3);
-
-        routine.active().onTrue(Commands.sequence(
-                factory.resetOdometry("depotClimbOutline"),
-                startIntake1.cmd().alongWith(slapdown.goToIntakeCommand()).alongWith(slapdown.intakeCommand()),
-                stopIntakeAndStartFire1.cmd().alongWith(slapdown.stopIntakeCommand().andThen(aim.shoot())),
-                stopFire1.cmd().alongWith(Commands.runOnce(() -> aim.stopShooting()))// ,
-        // climb1.cmd().alongWith(climb.levelOneClimb())
-        ));
-        return routine;
-    }
-
-    public AutoRoutine leftCenter() {
-        AutoRoutine routine = factory.newRoutine("LeftCenter");
-        AutoTrajectory leftCenter = routine.trajectory("LCProtect");
-
+        AutoRoutine routine = factory.newRoutine("DepotClimb");
+        AutoTrajectory depotClimb = routine.trajectory("depotClimbOutline");
+        
         routine.active().onTrue(
                 Commands.sequence(
-                        leftCenter.resetOdometry(),
-                        leftCenter.cmd(),
-                        drive.stopDrive(),
-                        aim.shoot().withTimeout(5.0)));
-
+                    depotClimb.resetOdometry(),
+                    depotClimb.cmd()
+            )
+        );
         return routine;
     }
 
