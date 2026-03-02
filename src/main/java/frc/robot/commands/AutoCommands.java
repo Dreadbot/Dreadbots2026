@@ -159,6 +159,7 @@ public class AutoCommands {
         trajectory.atTime("intake").onTrue(slapdown.goToIntakeCommand());
         trajectory.atTime("intake").onTrue(slapdown.intakeCommand());
 
+<<<<<<< HEAD
         //Stop intaking
         trajectory.atTime("stopIntake").onTrue(slapdown.stopIntakeCommand());
         
@@ -170,6 +171,14 @@ public class AutoCommands {
 
         trajectory.atTime("climb").onTrue(climb.testRaise());
        
+=======
+        routine.active().onTrue(Commands.sequence(
+            aim.shoot().andThen(startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand()))),
+            stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
+            startFire.cmd().alongWith(aim.shoot()),
+            stopFire.cmd().alongWith(aim.shoot())//,
+        ));
+>>>>>>> 6b9917c4af6be4a4a28a79892929dcdad9c40c83
             return routine;
         }
 }
