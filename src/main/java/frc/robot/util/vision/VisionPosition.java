@@ -63,8 +63,7 @@ public class VisionPosition implements StructSerializable {
 
         @Override
         public String getTypeName() {
-            return "DreadBots_VisionPosition";
+            return "Dreadbots_VisionPosition";
         }
-
     }
 }

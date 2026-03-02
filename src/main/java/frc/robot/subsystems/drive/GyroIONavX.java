@@ -33,7 +33,7 @@ public class GyroIONavX implements GyroIO {
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(() -> navX.getYaw().in(Degrees));
     navX.enableOptionalMessages(
         true,
-        true,
+        false,
         false,
         false,
         false,

@@ -13,19 +13,20 @@ import frc.robot.Constants.HoodConstants;
 public class Hood extends SubsystemBase {
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, 0, 0);
+    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, 0);
     
     private double goalRotations = 0.0;
-    private boolean calibrating = false;
+    private boolean calibrating = true;
 
     public Hood(HoodIO io) {
         this.io = io;
+        pid.setTolerance(0.1);
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Hood", inputs);
+        //Logger.processInputs("Hood", inputs);
         
         if (calibrating) {
             if (inputs.lowerSwitch) {
@@ -55,29 +56,26 @@ public class Hood extends SubsystemBase {
 
         Logger.recordOutput("Hood/Voltage", pidVoltage);
         Logger.recordOutput("Hood/Setpoint", goalRotations);
+        Logger.recordOutput("Hood/LimitSwitch", inputs.lowerSwitch);
     }
 
     public double getRotations() {
         return inputs.rotations;
     }
 
-    public Command calibrate() {
-        return runOnce(() -> {
-            if (!inputs.lowerSwitch) {
-                calibrating = true;
-            }
-        });
+    public void calibrate() {
+        calibrating = true;
     }
 
-    public Command setRotations(double rotations) {
-        return runOnce(() -> goalRotations = rotations);
+    public void setSetpoint(double rotations) {
+        goalRotations = rotations;
+    }
+
+    public boolean atSetpoint() {
+        return pid.atSetpoint();
     }
 
     public Command changeRotations(double rotations) {
         return runOnce(() -> goalRotations += rotations);
-    }
-
-    public void setGoalRotations(double rotations) {
-        goalRotations = rotations;
     }
 }

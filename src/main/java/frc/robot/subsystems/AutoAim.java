@@ -1,5 +1,9 @@
 package frc.robot.subsystems;
 
+import static frc.robot.subsystems.drive.DriveConstants.turnEncoderInverted;
+
+import java.util.function.DoubleSupplier;
+
 import org.ejml.simple.SimpleMatrix;
 import org.littletonrobotics.junction.Logger;
 
@@ -21,7 +25,9 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -32,27 +38,61 @@ public class AutoAim extends SubsystemBase {
     private final Turret turret;
     private final Indexer indexer;
     private final Drive drive;
+    private final DoubleSupplier xSupplier;
+    private final DoubleSupplier ySupplier;
 
-    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive) {
+    private boolean passing = false;
+
+    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
         this.indexer = indexer;
         this.drive = drive;
+        this.xSupplier = xSupplier;
+        this.ySupplier = ySupplier;
         // Distance (m)
         firingTable.put(1.20, getMatrix(0.0, 2900, 1.24));
-        firingTable.put(2.65, getMatrix(4.0, 3000, 1.24));
-        firingTable.put(3.49, getMatrix(5.0, 3400, 1.38));
+        firingTable.put(2.16, getMatrix(2.92, 2960, 1.24));
+        firingTable.put(2.64, getMatrix(6.3, 3173, 1.3));
+        firingTable.put(2.98, getMatrix(5.4, 3161, 1.35));
+        firingTable.put(3.80, getMatrix(5.83, 3450, 1.31));
         firingTable.put(4.43, getMatrix(6.0, 3600, 1.40));
-        firingTable.put(5.96, getMatrix(8.0, 3800, 1.45));
+        firingTable.put(5.08, getMatrix(9.67, 3867, 1.40));
+        firingTable.put(5.67, getMatrix(10.0, 3921, 1.45));
+    }
+
+    public Command targetPassing() {
+        return Commands.runOnce(
+            () -> {
+                passing = true;
+            }
+        );
+    }
+
+    public Command targetHub() {
+        return Commands.runOnce(
+            () -> {
+                passing = false;
+            }
+        );
     }
 
     public Command shoot() {
-        return prepShot().until(flywheel::atRPM)
-                .andThen(startFeeding())
-                .andThen(Commands.runEnd(
-                        () -> setSetpoints(true),
-                        this::stopShooting));
+        return Commands.sequence(
+            Commands.runOnce(() -> 
+                setSetpoints(true), 
+                flywheel, turret, hood, this),
+
+            prepShot().alongWith(
+                Commands.waitUntil(this::isReady)
+                .andThen(Commands.runOnce(this::startFeeding, indexer)))
+
+        ).finallyDo(interrupted -> stopShooting());
+    }
+
+    public boolean isReady() {
+        return flywheel.atRPM() && turret.atSetpoint() && hood.atSetpoint();
     }
 
     public Command prepShot() {
@@ -64,15 +104,13 @@ public class AutoAim extends SubsystemBase {
                 this);
     }
 
-    public Command startFeeding() {
-        return indexer.startIndexer()
-                .andThen(indexer.startKicker());
+    public void startFeeding() {
+        indexer.startIndexing();
     }
 
-    public Command stopShooting() {
-        return flywheel.setRPM(0)
-                .andThen(indexer.stopIndexer())
-                .andThen(indexer.stopKicker());
+    public void stopShooting() {
+        flywheel.setRPM(0);
+        indexer.stopIndexing();
     }
 
     public Command trackTarget() {
@@ -83,8 +121,10 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Translation2d getTargetTranslation() {
-        // Add joystick manipulation
-        return AimUtil.getHubTranslation();
+        if (!passing) {
+            return AimUtil.getHubTranslation().plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
+        }
+        return AimUtil.getPassTranslation(drive.getPose()).plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
     }
 
     public double getDistanceToTargetFromRobotPose(Pose2d robotPose) {
@@ -127,14 +167,14 @@ public class AutoAim extends SubsystemBase {
 
         turret.setSetpointFromTurretPose(turretPose, target);
         if (primingShot) {
-            hood.setRotations(firingValues.get(0, 0));
+            hood.setSetpoint(firingValues.get(0, 0));
             flywheel.setRPM(firingValues.get(1, 0));
         }
 
         Logger.recordOutput("AutoAim/DistanceToTarget", lookaheadTurretToTargetDistance);
-        Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
-        Logger.recordOutput("AutoAim/TurretPose", turretPose);
-        Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
+        // Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
+        // Logger.recordOutput("AutoAim/TurretPose", turretPose);
+        // Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
     }
 
     public Matrix<N3, N1> getFiringTableValues(double distance) {
