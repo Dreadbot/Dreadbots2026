@@ -148,14 +148,14 @@ public class AutoCommands {
         AutoTrajectory stopIntake1 = routine.trajectory("segment4", 1);
         AutoTrajectory startFire = routine.trajectory("segment7", 2);
         AutoTrajectory stopFire = routine.trajectory("segment8", 3);
-        //AutoTrajectory climb = routine.trajectory("segment8", 7);
+        AutoTrajectory climb = routine.trajectory("segment8", 7);
 
         routine.active().onTrue(Commands.sequence(
             startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire.cmd().alongWith(aim.shoot()),
             stopFire.cmd().alongWith(aim.shoot())//,
-            //climb.cmd().alongWith(climb.levelOneClimb())
+            climb.cmd()
         ));
             return routine;
         }
