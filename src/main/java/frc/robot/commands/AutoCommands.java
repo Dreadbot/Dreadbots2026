@@ -91,7 +91,7 @@ public class AutoCommands {
         return routine;
     }
 
-    // number 3
+     // number 3
     public AutoRoutine centerFireClimb() {
         AutoRoutine routine = factory.newRoutine("centerFireClimb");
         AutoTrajectory shoot1 = routine.trajectory("segment1", 0);
