@@ -154,7 +154,7 @@ public class AutoCommands {
             startIntake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire.cmd().alongWith(aim.shoot()),
-            stopFire.cmd().alongWith(aim.shoot())//,
+            stopFire.cmd().alongWith(aim.shoot()),
             climb.cmd()
         ));
             return routine;
