@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.misc.AimUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
@@ -25,14 +27,16 @@ public class Turret extends SubsystemBase {
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
     private final Drive drive;
+    private Flywheel flywheel;
 
     private double setpointRelativeRad;
     public double voltage;
     
 
-    public Turret(TurretIO io, Drive drive) {
+    public Turret(TurretIO io, Drive drive, Flywheel flywheel) {
         this.io = io;
         this.voltage = 0;
+        this.flywheel = flywheel;
         io.updateInputs(inputs);
         pid.setTolerance(Units.degreesToRadians(1));
         this.drive = drive;
@@ -50,6 +54,7 @@ public class Turret extends SubsystemBase {
         // }
 
         // goal = new TrapezoidProfile.State();
+            stall();
         setpoint = profile.calculate(0.02, setpoint, goal);
         //double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
         double wrappedSetpoint = wrapToLimits(setpoint.position);
@@ -127,5 +132,12 @@ public class Turret extends SubsystemBase {
     public void setSetpointFromTurretPose(Pose2d turretPose, Translation2d target) {
         double setpointRad = target.minus(turretPose.getTranslation()).getAngle().getRadians() - turretPose.getRotation().getRadians();
         setCorrectAngleRad(setpointRad);
+    }
+
+    public void stall() {
+        if (getAngle() > TurretConstants.MAX_ANGLE_RAD || getAngle() < TurretConstants.MIN_ANGLE_RAD) {
+            flywheel.stop();  
+            Commands.waitSeconds(1);     
+        } 
     }
 }
