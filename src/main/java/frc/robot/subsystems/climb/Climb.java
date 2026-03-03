@@ -130,6 +130,12 @@ public class Climb extends SubsystemBase {
                 () -> io.runVoltage(0.0),
                 this);
     }
+    
+    // public Command extentionChecker() {
+    //     return Commands.runOnce(() -> {
+    //         io.isSlapdownExtended();
+    //     });
+    // }
 
     public Command extentionChecker() {
     return Commands.runOnce(() -> {

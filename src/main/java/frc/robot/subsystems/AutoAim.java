@@ -54,7 +54,6 @@ public class AutoAim extends SubsystemBase {
         // Distance (m)
         firingTable.put(1.20, getMatrix(0.0, 2900, 1.24));
         firingTable.put(2.16, getMatrix(2.92, 2960, 1.24));
-        firingTable.put(2.64, getMatrix(6.3, 3173, 1.3));
         firingTable.put(2.98, getMatrix(5.4, 3161, 1.35));
         firingTable.put(3.80, getMatrix(5.83, 3450, 1.31));
         firingTable.put(4.43, getMatrix(6.0, 3600, 1.40));

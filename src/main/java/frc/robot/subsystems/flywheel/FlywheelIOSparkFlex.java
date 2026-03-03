@@ -22,11 +22,11 @@ public class FlywheelIOSparkFlex implements FlywheelIO {
         config1
             .idleMode(IdleMode.kCoast)
             .smartCurrentLimit(50);
-        config1.closedLoop
-            .p(0.003)
-            .i(0)
-            .d(0)
-            .outputRange(0, 1);
+        // config1.closedLoop
+        //     .p(0.003)
+        //     .i(0)
+        //     .d(0)
+        //     .outputRange(0, 1);
         motor1.configure(config1, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         controller = motor1.getClosedLoopController();
         motor2 = new SparkFlex(FlywheelConstants.MOTOR_ID_2, MotorType.kBrushless);
