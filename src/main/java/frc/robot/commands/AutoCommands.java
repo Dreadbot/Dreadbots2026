@@ -108,27 +108,6 @@ public class AutoCommands {
         return routine;
     }
 
-    //number 4 
-    public AutoRoutine centerOutpostClimb() {
-        AutoRoutine routine = factory.newRoutine("centerOutpostClimb");
-        AutoTrajectory shoot1 = routine.trajectory("segment1", 0);
-        AutoTrajectory intake1 = routine.trajectory("segment2", 1);
-        AutoTrajectory stopSlapdown1 = routine.trajectory("segment3", 2);
-        AutoTrajectory shoot2 = routine.trajectory("segment4", 3);
-        AutoTrajectory climb1 = routine.trajectory("segement5", 4);
-            
-        routine.active().onTrue(Commands.sequence(
-            aim.shoot().andThen(shoot1.cmd()),
-            intake1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
-            slapdown.stopIntakeCommand().alongWith(stopSlapdown1.cmd()),
-            shoot2.cmd().alongWith(aim.shoot()),
-            climb1.cmd()
-            /* .andThen(climb.levelOneClimb()) */
-        ));
-            return routine;
-        }
-        
-
 
 
     // number 4
