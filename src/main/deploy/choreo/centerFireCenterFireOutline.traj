@@ -429,7 +429,6 @@
  "events":[
    {"name":"slapdown", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"stopIntake", "from":{"target":2, "targetTimestamp":2.076, "offset":{"exp":"0.5 s", "val":0.5}}, "event":null},
-   {"name":"startIntake", "from":{"target":1, "targetTimestamp":1.16208, "offset":{"exp":"-0.5 s", "val":-0.5}}, "event":null},
    {"name":"shoot", "from":{"target":5, "targetTimestamp":4.60726, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"startIntake", "from":{"target":6, "targetTimestamp":5.66028, "offset":{"exp":"0 s", "val":0.0}}, "event":null},
    {"name":"stopIntake", "from":{"target":8, "targetTimestamp":7.67576, "offset":{"exp":"0 s", "val":0.0}}, "event":null},

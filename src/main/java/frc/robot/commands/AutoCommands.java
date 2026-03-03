@@ -43,6 +43,24 @@ public class AutoCommands {
             .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
     }
 
+    public AutoRoutine leftDouble() {
+        AutoRoutine routine = factory.newRoutine("leftDouble");
+        AutoTrajectory LCProtect = routine.trajectory("LCProtect");
+        AutoTrajectory LCInside = routine.trajectory("LCInside");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    LCProtect.resetOdometry(),
+                    LCProtect.cmd(),
+                    drive.stopDrive().alongWith(aim.shoot().withTimeout(5.0)),
+                    LCInside.cmd(),
+                    drive.stopDrive().alongWith(aim.shoot().withTimeout(5.0))
+            )
+        );
+
+        return routine;
+    }
+
     //number 1
     public AutoRoutine leftCenterCenterClimb() {
         AutoRoutine routine = factory.newRoutine("LeftCenterCenterClimb");
