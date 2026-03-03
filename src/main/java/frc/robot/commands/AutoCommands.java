@@ -179,7 +179,7 @@ public class AutoCommands {
             stopIntake1.cmd().alongWith(slapdown.stopIntakeCommand()),
             startFire.cmd().alongWith(aim.shoot()),
             stopFire.cmd().alongWith(aim.shoot())//,
-            climb.cmd()
+            //climb.cmd()
         ));
             return routine;
         }

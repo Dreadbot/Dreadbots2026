@@ -61,10 +61,10 @@ public class Slapdown extends SubsystemBase {
     public Command agitateCommand() {
         return Commands.repeatingSequence(
             Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE * -1), this),
-            Commands.waitSeconds(0.1),
+            Commands.waitSeconds(0.15),
             Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE), this),
-            Commands.waitSeconds(0.2)
-        );    
+            Commands.waitSeconds(0.25)
+        ).finallyDo(interrupted -> io.runIntakeVoltage(0.0));
     }
 
 

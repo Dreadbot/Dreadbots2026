@@ -79,8 +79,6 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
-                
-
                 break;
             case SIM:
                 drive = new Drive(
@@ -195,8 +193,8 @@ public class RobotContainer {
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         operator.start().onTrue(Commands.runOnce(() -> hood.calibrate()));
 
-        // operator.a().onTrue(autoAim.targetPassing());
-        // operator.b().onTrue(autoAim.targetHub());
+        operator.a().onTrue(autoAim.targetPassing());
+        operator.b().onTrue(autoAim.targetHub());
         // operator.y().onTrue(climb.prep);
         // operator.x().onTrue(climb.stow);
 
@@ -206,12 +204,12 @@ public class RobotContainer {
         // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
 
         // Tuning Operator Controls
-        operator.povUp().onTrue(hood.changeRotations(0.5));
-        operator.povDown().onTrue(hood.changeRotations(-0.5));
-        operator.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
-        operator.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
-        operator.b().onTrue(flywheel.changeRPM(100));
-        operator.x().onTrue(flywheel.changeRPM(-100));
+        // operator.povUp().onTrue(hood.changeRotations(0.5));
+        // operator.povDown().onTrue(hood.changeRotations(-0.5));
+        // operator.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
+        // operator.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
+        // operator.b().onTrue(flywheel.changeRPM(100));
+        // operator.x().onTrue(flywheel.changeRPM(-100));
     }
 
     public Command getAutonomousCommand() {
