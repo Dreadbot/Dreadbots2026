@@ -21,9 +21,9 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class Climb extends SubsystemBase {
-    // Auto logging output to something
-    private ClimbIO io;
-    private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
+        // Auto logging output to something
+        private ClimbIO io;
+        private ClimbIOInputsAutoLogged inputs = new ClimbIOInputsAutoLogged();
 
     // PID work?
     private final PIDController pid = new PIDController(ClimbConstants.PIDCONTROLLER_KP, ClimbConstants.PIDCONTROLLER_KI,
@@ -37,20 +37,20 @@ public class Climb extends SubsystemBase {
     private DigitalInput lowerSwitch = new DigitalInput(ClimbConstants.LOWER_LIMIT_SWITCH_ID);
     private DigitalInput upperSwitch = new DigitalInput(ClimbConstants.UPPER_LIMIT_SWITCH_ID);
 
-    @AutoLogOutput
-    // Setting up the boolean Varible, which is for right now isClimbed (Basic will
-    // be updated later)
-    public boolean isClimbed = false;
-    public boolean raisingArm = false;
-    public boolean loweringArm = false;
-    public boolean climbing = false;
+        @AutoLogOutput
+        // Setting up the boolean Varible, which is for right now isClimbed (Basic will
+        // be updated later)
+        public boolean isClimbed = false;
+        public boolean raisingArm = false;
+        public boolean loweringArm = false;
+        public boolean climbing = false;
 
-    private Slapdown slapdown;
+        private Slapdown slapdown;
 
-    public Climb(ClimbIO io, Slapdown slapdown) {
-        this.io = io;
-        this.slapdown = slapdown;
-    }
+        public Climb(ClimbIO io, Slapdown slapdown) {
+                this.io = io;
+                this.slapdown = slapdown;
+        }
 
     // public Command motorForward() {
     //     return Commands.startEnd(
@@ -137,7 +137,7 @@ public class Climb extends SubsystemBase {
                 () -> io.runVoltage(0.0),
                 this);
 
-    }
+        }
 
     public Command testRaise() {
         return Commands.runEnd(
