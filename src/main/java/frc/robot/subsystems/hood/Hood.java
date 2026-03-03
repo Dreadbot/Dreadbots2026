@@ -28,7 +28,7 @@ public class Hood extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Hood", inputs);
         
-        if (calibrating) {
+        if (calibrating || goalRotations == 0) {
             if (inputs.lowerSwitch) {
                 io.setPosition(0);
                 goalRotations = 0.0;

@@ -17,8 +17,8 @@ public class Constants {
     }
 
   public static class IndexerConstants {
-    public static final double SPINDEXER_VOLTAGE = 8.0;
-    public static final double KICKER_VOLTAGE = 8.0;
+    public static final double SPINDEXER_VOLTAGE = 10.0;
+    public static final double KICKER_VOLTAGE = 10.0;
     public static final int SPINDEXER_MOTOR_ID = 11;
     public static final int KICKER_MOTOR_ID = 12;
     public static final double DEAD_BAND = 0.5;
@@ -61,7 +61,7 @@ public class Constants {
     public static final double TURRET_ENCODER_OFFSET_RAD = -0.183;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
-    public static final double MAX_VOLTAGE = 9.0;
+    public static final double MAX_VOLTAGE = 12.0;
     public static final double TURRET_MOI = 0.0366;
 
 
@@ -80,17 +80,19 @@ public class Constants {
   }
 
   public static class ClimbConstants {
-    public static final double RAISE_VOLTAGE = 2;
-    public static final double LOWER_VOLTAGE = -12;
-    public static final double LEVEL_ONE_CLIMB_POSITION = 1.0; // Placeholder value, should be calibrated based on the actual climb mechanism
-    public static final double HOOK_DISENGAGE_POSITION = 2.0; // Value where the hooks go in
+    public static final double RAISE_VOLTAGE = 6;
+    public static final double LOWER_VOLTAGE = -6;
+    public static final double LEVEL_ONE_CLIMB_POSITION = 109.0; // Placeholder value, should be calibrated based on the actual climb mechanism
+    public static final double STOW_POSITION = 0.0;
+    public static final double CLIMB_POSITION = 50; // Value where the hooks go in
     public static final int MOTOR_ID = 17;
     public static final int LOWER_LIMIT_SWITCH_ID = 7;
     public static final int UPPER_LIMIT_SWITCH_ID = 6;
-    public static final double PIDCONTROLLER_KP = 0.013;
+    public static final double PIDCONTROLLER_KP = 0.3;
+    public static final double PIDCONTROLLER_KI = 0.1;
     public static final double PIDCONTROLLER_KD = 0.00;
-    public static final double ARMFEEDFORWARD_KS = 0.00;
-    public static final double ARMFEEDFORWARD_KV = 0.023;
+    public static final double ARMFEEDFORWARD_KS = 2.0;
+    public static final double ARMFEEDFORWARD_KV = 0.0;
     public static final int TRAPEZOID_CONSTRAINTS_MAX_VELOCITY = 540;
     public static final int TRAPEZOID_CONSTRAINTS_MAX_ACCELERATION = 540;
     public static final int TRAPEZOID_STATE_POSITION = 0;
@@ -106,7 +108,7 @@ public class Constants {
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 8;
+    public static final double INTAKE_VOLTAGE = 6;
     public static final double KP = 0.1;
     public static final double KI = 0.05;
     public static final double KD = 0;

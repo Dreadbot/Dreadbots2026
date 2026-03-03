@@ -171,10 +171,12 @@ public class RobotContainer {
         
         driver.b().onTrue(turret.setAngleRad(0 * Math.PI));
         driver.a().whileTrue(drive.brace());
+        driver.y().whileTrue(climb.testRaise());
+        driver.x().whileTrue(climb.testLower());
 
         
         driver.leftTrigger().whileTrue(slapdown.intakeCommand());
-        driver.leftBumper().onTrue(climb.raiseRobotLevelOne());
+        driver.leftBumper().onTrue(climb.climb());
         
         driver.rightTrigger().whileTrue(autoAim.shoot());
         driver.rightBumper().whileTrue(autoAim.prepShot());
@@ -197,8 +199,8 @@ public class RobotContainer {
 
         operator.a().onTrue(autoAim.targetPassing());
         operator.b().onTrue(autoAim.targetHub());
-        // operator.y().onTrue(climb.prep);
-        // operator.x().onTrue(climb.stow);
+        operator.y().onTrue(climb.raiseRobotLevelOne());
+        operator.x().onTrue(climb.lowerClimbArm());
 
         // Turret Presets
         // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));

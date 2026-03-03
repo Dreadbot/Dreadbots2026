@@ -62,9 +62,8 @@ public class Slapdown extends SubsystemBase {
     public Command agitateCommand() {
         return intakeCommand().withTimeout(0.15).andThen(
             Commands.repeatingSequence(
-                outtakeCommand().withTimeout(0.1),
-                intakeCommand().withTimeout(0.2),
-                stopIntakeCommand().withTimeout(0.1)
+                outtakeCommand().withTimeout(0.05),
+                intakeCommand().withTimeout(0.25)
             ));
     }
 
