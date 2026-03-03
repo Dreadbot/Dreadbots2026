@@ -43,5 +43,5 @@ public interface ClimbIO {
 
     public default void setPosition(double position) {};
 
-    public default void canClimb() {};
+    public default void isSlapdownExtended() {};
 }
