@@ -1,8 +1,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+
+import static edu.wpi.first.units.Units.Seconds;
+
+import java.util.concurrent.TimeUnit;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 
 public class Constants {
     public static final Mode simMode = Mode.SIM;
@@ -31,6 +37,16 @@ public class Constants {
       public static final double RPM_TOLERANCE = 100.0;
   }
 
+    }
+    public static final class LedConstants {
+        public static final int LED_COUNT = 700;
+        public static final int PWM_PORT = 0;
+        public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
+        public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
+        public static final double WARN_TIME = 3.0;
+        public static final double SHOOT_SIGNAL_TIME = 2.0;
+    }
+}
   public static class HoodConstants {
     public static final int MOTOR_ID = 15;
     public static final int LOWER_LIMIT_SWITCH_ID = 3;

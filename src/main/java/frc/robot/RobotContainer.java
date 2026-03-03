@@ -1,7 +1,16 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Percent;
+import static edu.wpi.first.units.Units.Seconds;
+
 import java.util.List;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -14,7 +23,10 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
@@ -23,7 +35,10 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.util.vision.VisionUtil;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.subsystems.LEDs.*;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -152,6 +167,15 @@ public class RobotContainer {
  
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
+        disabled().onTrue(
+            new InstantCommand(() ->
+                leds.setPattern(LEDPattern.solid(leds.getAllianceColor()).breathe(Seconds.of(2)).atBrightness(Percent.of(50)))
+            ).ignoringDisable(true));
+        gotAlliance().onTrue(
+            new InstantCommand(() ->
+                leds.setPattern(LEDPattern.solid(leds.getAllianceColor()).breathe(Seconds.of(2)).atBrightness(Percent.of(50)))
+            ).ignoringDisable(true));
+      
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
@@ -222,10 +246,18 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-
+        leds.autonomousInit();
     }
 
     public void teleopInit() {
+        leds.teleopInit();
+    }
 
+    private static Trigger disabled() {
+        return new Trigger(DriverStation::isDisabled);
+    }
+
+    private static Trigger gotAlliance() {
+        return new Trigger(() -> DriverStation.getAlliance().isPresent());
     }
 }
