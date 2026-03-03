@@ -92,28 +92,25 @@ public class AutoCommands {
 
 
     //number 3 
-    public AutoRoutine centerFireClimb() {
-        AutoRoutine routine = factory.newRoutine("centerFireClimb");
-        AutoTrajectory shoot1 = routine.trajectory("segment1", 0);
-        AutoTrajectory depot1 = routine.trajectory("segment2", 1);
-        AutoTrajectory climb1 = routine.trajectory("segment3", 2);
-
-        routine.active().onTrue(Commands.sequence(
-            shoot1.cmd().alongWith(aim.shoot()),
-            depot1.cmd().alongWith(slapdown.goToIntakeCommand().andThen(slapdown.intakeCommand())),
-            slapdown.goToHomeCommand().andThen(slapdown.stopIntakeCommand().andThen(climb1.cmd()
-            /*.alongWith(climb.levelOneClimb())*/
-            ))
-        ));
+    public AutoRoutine outpostClimb() {
+        AutoRoutine routine = factory.newRoutine("OutpostClimb");
+        AutoTrajectory trajectory = routine.trajectory("outpostClimbOutline");
+        
+        routine.active().onTrue(
+                Commands.sequence(
+                    trajectory.resetOdometry(),
+                    trajectory.cmd()
+            )
+        );
         return routine;
     }
 
 
 
     // number 4
-    public AutoRoutine RightDepotOutpostClimbOutline() {
-        AutoRoutine routine = factory.newRoutine("RightDepotOutpostClimbOutline");
-        AutoTrajectory trajectory = routine.trajectory("RightDepotOutpostClimbOutline");
+    public AutoRoutine rightOutpostClimbOutline() {
+        AutoRoutine routine = factory.newRoutine("RightOutpostClimbOutline");
+        AutoTrajectory trajectory = routine.trajectory("rightOutpostClimbOutline");
         
         routine.active().onTrue(
         Commands.sequence(
