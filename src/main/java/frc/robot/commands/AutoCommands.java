@@ -46,7 +46,7 @@ public class AutoCommands {
     //number 1
     public AutoRoutine leftCenterCenterClimb() {
         AutoRoutine routine = factory.newRoutine("LeftCenterCenterClimb");
-        AutoTrajectory leftCenterCenterClimb = routine.trajectory("centerCenterClimbOutline")
+        AutoTrajectory leftCenterCenterClimb = routine.trajectory("centerCenterClimbOutline");
         
         routine.active().onTrue(
                 Commands.sequence(
@@ -124,21 +124,11 @@ public class AutoCommands {
             trajectory.cmd()
         )
     );
-        // Starting at the event marker named "intake", run the intake 
-        //slapdown intake and start intaking
-        trajectory.atTime("intake").onTrue(slapdown.goToIntakeCommand());
-        trajectory.atTime("intake").onTrue(slapdown.intakeCommand());
 
-        //Stop intaking
-        trajectory.atTime("stopIntake").onTrue(slapdown.stopIntakeCommand());
-        
         //Start Shooting/Autoaiming and shooting
         trajectory.atTime("shoot").onTrue(aim.shoot());
 
-        // Slapup the intake
-        trajectory.atTime("slapup").onTrue(slapdown.goToHomeCommand());
-
-        trajectory.atTime("climb").onTrue(climb.testRaise());
+        //trajectory.atTime("climb").onTrue(climb.testRaise());
 
         return routine;
     }
