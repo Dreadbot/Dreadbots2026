@@ -102,8 +102,9 @@ public class Climb extends SubsystemBase {
 
     public Command raiseRobotLevelOne() {
     return Commands.runOnce (() -> {
-    if (lowerSwitch.get()) goal = new
-    TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0);
+    if (lowerSwitch.get()) {
+        goal = new
+    TrapezoidProfile.State(ClimbConstants.LEVEL_ONE_CLIMB_POSITION, 0); }
     });
     }
 
