@@ -172,9 +172,10 @@ public class RobotContainer {
         driver.b().onTrue(turret.setAngleRad(0 * Math.PI));
         driver.a().whileTrue(drive.brace());
 
+        
         driver.leftTrigger().whileTrue(slapdown.intakeCommand());
-        driver.leftBumper().whileTrue(autoAim.trackTarget());
-        // driver.leftBumper().onTrue(climb.climb());
+        //driver.leftBumper().whileTrue(autoAim.trackTarget());
+        driver.leftBumper().onTrue(climb.raiseRobotLevelOne());
         
         driver.rightTrigger().whileTrue(autoAim.shoot());
         driver.rightBumper().whileTrue(autoAim.prepShot());
