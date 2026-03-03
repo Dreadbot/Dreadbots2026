@@ -4,13 +4,16 @@ import org.littletonrobotics.junction.AutoLog;
 
 public interface HoodIO {
 
-  @AutoLog
-  public static class HoodIOInputs {
-    public double angleDeg = 0.0;
-    public double velocityDegPerSec = 0.0;
-    public double appliedVolts = 0.0;
-  }
+    @AutoLog
+    public static class HoodIOInputs {
+        public double rotations = 0.0;
+        public double appliedVolts = 0.0;
+        public boolean lowerSwitch = false;
+    }
 
-  default void updateInputs(HoodIOInputs inputs) {}
-  default void setVoltage(double volts) {}
+    default void updateInputs(HoodIOInputs inputs) {}
+
+    default void setVoltage(double volts) {}
+
+    default void setPosition(double position) {}
 }

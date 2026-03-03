@@ -1,32 +1,33 @@
 package frc.robot.subsystems.climb;
 
-import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.spark.SparkFlex;
 
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
-//Redone Code from 2024/2025 Slapdown Algae I wrote to get voltage from a motor needs work so commented out for now -Landon
-
-// I think issue is that the Sparkflex Motor has not been defined nad named yet 
 public class ClimbIOSim implements ClimbIO {
+   
+    private final DCMotorSim motorSim;
+    private final double rollerWheelMOI = 0.5 * Units.lbsToKilograms(0.12) * Units.inchesToMeters(1.5) * Units.inchesToMeters(1.5);
+    public ClimbIOSim() {
+        this.motorSim = new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getNeoVortex(1), 3 * rollerWheelMOI, 1.0),
+            DCMotor.getNeoVortex(1)
+        );
+    }
 
- ///private final SparkFlex ScrewMotor;
+    @Override
+    public void updateInputs(ClimbIOInputs inputs) {
+        motorSim.update(0.02);
 
+        inputs.appliedVolts = 0.0;
+        inputs.RPM = motorSim.getAngularVelocityRPM();
+        inputs.currentAmps = motorSim.getCurrentDrawAmps();
+    }
 
-//  public ClimbIOSim() {
-        
-    //      ScrewMotorVolts = 0.0;
-
-    // private double ScrewMotorVolts;
- 
-    // @Override
-    // public void updateInputs(ClimbIOInputs inputs) {
-      
-
-    //     inputs.screwMotorAppliedVolts = ScrewMotorVolts;
-        
-       
-    //     inputs.screwMotorCurrentAmps = ScrewMotor.getCurrentDrawAmps();
-
-       //}  
-    //}
+    @Override
+    public void runVoltage(double volts) {
+        motorSim.setInputVoltage(volts);
+    }
 }

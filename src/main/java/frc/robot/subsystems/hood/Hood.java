@@ -1,29 +1,81 @@
 package frc.robot.subsystems.hood;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
+
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+
+import frc.robot.Constants.HoodConstants;
 
 public class Hood extends SubsystemBase {
-  private final HoodIO io;
-  private final HoodIO.HoodIOInputs inputs = new HoodIO.HoodIOInputs();
+    private final HoodIO io;
+    private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
+    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, 0);
+    
+    private double goalRotations = 0.0;
+    private boolean calibrating = true;
 
-  public Hood(HoodIO io) {
-    this.io = io;
-  }
+    public Hood(HoodIO io) {
+        this.io = io;
+        pid.setTolerance(0.5);
+    }
 
-  @Override
-  public void periodic() {
-    io.updateInputs(inputs);
-  }
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Hood", inputs);
+        
+        if (calibrating || goalRotations == 0) {
+            if (inputs.lowerSwitch) {
+                io.setPosition(0);
+                goalRotations = 0.0;
+                calibrating = false;
+                io.setVoltage(0);
+            }
+            io.setVoltage(-1.5);
+            return;
+        }
 
-  public void setVoltage(double volts) {
-    io.setVoltage(volts);
-  }
+        double pidVoltage = pid.calculate(inputs.rotations, goalRotations);
+        if (pidVoltage > 0 && inputs.rotations >= HoodConstants.MAX_ROTATIONS) {
+            pidVoltage = 0;
+        }
+        if (Math.abs(pidVoltage) > 1e-1) {
+            pidVoltage += Math.copySign(HoodConstants.HOOD_KS, pidVoltage);
+        }
+        pidVoltage = MathUtil.clamp(pidVoltage, -HoodConstants.MAX_VOLTAGE, HoodConstants.MAX_VOLTAGE);
 
-  public double getAngleDegrees() {
-    return inputs.angleDeg;
-  }
+        if (inputs.lowerSwitch) {
+            io.setPosition(0);
+            if (pidVoltage < 0) pidVoltage = 0;
+        }
+        io.setVoltage(pidVoltage);
+        Logger.recordOutput("Hood/AtSetpoint", atSetpoint());
+        Logger.recordOutput("Hood/Voltage", pidVoltage);
+        Logger.recordOutput("Hood/Setpoint", goalRotations);
+        Logger.recordOutput("Hood/LimitSwitch", inputs.lowerSwitch);
+    }
 
-  public double getVelocityDegPerSec() {
-    return inputs.velocityDegPerSec;
-  }
+    public double getRotations() {
+        return inputs.rotations;
+    }
+
+    public void calibrate() {
+        calibrating = true;
+    }
+
+    public void setSetpoint(double rotations) {
+        goalRotations = rotations;
+    }
+
+    public boolean atSetpoint() {
+        return pid.atSetpoint();
+    }
+
+    public Command changeRotations(double rotations) {
+        return runOnce(() -> goalRotations += rotations);
+    }
 }

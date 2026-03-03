@@ -13,40 +13,46 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
+import com.studica.frc.Navx;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import java.util.Queue;
 
-import org.littletonrobotics.junction.Logger;
+import java.util.Queue;
 
 /** IO implementation for NavX. */
 public class GyroIONavX implements GyroIO {
-  private final AHRS navX = new AHRS(NavXComType.kUSB1, (int) odometryFrequency);
+  private final Navx navX = new Navx(0, (int) odometryFrequency);
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 
   public GyroIONavX() {
     yawTimestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(navX::getAngle);
-    Logger.recordOutput("Gyro/Debug/fullScaleRange", navX.getGyroFullScaleRangeDPS());
+    yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(() -> navX.getYaw().in(Degrees));
+    navX.enableOptionalMessages(
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false);
   }
 
   @Override
   public void updateInputs(GyroIOInputs inputs) {
-    inputs.connected = navX.isConnected();
-    inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle());
-    inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
-
-    inputs.odometryYawTimestamps =
-        yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryYawPositions =
-        yawPositionQueue.stream()
-            .map((Double value) -> Rotation2d.fromDegrees(-value))
-            .toArray(Rotation2d[]::new);
+    inputs.yawPosition = Rotation2d.fromDegrees(navX.getYaw().in(Degrees));
+    inputs.yawVelocityRadPerSec = navX.getAngularVel()[2].in(RadiansPerSecond);
+    inputs.connected = navX.getYaw().in(Degrees) != 360.0;
+    inputs.odometryYawTimestamps = yawTimestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryYawPositions = yawPositionQueue.stream()
+        .map((Double value) -> Rotation2d.fromDegrees(value))
+        .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
   }

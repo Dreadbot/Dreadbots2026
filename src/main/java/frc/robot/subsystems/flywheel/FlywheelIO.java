@@ -13,4 +13,6 @@ public interface FlywheelIO {
     public default void updateInputs(FlywheelIOInputs inputs) {}
 
     public default void setVoltage(double volts) {}
+
+    public default void setRPM(double rpm) {}
 }

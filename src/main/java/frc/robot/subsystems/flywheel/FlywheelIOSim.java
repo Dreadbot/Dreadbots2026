@@ -36,7 +36,6 @@ public class FlywheelIOSim implements FlywheelIO {
         sim.update(0.02);
 
         inputs.RPM = Units.radiansPerSecondToRotationsPerMinute(sim.getAngularVelocityRadPerSec());
-
         inputs.appliedVolts = appliedVolts;
     }
 }
