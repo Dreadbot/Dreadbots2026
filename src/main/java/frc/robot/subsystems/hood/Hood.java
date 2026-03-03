@@ -20,13 +20,13 @@ public class Hood extends SubsystemBase {
 
     public Hood(HoodIO io) {
         this.io = io;
-        pid.setTolerance(0.1);
+        pid.setTolerance(0.5);
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        //Logger.processInputs("Hood", inputs);
+        Logger.processInputs("Hood", inputs);
         
         if (calibrating) {
             if (inputs.lowerSwitch) {
@@ -53,7 +53,7 @@ public class Hood extends SubsystemBase {
             if (pidVoltage < 0) pidVoltage = 0;
         }
         io.setVoltage(pidVoltage);
-
+        Logger.recordOutput("Hood/AtSetpoint", atSetpoint());
         Logger.recordOutput("Hood/Voltage", pidVoltage);
         Logger.recordOutput("Hood/Setpoint", goalRotations);
         Logger.recordOutput("Hood/LimitSwitch", inputs.lowerSwitch);

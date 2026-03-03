@@ -27,44 +27,45 @@ public class Slapdown extends SubsystemBase {
     }
 
     public Command goToIntakeCommand() {
-        return Commands.runOnce(() -> {
-                    goal = new TrapezoidProfile.State(SlapdownConstants.INTAKE_ANGLE_DEGREES, 0);
-                });
+        return Commands.runOnce(
+            () -> goal = new TrapezoidProfile.State(SlapdownConstants.INTAKE_ANGLE_DEGREES, 0)
+        );
     }
 
     public Command goToHomeCommand() {
-        return Commands.runOnce(() -> {
-            goal = new TrapezoidProfile.State(SlapdownConstants.HOME_ANGLE_DEGREES, 0);
-        });
+        return Commands.runOnce(
+            () -> goal = new TrapezoidProfile.State(SlapdownConstants.HOME_ANGLE_DEGREES, 0)
+        );
+    }
+
+    public Command outtakeCommand() {
+        return Commands.runEnd(
+            () -> io.runIntakeVoltage(-SlapdownConstants.INTAKE_VOLTAGE),
+            () -> io.runIntakeVoltage(0)
+        );
     }
 
     public Command intakeCommand() {
         return Commands.runEnd(
-            () -> {
-                io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE);
-            },
-            () -> {
-                io.runIntakeVoltage(0);
-            }
+            () -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE),
+            () -> io.runIntakeVoltage(0)
         );
     }
 
     public Command stopIntakeCommand() {
-        return Commands.run(
-            () -> {
-                io.runIntakeVoltage(0);
-            }
+        return Commands.runOnce(
+            () -> io.runIntakeVoltage(0)
         );
     }
 
     // Double check with test
     public Command agitateCommand() {
-        return Commands.repeatingSequence(
-            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE * -1), this),
-            Commands.waitSeconds(0.1),
-            Commands.runOnce (() -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE), this),
-            Commands.waitSeconds(0.2)
-        );    
+        return intakeCommand().withTimeout(0.15).andThen(
+            Commands.repeatingSequence(
+                outtakeCommand().withTimeout(0.1),
+                intakeCommand().withTimeout(0.2),
+                stopIntakeCommand().withTimeout(0.1)
+            ));
     }
 
 
@@ -91,10 +92,10 @@ public class Slapdown extends SubsystemBase {
 
     public Command setAngleDegrees(double angle) {
         return runOnce(
-            () -> {
-                goal = new TrapezoidProfile.State(angle, 0);
-             } );
+            () -> goal = new TrapezoidProfile.State(angle, 0)
+        );
     }
+    
     public double getAngle() {
         return inputs.absolutePosition;
     }

@@ -20,7 +20,7 @@ public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
     private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, 0, TurretConstants.TURRET_Kd);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(300, 300));
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(300, 25));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
@@ -42,12 +42,12 @@ public class Turret extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        //Logger.processInputs("Turret", inputs);
+        Logger.processInputs("Turret", inputs);
 
-        if (DriverStation.isDisabled()) {
-            setpoint = new TrapezoidProfile.State(inputs.turretRotationRad, 0);
-            goal = setpoint;
-        }
+        // if (DriverStation.isDisabled()) {
+        //     setpoint = new TrapezoidProfile.State(inputs.turretRotationRad, 0);
+        //     goal = setpoint;
+        // }
 
         // goal = new TrapezoidProfile.State();
         setpoint = profile.calculate(0.02, setpoint, goal);
@@ -56,7 +56,7 @@ public class Turret extends SubsystemBase {
         double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
         
         voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
-        if (Math.abs(voltage) > 1e-2) {
+        if (Math.abs(voltage) > 1e-1) {
             voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
         }
         
@@ -74,7 +74,7 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Turret/CurrentTurretRotationRadians", turretRotationRelative);
         // Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
         // Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
-        // Logger.recordOutput("Turret/Voltage", voltage);
+        Logger.recordOutput("Turret/Voltage", voltage);
         Logger.recordOutput("Turret/FieldPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(
                 drive.getPose()), 
@@ -94,16 +94,16 @@ public class Turret extends SubsystemBase {
     }
 
     public void setCorrectAngleRad(double angleRad) {
-        // double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
-        // double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
-        // setpointRelativeRad = wrapToLimits(robotRelativeToTurretRelative(inputs.turretRotationRad + delta)); 
+        double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
+        double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
+        setpointRelativeRad = wrapToLimits(robotRelativeToTurretRelative(inputs.turretRotationRad + delta)); 
 
-        double currentPositionWrapped = robotRelativeToTurretRelative(inputs.turretRotationRad);
-        double delta = MathUtil.angleModulus(angleRad - currentPositionWrapped);
-        double value = currentPositionWrapped + delta;
-        value = MathUtil.clamp(value, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD);
-        double relativeValue = value + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
-        goal = new TrapezoidProfile.State(relativeValue, 0);
+        // double currentPositionWrapped = robotRelativeToTurretRelative(inputs.turretRotationRad);
+        // double delta = MathUtil.angleModulus(angleRad - currentPositionWrapped);
+        // double value = currentPositionWrapped + delta;
+        // value = MathUtil.clamp(value, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD);
+        // double relativeValue = value + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
+        goal = new TrapezoidProfile.State(setpointRelativeRad, 0);
     }
 
     public double robotRelativeToTurretRelative(double angleRad) {
