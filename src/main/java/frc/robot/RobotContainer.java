@@ -132,9 +132,9 @@ public class RobotContainer {
         // Set up auto routines
         choreoAutoChooser = new AutoChooser();
         // 1
-        choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
-        // 2
-        choreoAutoChooser.addRoutine("Left Center Sweep", autos::leftCenter);
+        // choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
+        // // 2
+        // choreoAutoChooser.addRoutine("Left Center Sweep", autos::leftCenter);
         // 3
         //choreoAutoChooser.addCmd("Outpost Climb", autos::outpostClimb);
         // 4
