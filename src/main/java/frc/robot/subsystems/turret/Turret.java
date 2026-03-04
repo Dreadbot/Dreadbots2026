@@ -40,7 +40,8 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         pid.setTolerance(Units.degreesToRadians(1));
         this.drive = drive;
-        setCorrectAngleRad(0.0);
+        //setCorrectAngleRad(0.0);
+        setpointRelativeRad = 0;
     }
 
     @Override
@@ -48,13 +49,13 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
 
-        // if (DriverStation.isDisabled()) {
-        //     setpoint = new TrapezoidProfile.State(inputs.turretRotationRad, 0);
-        //     goal = setpoint;
-        // }
+        if (DriverStation.isDisabled()) {
+            setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
+            goal = setpoint;
+        }
 
         // goal = new TrapezoidProfile.State();
-            stall();
+        //    stall();
         setpoint = profile.calculate(0.02, setpoint, goal);
         //double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
         double wrappedSetpoint = wrapToLimits(setpoint.position);
@@ -92,7 +93,7 @@ public class Turret extends SubsystemBase {
     }   
     
     public Command setAngleRad(double angleRad) {
-        return runOnce(
+        return run(
             () -> {
                 setCorrectAngleRad(angleRad); 
             } );

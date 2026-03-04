@@ -37,16 +37,15 @@ public class Constants {
       public static final double RPM_TOLERANCE = 100.0;
   }
 
-    }
-    public static final class LedConstants {
-        public static final int LED_COUNT = 700;
-        public static final int PWM_PORT = 0;
-        public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
-        public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
-        public static final double WARN_TIME = 3.0;
-        public static final double SHOOT_SIGNAL_TIME = 2.0;
-    }
-}
+  public static final class LedConstants {
+      public static final int LED_COUNT = 100;
+      public static final int PWM_PORT = 0;
+      public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
+      public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
+      public static final double WARN_TIME = 3.0;
+      public static final double SHOOT_SIGNAL_TIME = 2.0;
+  }
+
   public static class HoodConstants {
     public static final int MOTOR_ID = 15;
     public static final int LOWER_LIMIT_SWITCH_ID = 3;
@@ -74,7 +73,7 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = -0.183;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = -0.625;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 12.0;
@@ -118,17 +117,17 @@ public class Constants {
   public static class SlapdownConstants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
     public static final double ENCODER_OFFSET = 60;
-    public static final double HOME_ANGLE_DEGREES = 0;
+    public static final double HOME_ANGLE_DEGREES = 0.0;
     public static final double INTAKE_ANGLE_DEGREES = 129;
     public static final double MAX_ANGLE_DEGREES =  131.5;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
     public static final double INTAKE_VOLTAGE = 6;
-    public static final double KP = 0.1;
-    public static final double KI = 0.05;
+    public static final double KP = 0.15;
+    public static final double KI = 0.1;
     public static final double KD = 0;
-    public static final double KS = 0;
+    public static final double KS = 0.0;
     public static final double KV = 0;
     public static final double KG = 0;
     public static final double MAX_VELOCITY = 540;

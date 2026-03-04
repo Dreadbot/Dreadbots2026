@@ -71,6 +71,7 @@ public class RobotContainer {
     private final Slapdown slapdown;
     private final AutoChooser choreoAutoChooser;
     private final AutoCommands autos;
+    private final Led leds;
 
 
     public RobotContainer() {
@@ -143,7 +144,7 @@ public class RobotContainer {
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
 
         autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
-
+        leds = new Led(new LedIO());
         // Set up auto routines
         choreoAutoChooser = new AutoChooser();
         
@@ -191,12 +192,12 @@ public class RobotContainer {
                                         new Rotation2d())),
                         drive).ignoringDisable(true));
         
-        // autoAim.setDefaultCommand(autoAim.trackTarget());
+        autoAim.setDefaultCommand(autoAim.trackTarget());
         
-        driver.b().onTrue(turret.setAngleRad(0 * Math.PI));
+        driver.b().whileTrue(turret.setAngleRad(0 * Math.PI));
         driver.a().whileTrue(drive.brace());
-        driver.y().whileTrue(climb.testRaise());
-        driver.x().whileTrue(climb.testLower());
+        // driver.y().whileTrue(climb.testRaise());
+        // driver.x().whileTrue(climb.testLower());
 
         
         driver.leftTrigger().whileTrue(slapdown.intakeCommand());

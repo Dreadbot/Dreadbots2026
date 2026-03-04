@@ -81,7 +81,7 @@ public class Slapdown extends SubsystemBase {
 
         setpoint = profile.calculate(0.02, setpoint, goal);
         double voltage = pid.calculate(inputs.absolutePosition, setpoint.position) + 
-            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity);
+            feedforward.calculate(inputs.absolutePosition - 90, setpoint.velocity);
 
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);
