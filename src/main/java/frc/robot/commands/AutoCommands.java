@@ -6,6 +6,7 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
 import frc.robot.subsystems.slapdown.Slapdown;
 import frc.robot.subsystems.AutoAim;
@@ -15,16 +16,18 @@ public class AutoCommands {
     public AutoFactory factory;
     public Drive drive;
     public Slapdown slapdown;
+    public Hood hood;
     public Indexer indexer;
     public Climb climb;
     public AutoAim aim;
     public Flywheel flywheel;
    
-    public AutoCommands(Drive drive, Slapdown slapdown, Indexer indexer, Climb climb, Flywheel flywheel, AutoAim aim) {
+    public AutoCommands(Drive drive, Slapdown slapdown, Hood hood, Indexer indexer, Climb climb, Flywheel flywheel, AutoAim aim) {
         this.drive = drive;
         this.slapdown = slapdown;
         this.indexer = indexer;
         this.flywheel = flywheel;
+        this.hood = hood;
         this.factory = new AutoFactory(
             drive::getPose,
             drive::setPose,
@@ -52,9 +55,43 @@ public class AutoCommands {
                 Commands.sequence(
                     LCProtect.resetOdometry(),
                     LCProtect.cmd(),
-                    drive.stopDrive().alongWith(aim.shoot().withTimeout(5.0)),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    Commands.runOnce(() -> hood.setSetpoint(0.0)),
                     LCInside.cmd(),
-                    drive.stopDrive().alongWith(aim.shoot().withTimeout(5.0))
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine RCOutpost() {
+        AutoRoutine routine = factory.newRoutine("RCOutpost");
+        AutoTrajectory RCOutpost = routine.trajectory("RCOutpost");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    RCOutpost.resetOdometry(),
+                    RCOutpost.cmd(),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine wheelRadius() {
+        AutoRoutine routine = factory.newRoutine("wheelRadius");
+        AutoTrajectory wheelRadius = routine.trajectory("wheelRadius");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    wheelRadius.resetOdometry(),
+                    wheelRadius.cmd(),
+                    drive.stopDrive()
             )
         );
 

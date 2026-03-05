@@ -1,7 +1,16 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Percent;
+import static edu.wpi.first.units.Units.Seconds;
+
 import java.util.List;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -14,7 +23,10 @@ import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.DriveCommands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
@@ -23,7 +35,10 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.util.vision.VisionUtil;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
+import frc.robot.subsystems.flywheel.FlywheelIOSparkFlex;
+import frc.robot.subsystems.LEDs.*;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -56,6 +71,7 @@ public class RobotContainer {
     private final Slapdown slapdown;
     private final AutoChooser choreoAutoChooser;
     private final AutoCommands autos;
+    private final Led leds;
 
 
     public RobotContainer() {
@@ -73,7 +89,6 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
-
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
@@ -127,14 +142,15 @@ public class RobotContainer {
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
 
-        autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
-
+        autos = new AutoCommands(drive, slapdown, hood, indexer, climb, flywheel, autoAim);
+        leds = new Led(new LedIO());
         // Set up auto routines
         choreoAutoChooser = new AutoChooser();
         
         choreoAutoChooser.addRoutine("Left Double", autos::leftDouble);
+        choreoAutoChooser.addRoutine("Right Center-Outpost", autos::RCOutpost);
         // 1
-        //choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
+        choreoAutoChooser.addRoutine("Wheel Radius LT to Center", autos::wheelRadius);
         // // 2
         // choreoAutoChooser.addRoutine("Left Center Sweep", autos::leftCenter);
         // 3
@@ -152,6 +168,15 @@ public class RobotContainer {
  
     // This configures the button's bindings for the controller with the system for the robot
     private void configureButtonBindings() {
+        disabled().onTrue(
+            new InstantCommand(() ->
+                leds.setPattern(LEDPattern.solid(leds.getAllianceColor()).breathe(Seconds.of(2)).atBrightness(Percent.of(50)))
+            ).ignoringDisable(true));
+        gotAlliance().onTrue(
+            new InstantCommand(() ->
+                leds.setPattern(LEDPattern.solid(leds.getAllianceColor()).breathe(Seconds.of(2)).atBrightness(Percent.of(50)))
+            ).ignoringDisable(true));
+      
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
@@ -167,14 +192,16 @@ public class RobotContainer {
                                         new Rotation2d())),
                         drive).ignoringDisable(true));
         
-        // autoAim.setDefaultCommand(autoAim.trackTarget());
+        autoAim.setDefaultCommand(autoAim.trackTarget());
         
-        driver.b().onTrue(turret.setAngleRad(0 * Math.PI));
+        driver.b().whileTrue(turret.setAngleRad(0 * Math.PI));
         driver.a().whileTrue(drive.brace());
+        // driver.y().whileTrue(climb.testRaise());
+        // driver.x().whileTrue(climb.testLower());
 
         
         driver.leftTrigger().whileTrue(slapdown.intakeCommand());
-        driver.leftBumper().onTrue(climb.raiseRobotLevelOne());
+        driver.leftBumper().onTrue(climb.climb());
         
         driver.rightTrigger().whileTrue(autoAim.shoot());
         driver.rightBumper().whileTrue(autoAim.prepShot());
@@ -197,8 +224,8 @@ public class RobotContainer {
 
         operator.a().onTrue(autoAim.targetPassing());
         operator.b().onTrue(autoAim.targetHub());
-        // operator.y().onTrue(climb.prep);
-        // operator.x().onTrue(climb.stow);
+        operator.y().onTrue(climb.raiseRobotLevelOne());
+        operator.x().onTrue(climb.lowerClimbArm());
 
         // Turret Presets
         // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
@@ -220,10 +247,18 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-
+        leds.autonomousInit();
     }
 
     public void teleopInit() {
+        leds.teleopInit();
+    }
 
+    private static Trigger disabled() {
+        return new Trigger(DriverStation::isDisabled);
+    }
+
+    private static Trigger gotAlliance() {
+        return new Trigger(() -> DriverStation.getAlliance().isPresent());
     }
 }

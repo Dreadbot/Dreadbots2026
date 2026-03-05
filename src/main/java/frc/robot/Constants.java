@@ -1,8 +1,14 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+
+import static edu.wpi.first.units.Units.Seconds;
+
+import java.util.concurrent.TimeUnit;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Time;
 
 public class Constants {
     public static final Mode simMode = Mode.SIM;
@@ -17,7 +23,7 @@ public class Constants {
     }
 
   public static class IndexerConstants {
-    public static final double SPINDEXER_VOLTAGE = 8.0;
+    public static final double SPINDEXER_VOLTAGE = 12.0;
     public static final double KICKER_VOLTAGE = 8.0;
     public static final int SPINDEXER_MOTOR_ID = 11;
     public static final int KICKER_MOTOR_ID = 12;
@@ -30,6 +36,15 @@ public class Constants {
       public static final int MOTOR_ID_2 = 13;
       public static final double RPM_TOLERANCE = 100.0;
       public static final double ROTATION_TOLERANCE = 1.0;
+  }
+
+  public static final class LedConstants {
+      public static final int LED_COUNT = 100;
+      public static final int PWM_PORT = 0;
+      public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
+      public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
+      public static final double WARN_TIME = 3.0;
+      public static final double SHOOT_SIGNAL_TIME = 2.0;
   }
 
   public static class HoodConstants {
@@ -59,10 +74,10 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = -0.183;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = -0.684;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
-    public static final double MAX_VOLTAGE = 9.0;
+    public static final double MAX_VOLTAGE = 12.0;
     public static final double TURRET_MOI = 0.0366;
 
 
@@ -71,7 +86,7 @@ public class Constants {
     public static final double MAX_ANGLE_RAD = Units.degreesToRadians(180);
     public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(180);
 
-    public static final double TURRET_Kp = 12.0;
+    public static final double TURRET_Kp = 13.0;
     public static final double TURRET_Kd = 0.0;
     public static final double TURRET_Ks = 0.2465;
   }
@@ -81,17 +96,19 @@ public class Constants {
   }
 
   public static class ClimbConstants {
-    public static final double RAISE_VOLTAGE = 2;
-    public static final double LOWER_VOLTAGE = -12;
-    public static final double LEVEL_ONE_CLIMB_POSITION = 1.0; // Placeholder value, should be calibrated based on the actual climb mechanism
-    public static final double HOOK_DISENGAGE_POSITION = 2.0; // Value where the hooks go in
+    public static final double RAISE_VOLTAGE = 6;
+    public static final double LOWER_VOLTAGE = -6;
+    public static final double LEVEL_ONE_CLIMB_POSITION = 109.0; // Placeholder value, should be calibrated based on the actual climb mechanism
+    public static final double STOW_POSITION = 0.0;
+    public static final double CLIMB_POSITION = 50; // Value where the hooks go in
     public static final int MOTOR_ID = 17;
     public static final int LOWER_LIMIT_SWITCH_ID = 7;
     public static final int UPPER_LIMIT_SWITCH_ID = 6;
-    public static final double PIDCONTROLLER_KP = 0.013;
+    public static final double PIDCONTROLLER_KP = 0.3;
+    public static final double PIDCONTROLLER_KI = 0.1;
     public static final double PIDCONTROLLER_KD = 0.00;
-    public static final double ARMFEEDFORWARD_KS = 0.00;
-    public static final double ARMFEEDFORWARD_KV = 0.023;
+    public static final double ARMFEEDFORWARD_KS = 2.0;
+    public static final double ARMFEEDFORWARD_KV = 0.0;
     public static final int TRAPEZOID_CONSTRAINTS_MAX_VELOCITY = 540;
     public static final int TRAPEZOID_CONSTRAINTS_MAX_ACCELERATION = 540;
     public static final int TRAPEZOID_STATE_POSITION = 0;
@@ -101,17 +118,17 @@ public class Constants {
   public static class SlapdownConstants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
     public static final double ENCODER_OFFSET = 60;
-    public static final double HOME_ANGLE_DEGREES = 0;
+    public static final double HOME_ANGLE_DEGREES = 0.0;
     public static final double INTAKE_ANGLE_DEGREES = 129;
     public static final double MAX_ANGLE_DEGREES =  131.5;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 8;
-    public static final double KP = 0.1;
-    public static final double KI = 0.05;
+    public static final double INTAKE_VOLTAGE = 10;
+    public static final double KP = 0.15;
+    public static final double KI = 0.1;
     public static final double KD = 0;
-    public static final double KS = 0;
+    public static final double KS = 0.0;
     public static final double KV = 0;
     public static final double KG = 0;
     public static final double MAX_VELOCITY = 540;

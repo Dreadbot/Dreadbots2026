@@ -13,6 +13,7 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
     private final FlywheelIO io;
 
+    // Create flywheel PID and feedforward controllers to calculate voltage to run rpm
     private double kP = 0.002;
     private double kI = 0.0004;
     private double kD = 0.0;
@@ -26,6 +27,7 @@ public class Flywheel extends SubsystemBase {
     // private String target = "kP";
     // private String system = "PID";
     private double goalRPM = 0;
+    // Flag for stopping the flywheel, creates smoother stop by setting voltage to 0 instead of setting rpm to 0 which causes the PID to calculate a large negative voltage
     private boolean stopping = false;
 
     public Flywheel(FlywheelIO io, Turret turret) {
@@ -39,6 +41,7 @@ public class Flywheel extends SubsystemBase {
         io.updateInputs(inputs);
         //Logger.processInputs("Flywheel", inputs);
 
+        // PID and feedforward is used to calculate the voltage to run the flywheel
         double pidValue = pid.calculate(inputs.RPM, goalRPM);
         double feedforwardValue = feedforward.calculateWithVelocities(inputs.RPM, goalRPM);
         pid.reset();

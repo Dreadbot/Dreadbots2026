@@ -62,9 +62,8 @@ public class Slapdown extends SubsystemBase {
     public Command agitateCommand() {
         return intakeCommand().withTimeout(0.15).andThen(
             Commands.repeatingSequence(
-                outtakeCommand().withTimeout(0.1),
-                intakeCommand().withTimeout(0.2),
-                stopIntakeCommand().withTimeout(0.1)
+                outtakeCommand().withTimeout(0.05),
+                intakeCommand().withTimeout(0.25)
             ));
     }
 
@@ -82,7 +81,7 @@ public class Slapdown extends SubsystemBase {
 
         setpoint = profile.calculate(0.02, setpoint, goal);
         double voltage = pid.calculate(inputs.absolutePosition, setpoint.position) + 
-            feedforward.calculate(inputs.absolutePosition + 90, setpoint.velocity);
+            feedforward.calculate(inputs.absolutePosition - 90, setpoint.velocity);
 
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);
