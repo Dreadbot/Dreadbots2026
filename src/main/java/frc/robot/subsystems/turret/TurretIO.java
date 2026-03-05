@@ -15,6 +15,8 @@ public interface TurretIO {
         public double turretRotationRad = 0.0;
         
         public double absolutePosition = 0.0;
+
+        public double turretVelocityRadPerSec = 0.0;
     }
 
     public default void updateInputs(TurretIOInputs inputs) {};

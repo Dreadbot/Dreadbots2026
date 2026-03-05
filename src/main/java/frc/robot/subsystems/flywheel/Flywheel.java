@@ -7,6 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 
 import frc.robot.Constants.FlywheelConstants;
+import frc.robot.subsystems.turret.Turret;
 
 public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
@@ -19,6 +20,7 @@ public class Flywheel extends SubsystemBase {
     private double kS = 0.0;
     private double kV = 0.00185;
     private double kA = 0.0;
+    private Turret turret;
     private PIDController pid = new PIDController(kP, kI, kD);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
     // private double increment = 0.1;
@@ -28,8 +30,9 @@ public class Flywheel extends SubsystemBase {
     // Flag for stopping the flywheel, creates smoother stop by setting voltage to 0 instead of setting rpm to 0 which causes the PID to calculate a large negative voltage
     private boolean stopping = false;
 
-    public Flywheel(FlywheelIO io) {
+    public Flywheel(FlywheelIO io, Turret turret) {
         this.io = io;
+        this.turret = turret;
         pid.setTolerance(FlywheelConstants.RPM_TOLERANCE);
     }
 
@@ -61,8 +64,7 @@ public class Flywheel extends SubsystemBase {
         // });
         // Logger.recordOutput("Flywheel/Increment", increment);
 
-        // If the flywheel is not stopping, use calculated voltage, otherwise set voltage to 0 to stop the flywheel
-        if (!stopping) {
+       if (!stopping && Math.abs(turret.getAngularVelocity()) < FlywheelConstants.ROTATION_TOLERANCE){
             io.setVoltage(pidValue + feedforwardValue);
         } else {
             io.setVoltage(0.0);

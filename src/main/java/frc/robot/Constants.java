@@ -35,6 +35,7 @@ public class Constants {
       public static final int MOTOR_ID_1 = 14;
       public static final int MOTOR_ID_2 = 13;
       public static final double RPM_TOLERANCE = 100.0;
+      public static final double ROTATION_TOLERANCE = 1.0;
   }
 
   public static final class LedConstants {

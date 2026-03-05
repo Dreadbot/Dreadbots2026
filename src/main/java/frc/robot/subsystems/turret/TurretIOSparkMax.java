@@ -48,6 +48,8 @@ public class TurretIOSparkMax implements TurretIO {
         inputs.turretCurrentAmps = turretMotor.getOutputCurrent();
         inputs.turretRotationRad = Units.rotationsToRadians(turretMotor.getEncoder().getPosition()) / TurretConstants.GEAR_REDUCTION;
         inputs.absolutePosition = absoluteEncoder.get() - Math.PI;
+        inputs.turretVelocityRadPerSec = Units.rotationsPerMinuteToRadiansPerSecond(turretMotor.getEncoder().getVelocity())
+    / TurretConstants.GEAR_REDUCTION;
     }
 
     @Override

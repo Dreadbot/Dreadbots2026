@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.util.misc.AimUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,16 +26,14 @@ public class Turret extends SubsystemBase {
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
     private final Drive drive;
-    private Flywheel flywheel;
 
     private double setpointRelativeRad;
     public double voltage;
     
 
-    public Turret(TurretIO io, Drive drive, Flywheel flywheel) {
+    public Turret(TurretIO io, Drive drive) {
         this.io = io;
         this.voltage = 0;
-        this.flywheel = flywheel;
         io.updateInputs(inputs);
         pid.setTolerance(Units.degreesToRadians(1));
         this.drive = drive;
@@ -137,10 +134,11 @@ public class Turret extends SubsystemBase {
         setCorrectAngleRad(setpointRad);
     }
 
-    public void stall() {
-        if (getAngle() > TurretConstants.MAX_ANGLE_RAD || getAngle() < TurretConstants.MIN_ANGLE_RAD) {
-            flywheel.stop();  
-            Commands.waitSeconds(1);     
-        } 
+    public double getVoltage() {
+        return inputs.turretAppliedVolts;
     }
+
+    public double getAngularVelocity() {
+    return inputs.turretVelocityRadPerSec;
+}
 }

@@ -88,9 +88,8 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                turret = new Turret(new TurretIOSparkMax(), drive, flywheel);
+                turret = new Turret(new TurretIOSparkMax(), drive);
+                flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
@@ -110,8 +109,8 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOSim(drive::getPose), 2));
 
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                flywheel = new Flywheel(new FlywheelIOSim());
-                turret = new Turret(new TurretIOSim(), drive, flywheel);
+                turret = new Turret(new TurretIOSim(), drive);
+                flywheel = new Flywheel(new FlywheelIOSim(), turret);
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim());
                 slapdown = new Slapdown(new SlapdownIOSim());
@@ -131,8 +130,8 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.frontLeftCameraName), 1),
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
-                flywheel = new Flywheel(new FlywheelIOSparkFlex());
-                turret = new Turret(new TurretIOSparkMax(), drive, flywheel);
+                turret = new Turret(new TurretIOSparkMax(), drive);
+                flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
