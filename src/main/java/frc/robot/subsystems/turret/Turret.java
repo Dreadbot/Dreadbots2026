@@ -128,4 +128,12 @@ public class Turret extends SubsystemBase {
         double setpointRad = target.minus(turretPose.getTranslation()).getAngle().getRadians() - turretPose.getRotation().getRadians();
         setCorrectAngleRad(setpointRad);
     }
+
+    public double getVoltage() {
+        return inputs.turretAppliedVolts;
+    }
+
+    public double getAngularVelocity() {
+    return inputs.turretVelocityRadPerSec;
+}
 }
