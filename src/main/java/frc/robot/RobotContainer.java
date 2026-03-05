@@ -143,14 +143,15 @@ public class RobotContainer {
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
 
-        autos = new AutoCommands(drive, slapdown, indexer, climb, flywheel, autoAim);
+        autos = new AutoCommands(drive, slapdown, hood, indexer, climb, flywheel, autoAim);
         leds = new Led(new LedIO());
         // Set up auto routines
         choreoAutoChooser = new AutoChooser();
         
         choreoAutoChooser.addRoutine("Left Double", autos::leftDouble);
+        choreoAutoChooser.addRoutine("Right Center-Outpost", autos::RCOutpost);
         // 1
-        //choreoAutoChooser.addRoutine("Center Center Climb", autos::centerCenterClimb);
+        choreoAutoChooser.addRoutine("Wheel Radius LT to Center", autos::wheelRadius);
         // // 2
         // choreoAutoChooser.addRoutine("Left Center Sweep", autos::leftCenter);
         // 3

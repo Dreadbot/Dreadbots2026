@@ -52,6 +52,8 @@ public class Turret extends SubsystemBase {
         if (DriverStation.isDisabled()) {
             setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
             goal = setpoint;
+            io.runTurretVoltage(0.0);
+            return;
         }
 
         // goal = new TrapezoidProfile.State();
