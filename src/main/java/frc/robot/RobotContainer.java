@@ -148,6 +148,7 @@ public class RobotContainer {
         choreoAutoChooser = new AutoChooser();
         
         choreoAutoChooser.addRoutine("Left Double", autos::leftDouble);
+        choreoAutoChooser.addRoutine("Right Double", autos::rightDouble);
         choreoAutoChooser.addRoutine("Right Center-Outpost", autos::RCOutpost);
         // 1
         choreoAutoChooser.addRoutine("Wheel Radius LT to Center", autos::wheelRadius);
@@ -197,7 +198,7 @@ public class RobotContainer {
         driver.b().whileTrue(turret.setAngleRad(0 * Math.PI));
         driver.a().whileTrue(drive.brace());
         // driver.y().whileTrue(climb.testRaise());
-        // driver.x().whileTrue(climb.testLower());
+        driver.x().whileTrue(climb.testLower());
 
         
         driver.leftTrigger().whileTrue(slapdown.intakeCommand());
@@ -211,7 +212,7 @@ public class RobotContainer {
         // Final Operator Controls
         operator.rightBumper().onTrue(slapdown.goToIntakeCommand());
         operator.leftBumper().onTrue(slapdown.goToHomeCommand());
-        operator.leftTrigger().whileTrue(hood.run(() -> hood.setSetpoint(0)));
+        //operator.leftTrigger().whileTrue(hood.run(() -> hood.setSetpoint(0)));
         operator.rightTrigger().whileTrue(slapdown.agitateCommand());
 
         operator.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
@@ -221,6 +222,7 @@ public class RobotContainer {
         operator.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         operator.start().onTrue(Commands.runOnce(() -> hood.calibrate()));
+        operator.povUp().onTrue(turret.toggleLock());
 
         operator.a().onTrue(autoAim.targetPassing());
         operator.b().onTrue(autoAim.targetHub());

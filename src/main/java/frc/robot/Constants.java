@@ -34,12 +34,11 @@ public class Constants {
   public static class FlywheelConstants {
       public static final int MOTOR_ID_1 = 14;
       public static final int MOTOR_ID_2 = 13;
-      public static final double RPM_TOLERANCE = 100.0;
-      public static final double ROTATION_TOLERANCE = 1.0;
+      public static final double RPM_TOLERANCE = 50.0;
   }
 
   public static final class LedConstants {
-      public static final int LED_COUNT = 100;
+      public static final int LED_COUNT = 101;
       public static final int PWM_PORT = 0;
       public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
       public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
@@ -52,11 +51,11 @@ public class Constants {
     public static final int LOWER_LIMIT_SWITCH_ID = 3;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
-    public static final double HOOD_KP = 1.0;
+    public static final double HOOD_KP = 1.3;
     public static final double MAX_VOLTAGE = 2.0;
     public static final double MAX_ROTATIONS = 10.8;
     public static final double HOOD_KS = 0.50;
-    public static final double HOOD_KI = 0.05;
+    public static final double HOOD_KI = 0.0;
   }
 
   public static final class AutoAlignConstants {
@@ -74,7 +73,7 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = -0.684;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = -2.356;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 12.0;
@@ -89,6 +88,8 @@ public class Constants {
     public static final double TURRET_Kp = 13.0;
     public static final double TURRET_Kd = 0.0;
     public static final double TURRET_Ks = 0.2465;
+    public static final double MAX_ACCELERATION = 30;
+    public static final double MAX_VELOCITY = 300;
   }
 
   public static class AutoAimConstants {
@@ -124,7 +125,7 @@ public class Constants {
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 10;
+    public static final double INTAKE_VOLTAGE = 7;
     public static final double KP = 0.15;
     public static final double KI = 0.1;
     public static final double KD = 0;

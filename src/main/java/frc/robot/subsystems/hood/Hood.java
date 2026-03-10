@@ -36,6 +36,15 @@ public class Hood extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Hood", inputs);
+
+        // Calculate PID output and apply feedforward to overcome static friction
+        double pidVoltage = pid.calculate(inputs.rotations, goalRotations);
+
+        // Log relevant information for debugging and analysis
+        Logger.recordOutput("Hood/AtSetpoint", atSetpoint());
+        Logger.recordOutput("Hood/Voltage", pidVoltage);
+        Logger.recordOutput("Hood/Setpoint", goalRotations);
+        Logger.recordOutput("Hood/LimitSwitch", inputs.lowerSwitch);
         
         if (calibrating || goalRotations == 0) {
             if (inputs.lowerSwitch) {
@@ -43,13 +52,12 @@ public class Hood extends SubsystemBase {
                 goalRotations = 0.0;
                 calibrating = false;
                 io.setVoltage(0);
+                return;
             }
             io.setVoltage(-1.5);
             return;
         }
-
-        // Calculate PID output and apply feedforward to overcome static friction
-        double pidVoltage = pid.calculate(inputs.rotations, goalRotations);
+        
         // Prevent moving beyond maximum rotations
         if (pidVoltage > 0 && inputs.rotations >= HoodConstants.MAX_ROTATIONS) {
             pidVoltage = 0;
@@ -67,11 +75,6 @@ public class Hood extends SubsystemBase {
         }
         // Set the motor voltage
         io.setVoltage(pidVoltage);
-        // Log relevant information for debugging and analysis
-        Logger.recordOutput("Hood/AtSetpoint", atSetpoint());
-        Logger.recordOutput("Hood/Voltage", pidVoltage);
-        Logger.recordOutput("Hood/Setpoint", goalRotations);
-        Logger.recordOutput("Hood/LimitSwitch", inputs.lowerSwitch);
     }
 
     // Public methods to control the hood subsystem

@@ -64,7 +64,7 @@ public class Flywheel extends SubsystemBase {
         // });
         // Logger.recordOutput("Flywheel/Increment", increment);
 
-       if (!stopping && Math.abs(turret.getAngularVelocity()) < FlywheelConstants.ROTATION_TOLERANCE){
+       if (!stopping){
             io.setVoltage(pidValue + feedforwardValue);
         } else {
             io.setVoltage(0.0);

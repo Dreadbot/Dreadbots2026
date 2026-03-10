@@ -27,6 +27,9 @@ public class Led extends SubsystemBase{
     private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
     private boolean warning = false;
+    private boolean gotGameData = false;
+    private String gameData = "";
+
 
     public Led(LedIO io) {
         this.io = io;
@@ -41,6 +44,13 @@ public class Led extends SubsystemBase{
         io.updateInputs(inputs);
         if (enabled) {
             io.periodic();
+        }
+        if (!gotGameData) {
+            String data = DriverStation.getGameSpecificMessage();
+            if (data.length() > 0) {
+                gameData = data;
+                gotGameData = true;
+            }
         }
         Logger.processInputs("LEDs", inputs);
     }
@@ -65,7 +75,6 @@ public class Led extends SubsystemBase{
 
     public void teleopInit() {
         updateAllianceColor();
-        String gameData = DriverStation.getGameSpecificMessage();
         boolean wonAuton = false;
         if(gameData.length() > 0) {
             switch (gameData.charAt(0)){
@@ -87,10 +96,10 @@ public class Led extends SubsystemBase{
             CommandScheduler.getInstance().schedule(
                 setToPattern(LEDPattern.solid(Color.kWhite).blink(LedConstants.BLINK_FREQUENCY))
                 .andThen(transitionPeriod())
-                .andThen(activePeriod())
-                .andThen(activePeriod())
-                .andThen(activePeriod())
-                .andThen(activePeriod())
+                .andThen(inactivePeriod())
+                .andThen(inactivePeriod())
+                .andThen(inactivePeriod())
+                .andThen(inactivePeriod())
                 .andThen(endgame())
                 );
         }

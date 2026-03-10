@@ -36,7 +36,6 @@ import frc.robot.RobotState.CurrentAction;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 //import frc.robot.subsystems.vision.Vision;
-import frc.robot.util.misc.AutoAlignUtil;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -164,16 +163,16 @@ public static Command driveToPosition(Drive drive, Supplier<Pose2d> position) {
     });
   }
 
-   public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
-     if(AutoAlignUtil.POIs.isEmpty()) {
-       AutoAlignUtil.buildPOIList();
-     }
-     Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
-     Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
-     Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
-     Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
-     return closestPose;
-   }
+  //  public static Pose2d getAutoAlignPose(Supplier<Pose2d> robotPos, Trigger leftTrim, Trigger rightTrim) {
+  //    if(AutoAlignUtil.POIs.isEmpty()) {
+  //      AutoAlignUtil.buildPOIList();
+  //    }
+  //    Pose2d closestPose = robotPos.get().nearest(AutoAlignUtil.POIs);
+  //    Logger.recordOutput("AutoAlign/LeftTrim", leftTrim.getAsBoolean());
+  //    Logger.recordOutput("AutoAlign/RightTrim", rightTrim.getAsBoolean());
+  //    Logger.recordOutput("AutoAlign/TrimmedPose", closestPose);
+  //    return closestPose;
+  //  }
   /**
    * Field relative drive command using joystick for linear control and PID for angular control.
    * Possible use cases include snapping to an angle, aiming at a vision target, or controlling

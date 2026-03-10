@@ -32,9 +32,9 @@ public class AimUtil {
 
     public static Translation2d getFieldShiftFromJoystick(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            return new Translation2d(-ySupplier.getAsDouble(), -xSupplier.getAsDouble());
+            return new Translation2d(-ySupplier.getAsDouble() * 3, -xSupplier.getAsDouble() * 3);
         } else {
-            return new Translation2d(ySupplier.getAsDouble(), xSupplier.getAsDouble());
+            return new Translation2d(ySupplier.getAsDouble() * 3, xSupplier.getAsDouble() * 3);
         }
     }
 

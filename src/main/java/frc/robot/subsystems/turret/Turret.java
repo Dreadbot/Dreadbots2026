@@ -1,9 +1,10 @@
 package frc.robot.subsystems.turret;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.SlapdownConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.misc.AimUtil;
@@ -21,7 +22,7 @@ public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
     private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, 0, TurretConstants.TURRET_Kd);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(300, 25));
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(TurretConstants.MAX_VELOCITY, TurretConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
@@ -29,13 +30,14 @@ public class Turret extends SubsystemBase {
 
     private double setpointRelativeRad;
     public double voltage;
+    private boolean lock = false;
     
 
     public Turret(TurretIO io, Drive drive) {
         this.io = io;
         this.voltage = 0;
         io.updateInputs(inputs);
-        pid.setTolerance(Units.degreesToRadians(1));
+        pid.setTolerance(Units.degreesToRadians(3));
         this.drive = drive;
         //setCorrectAngleRad(0.0);
         setpointRelativeRad = 0;
@@ -53,10 +55,7 @@ public class Turret extends SubsystemBase {
             return;
         }
 
-        // goal = new TrapezoidProfile.State();
-        //    stall();
         setpoint = profile.calculate(0.02, setpoint, goal);
-        //double wrappedSetpoint = wrapToLimits(setpointRelativeRad);
         double wrappedSetpoint = wrapToLimits(setpoint.position);
         double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
         
@@ -72,7 +71,10 @@ public class Turret extends SubsystemBase {
         }
 
         voltage = MathUtil.clamp(voltage, -TurretConstants.MAX_VOLTAGE, TurretConstants.MAX_VOLTAGE);
-        io.runTurretVoltage(voltage);
+
+        if (!lock) {
+            io.runTurretVoltage(voltage);
+        }
 
         Logger.recordOutput("Turret/SetpointRelativeRadians", wrappedSetpoint);
         // Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
@@ -98,16 +100,17 @@ public class Turret extends SubsystemBase {
             } );
     }
 
+    public Command toggleLock() {
+        return Commands.runOnce(
+            () -> {
+                lock = !lock;
+            }, this);
+    }
+
     public void setCorrectAngleRad(double angleRad) {
         double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
         double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
         setpointRelativeRad = wrapToLimits(robotRelativeToTurretRelative(inputs.turretRotationRad + delta)); 
-
-        // double currentPositionWrapped = robotRelativeToTurretRelative(inputs.turretRotationRad);
-        // double delta = MathUtil.angleModulus(angleRad - currentPositionWrapped);
-        // double value = currentPositionWrapped + delta;
-        // value = MathUtil.clamp(value, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD);
-        // double relativeValue = value + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
         goal = new TrapezoidProfile.State(setpointRelativeRad, 0);
     }
 
@@ -137,8 +140,4 @@ public class Turret extends SubsystemBase {
     public double getVoltage() {
         return inputs.turretAppliedVolts;
     }
-
-    public double getAngularVelocity() {
-    return inputs.turretVelocityRadPerSec;
-}
 }

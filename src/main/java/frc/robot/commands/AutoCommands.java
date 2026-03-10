@@ -67,6 +67,27 @@ public class AutoCommands {
         return routine;
     }
 
+    public AutoRoutine rightDouble() {
+        AutoRoutine routine = factory.newRoutine("rightDouble");
+        AutoTrajectory RCOutside = routine.trajectory("RCOutside");
+        AutoTrajectory RCInside = routine.trajectory("RCInside");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    RCOutside.resetOdometry(),
+                    RCOutside.cmd(),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    Commands.runOnce(() -> hood.setSetpoint(0.0)),
+                    RCInside.cmd(),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
     public AutoRoutine RCOutpost() {
         AutoRoutine routine = factory.newRoutine("RCOutpost");
         AutoTrajectory RCOutpost = routine.trajectory("RCOutpost");
