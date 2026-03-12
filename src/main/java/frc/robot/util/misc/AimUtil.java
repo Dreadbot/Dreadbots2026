@@ -34,10 +34,15 @@ public class AimUtil {
     }
 
     public static Translation2d getFieldShiftFromJoystick(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+        double y = ySupplier.getAsDouble();
+        double x = xSupplier.getAsDouble();
+        if (x == 0 && y == 0) {
+            return Translation2d.kZero;
+        }
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            return new Translation2d(-ySupplier.getAsDouble() * 3, -xSupplier.getAsDouble() * 3);
+            return new Translation2d(-y * 3, -x * 3);
         } else {
-            return new Translation2d(ySupplier.getAsDouble() * 3, xSupplier.getAsDouble() * 3);
+            return new Translation2d(y * 3, x * 3);
         }
     }
 
