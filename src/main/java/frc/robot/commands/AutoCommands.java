@@ -89,7 +89,7 @@ public class AutoCommands {
     }
 
     public AutoRoutine RCOutpost() {
-        AutoRoutine routine = factory.newRoutine("RCOutpost");
+        AutoRoutine routine = factory.newRoutine("CenterOutpost");
         AutoTrajectory RCOutpost = routine.trajectory("RCOutpost");
 
         routine.active().onTrue(

@@ -22,7 +22,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 
 public class DriveConstants {
-  public static final double maxSpeedMetersPerSec = 5.0;
+  public static final double maxSpeedMetersPerSec = 4.0;
   public static final double odometryFrequency = 200.0; // Hz
   public static final double trackWidth = 0.564769; // Distance between center of wheels - found in CAD
   public static final double wheelBase = 0.564769;

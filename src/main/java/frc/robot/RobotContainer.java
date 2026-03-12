@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -163,6 +164,7 @@ public class RobotContainer {
         // 6 needs to be done
         //choreoAutoChooser.addCmd("", autos::);
         SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+        SmartDashboard.putData("Field", drive.field);
 
         configureButtonBindings();
     }

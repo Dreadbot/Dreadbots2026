@@ -80,7 +80,7 @@ public class Turret extends SubsystemBase {
         // Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
         Logger.recordOutput("Turret/CurrentTurretRotationRadians", turretRotationRelative);
         // Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
-        // Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
+        Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
         Logger.recordOutput("Turret/Voltage", voltage);
         Logger.recordOutput("Turret/FieldPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(

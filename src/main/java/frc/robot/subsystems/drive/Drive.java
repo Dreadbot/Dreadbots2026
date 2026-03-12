@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -90,7 +91,10 @@ public class Drive extends SubsystemBase {
   private PIDController yController = new PIDController(yKp, 0.0, yKd);
   private PIDController rotationController = new PIDController(rotationKp, 0.0, rotationKd);
 
+  private final SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+  private final SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
 
+  public final Field2d field = new Field2d();
 
   public Drive(
       GyroIO gyroIO,
@@ -157,8 +161,7 @@ public class Drive extends SubsystemBase {
     int sampleCount = sampleTimestamps.length;
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
-      SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
-      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+      
       for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
         modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
         moduleDeltas[moduleIndex] =
@@ -180,12 +183,13 @@ public class Drive extends SubsystemBase {
       }
 
       // Apply update
-      Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
+      //Logger.recordOutput("Drive/Timestamp", sampleTimestamps[i]);
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
     }
 
     // Update gyro alert
     //gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+    field.setRobotPose(getPose());
   }
 
   /**

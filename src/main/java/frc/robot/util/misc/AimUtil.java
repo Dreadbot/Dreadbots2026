@@ -13,11 +13,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.TurretConstants;
 
 public class AimUtil {
+    public static final Translation2d blueHub = new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84));
+    public static final Translation2d redHub = new Translation2d(Units.inchesToMeters(651.22 - 182.11), Units.inchesToMeters(158.84));
+
     public static Translation2d getHubTranslation() {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            return new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84));
+            return blueHub;
         } else {
-            return new Translation2d(Units.inchesToMeters(651.22 - 182.11), Units.inchesToMeters(158.84));
+            return redHub;
         }
     }
 
