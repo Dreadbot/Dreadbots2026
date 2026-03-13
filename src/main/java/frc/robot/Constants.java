@@ -26,6 +26,11 @@ public class Constants {
     public static final double SPINDEXER_VOLTAGE = 12.0;
     public static final double KICKER_VOLTAGE = 8.0;
     public static final int SPINDEXER_MOTOR_ID = 11;
+    public static final double KICKER_KP = 0.0;
+    public static final double KICKER_KI = 0.0;
+    public static final double KICKER_KD = 0.0;
+    public static final double KICKER_KS = 0.0;
+    public static final double KICKER_KV = 0.0;
     public static final int KICKER_MOTOR_ID = 12;
     public static final double DEAD_BAND = 0.5;
   }
@@ -73,7 +78,7 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = -2.356;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = -2.479;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 12.0;
@@ -120,24 +125,24 @@ public class Constants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
     public static final double ENCODER_OFFSET = 60;
     public static final double HOME_ANGLE_DEGREES = 0.0;
-    public static final double INTAKE_ANGLE_DEGREES = 129;
-    public static final double MAX_ANGLE_DEGREES =  131.5;
+    public static final double INTAKE_ANGLE_DEGREES = 129.9;
+    public static final double MAX_ANGLE_DEGREES =  130;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
     public static final double INTAKE_VOLTAGE = 7;
     public static final double KP = 0.15;
-    public static final double KI = 0.1;
+    public static final double KI = 0.01;
     public static final double KD = 0;
-    public static final double KS = 0.0;
-    public static final double KV = 0;
-    public static final double KG = 0;
+    public static final double KS = 1.5;
+    public static final double KV = 0.0;
+    public static final double KG = 0.0;
     public static final double MAX_VELOCITY = 540;
     public static final double MAX_ACCELERATION = 540;
     public static final int SLAPDOWN_GEARING = 1;
     public static final int INTAKE_GEARING = 1;
     public static final double ARM_LENGTH = Units.inchesToMeters(11.75);
-    public static final double MIN_ANGLE_RAD = Units.degreesToRadians(0);
+    public static final double MIN_ANGLE_RAD = Units.degreesToRadians(-20);
     public static final double MAX_ANGLE_RAD = Units.degreesToRadians(131.5);
 
     public static final double SIM_INTAKE_MOI = 0.00011264;

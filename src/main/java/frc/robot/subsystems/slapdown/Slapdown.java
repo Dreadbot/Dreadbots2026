@@ -7,10 +7,12 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownConstants;
+import frc.robot.Constants.TurretConstants;
 
 public class Slapdown extends SubsystemBase {
     
@@ -24,6 +26,7 @@ public class Slapdown extends SubsystemBase {
 
     public Slapdown(SlapdownIO io) {
         this.io = io;
+        SmartDashboard.putData("SlapdownPID", pid);
     }
 
     public Command goToIntakeCommand() {
@@ -80,12 +83,17 @@ public class Slapdown extends SubsystemBase {
         }
 
         setpoint = profile.calculate(0.02, setpoint, goal);
-        double voltage = pid.calculate(inputs.absolutePosition, setpoint.position) + 
-            feedforward.calculate(inputs.absolutePosition - 90, setpoint.velocity);
+        double voltage = pid.calculate(inputs.absolutePosition, setpoint.position);
+        if (inputs.absolutePosition < 10 && voltage < 0.1) {
+            voltage += Math.copySign(3, voltage);
+        }
+        
+        double ffvoltage = feedforward.calculate(inputs.absolutePosition - 90, setpoint.velocity);
 
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);
         Logger.recordOutput("Slapdown/Voltage", voltage);
+        Logger.recordOutput("Slapdown/FFVoltage", ffvoltage);
         io.runPivotVoltage(voltage); 
     }
 

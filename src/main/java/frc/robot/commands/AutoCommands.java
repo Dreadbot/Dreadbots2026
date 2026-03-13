@@ -42,8 +42,8 @@ public class AutoCommands {
         factory
             .bind("intake", slapdown.intakeCommand())
             .bind("stopIntake", slapdown.stopIntakeCommand())
-            .bind("slapdown", slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()))
-            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
+            .bind("slapdown", slapdown.goToIntakeCommand())
+            .bind("slapup", slapdown.goToHomeCommand());
     }
 
     public AutoRoutine leftDouble() {
