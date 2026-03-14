@@ -13,11 +13,14 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.TurretConstants;
 
 public class AimUtil {
+    public static final Translation2d blueHub = new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84));
+    public static final Translation2d redHub = new Translation2d(Units.inchesToMeters(651.22 - 182.11), Units.inchesToMeters(158.84));
+
     public static Translation2d getHubTranslation() {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            return new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84));
+            return blueHub;
         } else {
-            return new Translation2d(Units.inchesToMeters(651.22 - 182.11), Units.inchesToMeters(158.84));
+            return redHub;
         }
     }
 
@@ -31,10 +34,15 @@ public class AimUtil {
     }
 
     public static Translation2d getFieldShiftFromJoystick(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+        double y = ySupplier.getAsDouble();
+        double x = xSupplier.getAsDouble();
+        if (x == 0 && y == 0) {
+            return Translation2d.kZero;
+        }
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            return new Translation2d(-ySupplier.getAsDouble() * 3, -xSupplier.getAsDouble() * 3);
+            return new Translation2d(-y * 3, -x * 3);
         } else {
-            return new Translation2d(ySupplier.getAsDouble() * 3, xSupplier.getAsDouble() * 3);
+            return new Translation2d(y * 3, x * 3);
         }
     }
 

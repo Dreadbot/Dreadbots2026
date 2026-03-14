@@ -42,8 +42,8 @@ public class AutoCommands {
         factory
             .bind("intake", slapdown.intakeCommand())
             .bind("stopIntake", slapdown.stopIntakeCommand())
-            .bind("slapdown", slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()))
-            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
+            .bind("slapdown", slapdown.goToIntakeCommand())
+            .bind("slapup", slapdown.goToHomeCommand());
     }
 
     public AutoRoutine leftDouble() {
@@ -89,7 +89,7 @@ public class AutoCommands {
     }
 
     public AutoRoutine RCOutpost() {
-        AutoRoutine routine = factory.newRoutine("RCOutpost");
+        AutoRoutine routine = factory.newRoutine("CenterOutpost");
         AutoTrajectory RCOutpost = routine.trajectory("RCOutpost");
 
         routine.active().onTrue(

@@ -12,8 +12,10 @@ import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
+import frc.robot.util.Elastic;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -163,6 +165,7 @@ public class RobotContainer {
         // 6 needs to be done
         //choreoAutoChooser.addCmd("", autos::);
         SmartDashboard.putData("Auto Chooser", choreoAutoChooser);
+        SmartDashboard.putData("Field", drive.field);
 
         configureButtonBindings();
     }
@@ -249,11 +252,13 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-        leds.autonomousInit();
+        //leds.autonomousInit();
+        //Elastic.selectTab("Autonomous");
     }
 
     public void teleopInit() {
-        leds.teleopInit();
+        //leds.teleopInit();
+        //Elastic.selectTab("Teleoperated");
     }
 
     private static Trigger disabled() {

@@ -60,7 +60,7 @@ public class AutoAim extends SubsystemBase {
         firingTable.put(4.43, getMatrix(6.0, 3510 + flywheel_tuning, 1.40));
         firingTable.put(5.08, getMatrix(8.67, 3660 + flywheel_tuning, 1.40));
         firingTable.put(5.67, getMatrix(10.0, 3870 + flywheel_tuning, 1.45));
-        firingTable.put(7.0, getMatrix(10.0, 4000 + flywheel_tuning, 1.45));
+        firingTable.put(7.0, getMatrix(10.0, 4000 + flywheel_tuning, 1.5));
     }
 
     public Command targetPassing() {
@@ -85,9 +85,9 @@ public class AutoAim extends SubsystemBase {
                 setSetpoints(true), 
                 flywheel, turret, hood, this),
 
-            prepShot().alongWith(
-                Commands.waitUntil(this::isReady)
-                .andThen(Commands.runOnce(this::startFeeding, indexer)))
+            prepShot().alongWith(Commands.waitUntil(this::isReady).andThen(indexer.conditionalFeed(turret::atSetpoint)))
+                //
+                //.andThen(Commands.runOnce(this::startFeeding, indexer)))
 
         ).finallyDo(interrupted -> stopShooting());
     }
@@ -151,7 +151,7 @@ public class AutoAim extends SubsystemBase {
         Pose2d lookaheadPose = drive.getPose();
         double lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(estimatedPose);
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             timeOfFlight = firingTable.get(lookaheadTurretToTargetDistance).get(2, 0);
             ChassisSpeeds robotDelta = robotRelativeVelocity.times(timeOfFlight);
             lookaheadPose = estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond,

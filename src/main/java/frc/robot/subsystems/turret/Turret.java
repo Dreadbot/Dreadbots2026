@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -34,6 +35,7 @@ public class Turret extends SubsystemBase {
     
 
     public Turret(TurretIO io, Drive drive) {
+        SmartDashboard.putData("TurretPID", pid);
         this.io = io;
         this.voltage = 0;
         io.updateInputs(inputs);
@@ -48,6 +50,9 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
 
+        double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
+        Logger.recordOutput("Turret/CurrentTurretRotationRadians", -(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
+
         if (DriverStation.isDisabled()) {
             setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
             goal = setpoint;
@@ -57,7 +62,7 @@ public class Turret extends SubsystemBase {
 
         setpoint = profile.calculate(0.02, setpoint, goal);
         double wrappedSetpoint = wrapToLimits(setpoint.position);
-        double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
+        
         
         voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
         if (Math.abs(voltage) > 1e-1) {
@@ -78,9 +83,8 @@ public class Turret extends SubsystemBase {
 
         Logger.recordOutput("Turret/SetpointRelativeRadians", wrappedSetpoint);
         // Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
-        Logger.recordOutput("Turret/CurrentTurretRotationRadians", turretRotationRelative);
         // Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
-        // Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
+        Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
         Logger.recordOutput("Turret/Voltage", voltage);
         Logger.recordOutput("Turret/FieldPose", 
             new Pose2d(AimUtil.getTurretTranslationFromRobotPose(

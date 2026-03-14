@@ -29,6 +29,7 @@ public class Led extends SubsystemBase{
     private boolean warning = false;
     private boolean gotGameData = false;
     private String gameData = "";
+    private boolean teleop = false;
 
 
     public Led(LedIO io) {
@@ -52,6 +53,9 @@ public class Led extends SubsystemBase{
                 gotGameData = true;
             }
         }
+        if (teleop) {
+            Logger.recordOutput("TimeLeftInPeriod", (DriverStation.getMatchTime() - 30) % 25);
+        }
         Logger.processInputs("LEDs", inputs);
     }
 
@@ -70,10 +74,12 @@ public class Led extends SubsystemBase{
     }
 
     public void autonomousInit() {
+        teleop = false;
         CommandScheduler.getInstance().schedule(auton());
     }
 
     public void teleopInit() {
+        teleop = true;
         updateAllianceColor();
         boolean wonAuton = false;
         if(gameData.length() > 0) {
