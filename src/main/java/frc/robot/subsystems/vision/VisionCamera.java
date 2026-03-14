@@ -28,6 +28,7 @@ public class VisionCamera {
     private VisionDetection lastVisionDetection;
 
     public VisionCamera(VisionIO io, int index) {
+		VisionUtil.getApriltagPose(1);
 		this.io = io;
         this.index = index;
 		this.lastVisionDetection = new VisionDetection(new Pose2d(), 1, 0.0);

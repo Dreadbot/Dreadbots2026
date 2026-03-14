@@ -253,12 +253,12 @@ public class RobotContainer {
 
     public void autonomousInit() {
         //leds.autonomousInit();
-        Elastic.selectTab("Autonomous");
+        //Elastic.selectTab("Autonomous");
     }
 
     public void teleopInit() {
         //leds.teleopInit();
-        Elastic.selectTab("Teleoperated");
+        //Elastic.selectTab("Teleoperated");
     }
 
     private static Trigger disabled() {

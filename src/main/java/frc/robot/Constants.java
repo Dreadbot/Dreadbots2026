@@ -26,11 +26,12 @@ public class Constants {
     public static final double SPINDEXER_VOLTAGE = 12.0;
     public static final double KICKER_VOLTAGE = 8.0;
     public static final int SPINDEXER_MOTOR_ID = 11;
-    public static final double KICKER_KP = 0.0;
+    public static final double KICKER_RPM = 3000.0;
+    public static final double KICKER_KP = 0.002;
     public static final double KICKER_KI = 0.0;
     public static final double KICKER_KD = 0.0;
     public static final double KICKER_KS = 0.0;
-    public static final double KICKER_KV = 0.0;
+    public static final double KICKER_KV = 0.00185;
     public static final int KICKER_MOTOR_ID = 12;
     public static final double DEAD_BAND = 0.5;
   }
@@ -56,7 +57,7 @@ public class Constants {
     public static final int LOWER_LIMIT_SWITCH_ID = 3;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
-    public static final double HOOD_KP = 1.3;
+    public static final double HOOD_KP = 1.0;
     public static final double MAX_VOLTAGE = 2.0;
     public static final double MAX_ROTATIONS = 10.8;
     public static final double HOOD_KS = 0.50;

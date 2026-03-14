@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,7 +21,7 @@ public class Slapdown extends SubsystemBase {
     private final SlapdownIO io;
     public final PIDController pid = new PIDController(SlapdownConstants.KP, SlapdownConstants.KI, SlapdownConstants.KD);
     public final ArmFeedforward feedforward = new ArmFeedforward(SlapdownConstants.KS, SlapdownConstants.KG, SlapdownConstants.KV);
-    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(SlapdownConstants.MAX_ANGLE_DEGREES, SlapdownConstants.MAX_ACCELERATION));
+    private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(SlapdownConstants.MAX_VELOCITY, SlapdownConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
@@ -84,11 +85,11 @@ public class Slapdown extends SubsystemBase {
 
         setpoint = profile.calculate(0.02, setpoint, goal);
         double voltage = pid.calculate(inputs.absolutePosition, setpoint.position);
-        if (inputs.absolutePosition < 10 && voltage < 0.1) {
-            voltage += Math.copySign(3, voltage);
-        }
+        // if (inputs.absolutePosition < 20 && voltage < -0.1) {
+        //     voltage -= 3;
+        // }
         
-        double ffvoltage = feedforward.calculate(inputs.absolutePosition - 90, setpoint.velocity);
+        double ffvoltage = feedforward.calculate(Units.degreesToRadians(setpoint.position - 90), setpoint.velocity);
 
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
         Logger.recordOutput("Slapdown/GoalPosition", goal.position);

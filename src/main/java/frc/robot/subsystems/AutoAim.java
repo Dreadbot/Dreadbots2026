@@ -85,8 +85,8 @@ public class AutoAim extends SubsystemBase {
                 setSetpoints(true), 
                 flywheel, turret, hood, this),
 
-            prepShot().alongWith(indexer.conditionalFeed(this::isReady))
-                //Commands.waitUntil(this::isReady)
+            prepShot().alongWith(Commands.waitUntil(this::isReady).andThen(indexer.conditionalFeed(turret::atSetpoint)))
+                //
                 //.andThen(Commands.runOnce(this::startFeeding, indexer)))
 
         ).finallyDo(interrupted -> stopShooting());

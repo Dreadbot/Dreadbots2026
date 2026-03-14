@@ -6,6 +6,7 @@ import java.util.function.BooleanSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.Sendable;
@@ -20,6 +21,7 @@ public class Indexer extends SubsystemBase {
     private IndexerIOInputsAutoLogged inputs = new IndexerIOInputsAutoLogged();
     private IndexerIOInputsAutoLogged kickerInputs = new IndexerIOInputsAutoLogged();
     private final PIDController pid = new PIDController(IndexerConstants.KICKER_KP, IndexerConstants.KICKER_KI, IndexerConstants.KICKER_KD);
+    //private final BangBangController bangbang = new BangBangController(250);
     private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(IndexerConstants.KICKER_KS, IndexerConstants.KICKER_KV);
     private IndexerIO io;
     private double kickerTargetRPM = 0;
@@ -29,27 +31,27 @@ public class Indexer extends SubsystemBase {
     public Indexer(IndexerIO io) {
         this.io = io;
         SmartDashboard.putData("KickerPID", pid);
-        SmartDashboard.putNumberArray("KickerFF", new double[] {IndexerConstants.KICKER_KS, IndexerConstants.KICKER_KV});
-        SmartDashboard.putData("KickerFFUpdate", updateFF());
     }
 
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
-        io.updateInputs(kickerInputs);
+        io.updateInputs(inputs, kickerInputs);
         //Logger.processInputs("Indexer", inputs);
         Logger.processInputs("Kicker", kickerInputs);
         Logger.recordOutput("Kicker/TargetRPM", kickerTargetRPM);
         
         double currentRPM = kickerInputs.RPM;
-        double output = feedforward.calculate(kickerTargetRPM);
+        double feedforwardOutput = feedforward.calculate(kickerTargetRPM);
         double pidOutput = pid.calculate(currentRPM, kickerTargetRPM);
+        //double bangbangOutput = bangbang.calculate(currentRPM, kickerTargetRPM) * 12;
+        
         if (pidOutput < 0) {
             pidOutput = 0;
         }
-
+        double voltage = pidOutput + feedforwardOutput;
+        Logger.recordOutput("Kicker/Voltage", voltage);
         if (kickerTargetRPM > 0) {
-            io.runKickerVoltage(pidOutput + output);
+            io.runKickerVoltage(voltage);
         } else {
             io.runKickerVoltage(0.0);
             pid.reset(); 
@@ -58,19 +60,22 @@ public class Indexer extends SubsystemBase {
 
     public void startIndexing() {
         io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE);
-        io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE);
+        //io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE);
+        kickerTargetRPM = IndexerConstants.KICKER_RPM;
         isFeeding = true;
     }
 
     public void startReverseIndexing() {
         io.runSpindexerVoltage(IndexerConstants.SPINDEXER_VOLTAGE * -1);
-        io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE * -1);
+        kickerTargetRPM = -IndexerConstants.KICKER_RPM;
+        //io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE * -1);
         isFeeding = false;
     }
 
     public void stopIndexing() {
         io.runSpindexerVoltage(0.0);
-        io.runKickerVoltage(0.0);
+        //io.runKickerVoltage(0.0);
+        kickerTargetRPM = 0.0;
         isFeeding = false;
     }
 
@@ -85,14 +90,6 @@ public class Indexer extends SubsystemBase {
             }
             startIndexing();
         }, this);
-    }
-
-    public Command updateFF() {
-        return Commands.runOnce(() -> {
-            double[] nums = SmartDashboard.getNumberArray("KickerFF", new double[] {IndexerConstants.KICKER_KS, IndexerConstants.KICKER_KV});
-            feedforward.setKs(nums[0]);
-            feedforward.setKv(nums[1]);
-        });
     }
 
     // The increase / decrease kicker speed/volts commands (intended for every click)
