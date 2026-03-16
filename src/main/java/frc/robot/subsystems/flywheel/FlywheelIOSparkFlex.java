@@ -21,7 +21,11 @@ public class FlywheelIOSparkFlex implements FlywheelIO {
         SparkFlexConfig config1 = new SparkFlexConfig();
         config1
             .idleMode(IdleMode.kCoast)
-            .smartCurrentLimit(50);
+            .smartCurrentLimit(80)
+            .encoder
+                .uvwMeasurementPeriod(8)
+                .quadratureAverageDepth(2)
+                .quadratureMeasurementPeriod(8);
         // config1.closedLoop
         //     .p(0.003)
         //     .i(0)

@@ -29,7 +29,11 @@ public class IndexerIOSparkFlex implements IndexerIO {
         kickerConfig
             .idleMode(IdleMode.kCoast)
             .smartCurrentLimit(50)
-            .inverted(false);
+            .inverted(false)
+            .encoder
+                .uvwMeasurementPeriod(8)
+                .quadratureAverageDepth(2)
+                .quadratureMeasurementPeriod(8);
         indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         kickerMotor.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
