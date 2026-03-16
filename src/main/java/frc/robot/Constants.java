@@ -100,6 +100,7 @@ public class Constants {
 
   public static class AutoAimConstants {
     public static final double PHASE_DELAY = 0.02;
+    public static boolean PREPSHOT_OVERRIDE = false;
   }
 
   public static class ClimbConstants {

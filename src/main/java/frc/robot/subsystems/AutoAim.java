@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.subsystems.drive.DriveConstants.turnEncoderInverted;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import org.ejml.simple.SimpleMatrix;
@@ -9,18 +11,23 @@ import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.Constants;
 import frc.robot.Constants.AutoAimConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.misc.AimUtil;
+import frc.robot.util.vision.VisionUtil;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
@@ -40,10 +47,13 @@ public class AutoAim extends SubsystemBase {
     private final Drive drive;
     private final DoubleSupplier xSupplier;
     private final DoubleSupplier ySupplier;
+    private final ChassisSpeeds speeds;
+    private final VisionUtil vision;
 
     private boolean passing = false;
 
-    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier,
+            DoubleSupplier ySupplier, ChassisSpeeds speeds, VisionUtil vision) {
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
@@ -51,43 +61,41 @@ public class AutoAim extends SubsystemBase {
         this.drive = drive;
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
+        this.speeds = speeds;
+        this.vision = vision;
         // Distance (m)
-        double flywheel_tuning = -125;
-        firingTable.put(1.20, getMatrix(0.0, 2875 + flywheel_tuning, 1.24));
-        firingTable.put(2.16, getMatrix(2.92, 2935 + flywheel_tuning, 1.24));
-        firingTable.put(2.98, getMatrix(5.4, 3140 + flywheel_tuning, 1.35));
-        firingTable.put(3.80, getMatrix(5.83, 3375 + flywheel_tuning, 1.31));
-        firingTable.put(4.43, getMatrix(6.0, 3510 + flywheel_tuning, 1.40));
-        firingTable.put(5.08, getMatrix(8.67, 3660 + flywheel_tuning, 1.40));
-        firingTable.put(5.67, getMatrix(10.0, 3870 + flywheel_tuning, 1.45));
-        firingTable.put(7.0, getMatrix(10.0, 4000 + flywheel_tuning, 1.5));
+        double flywheel_tuning = -75;
+        firingTable.put(1.20, getMatrix(0.0, 2900 + flywheel_tuning, 1.24));
+        firingTable.put(2.16, getMatrix(2.92, 2960 + flywheel_tuning, 1.24));
+        firingTable.put(2.98, getMatrix(5.4, 3161 + flywheel_tuning, 1.35));
+        firingTable.put(3.80, getMatrix(5.83, 3400 + flywheel_tuning, 1.31));
+        firingTable.put(4.43, getMatrix(6.0, 3630 + flywheel_tuning, 1.40));
+        firingTable.put(5.08, getMatrix(8.67, 3650 + flywheel_tuning, 1.40));
+        firingTable.put(5.67, getMatrix(10.0, 3921 + flywheel_tuning, 1.45));
     }
 
     public Command targetPassing() {
         return Commands.runOnce(
-            () -> {
-                passing = true;
-            }
-        );
+                () -> {
+                    passing = true;
+                });
     }
 
     public Command targetHub() {
         return Commands.runOnce(
-            () -> {
-                passing = false;
-            }
-        );
+                () -> {
+                    passing = false;
+                });
     }
 
     public Command shoot() {
         return Commands.sequence(
-            Commands.runOnce(() -> 
-                setSetpoints(true), 
-                flywheel, turret, hood, this),
+                Commands.runOnce(() -> setSetpoints(true),
+                        flywheel, turret, hood, this),
 
-            prepShot().alongWith(Commands.waitUntil(this::isReady).andThen(indexer.conditionalFeed(turret::atSetpoint)))
-                //
-                //.andThen(Commands.runOnce(this::startFeeding, indexer)))
+                prepShot().alongWith(
+                        Commands.waitUntil(this::isReady)
+                                .andThen(Commands.runOnce(this::startFeeding, indexer)))
 
         ).finallyDo(interrupted -> stopShooting());
     }
@@ -97,12 +105,19 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Command prepShot() {
+        Boolean should_prime_shot;
+        if (Constants.AutoAimConstants.PREPSHOT_OVERRIDE || trenchApproachTime() > (2 * Constant)) {
+            should_prime_shot = true;
+        } else {
+            should_prime_shot = false;
+        }
         return Commands.run(
-                () -> setSetpoints(true),
+                () -> setSetpoints(should_prime_shot),
                 turret,
                 hood,
                 flywheel,
                 this);
+
     }
 
     public void startFeeding() {
@@ -125,7 +140,8 @@ public class AutoAim extends SubsystemBase {
         if (!passing) {
             return AimUtil.getHubTranslation().plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
         }
-        return AimUtil.getPassTranslation(drive.getPose()).plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
+        return AimUtil.getPassTranslation(drive.getPose())
+                .plus(AimUtil.getFieldShiftFromJoystick(xSupplier, ySupplier));
     }
 
     public double getDistanceToTargetFromRobotPose(Pose2d robotPose) {
@@ -151,7 +167,7 @@ public class AutoAim extends SubsystemBase {
         Pose2d lookaheadPose = drive.getPose();
         double lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(estimatedPose);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             timeOfFlight = firingTable.get(lookaheadTurretToTargetDistance).get(2, 0);
             ChassisSpeeds robotDelta = robotRelativeVelocity.times(timeOfFlight);
             lookaheadPose = estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond,
@@ -185,5 +201,52 @@ public class AutoAim extends SubsystemBase {
     public static Matrix<N3, N1> getMatrix(double hoodSetpoint, double flywheelSetpoint, double flightTimeSeconds) {
         return new Matrix<>(
                 new SimpleMatrix(3, 1, true, new double[] { hoodSetpoint, flywheelSetpoint, flightTimeSeconds }));
+    }
+
+    public ArrayList trenchApproachTime() {
+        ArrayList<Double> timeArray = new ArrayList<>();
+        double xVelo = speeds.vxMetersPerSecond;
+        double yVelo = speeds.vyMetersPerSecond;
+        double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
+        Pose3d rightFrontTrenchPose = vision.getApriltagPose(12);
+            Translation3d rftTranslation = rightFrontTrenchPose.getTranslation();
+            double rftPrimative = rftTranslation.getDistance(rftTranslation);
+            Double rft = rftPrimative;
+        Pose3d rightBackTrenchPose = vision.getApriltagPose(1);
+            Translation3d rbtTranslation = rightBackTrenchPose.getTranslation();
+            double rbtPrimative = rbtTranslation.getDistance(rbtTranslation);
+            Double rbt = rbtPrimative;
+        Pose3d leftFrontTrenchPose = vision.getApriltagPose(7);
+            Translation3d lftTranslation = leftFrontTrenchPose.getTranslation();
+            double lftPrimative = lftTranslation.getDistance(lftTranslation);
+            Double lft = lftPrimative;
+        Pose3d leftBackTrenchPose = vision.getApriltagPose(6);
+            Translation3d lbtTranslation = leftBackTrenchPose.getTranslation();
+            double lbtPrimative = lbtTranslation.getDistance(lbtTranslation);
+            Double lbt = lbtPrimative;
+        Pose2d drivePose = drive.getPose();
+            Translation2d driveTranslation = drivePose.getTranslation();
+            double drivePrimative = driveTranslation.getDistance(driveTranslation);
+            Double driveDouble = drivePrimative;
+        
+        Double rftTime = (driveDouble - rft) / resultant;
+            timeArray.add(rftTime);
+        Double rbtTime = (driveDouble - rbt) / resultant;
+            timeArray.add(rbtTime);
+        Double lftTime = (driveDouble - lft) / resultant;
+            timeArray.add(lftTime);
+        Double lbtTime = (driveDouble - lbt) / resultant;
+            timeArray.add(lbtTime);
+        
+        return timeArray;
+    }
+
+    // Override for the hood that sets the hood safety to be on or off
+    public void overridePrepshotTrue() {
+        Constants.AutoAimConstants.PREPSHOT_OVERRIDE = true;
+    }
+
+    public void overridePrepshotFalse() {
+        Constants.AutoAimConstants.PREPSHOT_OVERRIDE = false;
     }
 }

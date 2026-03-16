@@ -138,8 +138,6 @@ public class RobotContainer {
                 indexer = new Indexer(new IndexerIOSparkFlex());
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
-             
-
                 break;
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
