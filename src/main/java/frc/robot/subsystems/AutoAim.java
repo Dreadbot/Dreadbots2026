@@ -106,7 +106,7 @@ public class AutoAim extends SubsystemBase {
 
     public Command prepShot() {
         Boolean should_prime_shot;
-        if (Constants.AutoAimConstants.PREPSHOT_OVERRIDE || trenchApproachTime() > (2 * Constant)) {
+        if (Constants.AutoAimConstants.PREPSHOT_OVERRIDE || trenchApproachTimeListTraversal() > (2 * AutoAimConstants.HOOD_LOWER_TIME)) {
             should_prime_shot = true;
         } else {
             should_prime_shot = false;
@@ -203,42 +203,58 @@ public class AutoAim extends SubsystemBase {
                 new SimpleMatrix(3, 1, true, new double[] { hoodSetpoint, flywheelSetpoint, flightTimeSeconds }));
     }
 
-    public ArrayList trenchApproachTime() {
+    //too clunky right now, will simplify to loops instead
+    public ArrayList<Double> trenchApproachTimeList() {
         ArrayList<Double> timeArray = new ArrayList<>();
         double xVelo = speeds.vxMetersPerSecond;
         double yVelo = speeds.vyMetersPerSecond;
         double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
-        Pose3d rightFrontTrenchPose = vision.getApriltagPose(12);
-            Translation3d rftTranslation = rightFrontTrenchPose.getTranslation();
-            double rftPrimative = rftTranslation.getDistance(rftTranslation);
-            Double rft = rftPrimative;
-        Pose3d rightBackTrenchPose = vision.getApriltagPose(1);
-            Translation3d rbtTranslation = rightBackTrenchPose.getTranslation();
-            double rbtPrimative = rbtTranslation.getDistance(rbtTranslation);
-            Double rbt = rbtPrimative;
-        Pose3d leftFrontTrenchPose = vision.getApriltagPose(7);
-            Translation3d lftTranslation = leftFrontTrenchPose.getTranslation();
-            double lftPrimative = lftTranslation.getDistance(lftTranslation);
-            Double lft = lftPrimative;
-        Pose3d leftBackTrenchPose = vision.getApriltagPose(6);
-            Translation3d lbtTranslation = leftBackTrenchPose.getTranslation();
-            double lbtPrimative = lbtTranslation.getDistance(lbtTranslation);
-            Double lbt = lbtPrimative;
         Pose2d drivePose = drive.getPose();
             Translation2d driveTranslation = drivePose.getTranslation();
             double drivePrimative = driveTranslation.getDistance(driveTranslation);
             Double driveDouble = drivePrimative;
+        Pose3d rightFrontTrenchPose = vision.getApriltagPose(12);
+            Translation3d rftTranslation3d = rightFrontTrenchPose.getTranslation();
+            Translation2d rftTranslation = rftTranslation3d.toTranslation2d();
+            double rftPrimative = rftTranslation.getDistance(driveTranslation);
+            Double rft = rftPrimative;
+        Pose3d rightBackTrenchPose = vision.getApriltagPose(1);
+            Translation3d rbtTranslation3d = rightBackTrenchPose.getTranslation();
+            Translation2d rbtTranslation = rbtTranslation3d.toTranslation2d();
+            double rbtPrimative = rbtTranslation.getDistance(driveTranslation);
+            Double rbt = rbtPrimative;
+        Pose3d leftFrontTrenchPose = vision.getApriltagPose(7);
+            Translation3d lftTranslation3d = leftFrontTrenchPose.getTranslation();
+            Translation2d lftTranslation = lftTranslation3d.toTranslation2d();
+            double lftPrimative = lftTranslation.getDistance(driveTranslation);
+            Double lft = lftPrimative;
+        Pose3d leftBackTrenchPose = vision.getApriltagPose(6);
+            Translation3d lbtTranslation3d = leftBackTrenchPose.getTranslation();
+            Translation2d lbtTranslation = lbtTranslation3d.toTranslation2d();
+            double lbtPrimative = lbtTranslation.getDistance(driveTranslation);
+            Double lbt = lbtPrimative;
         
-        Double rftTime = (driveDouble - rft) / resultant;
+        Double rftTime = Math.abs(driveDouble - rft) / resultant;
             timeArray.add(rftTime);
-        Double rbtTime = (driveDouble - rbt) / resultant;
+        Double rbtTime = Math.abs(driveDouble - rbt) / resultant;
             timeArray.add(rbtTime);
-        Double lftTime = (driveDouble - lft) / resultant;
+        Double lftTime = Math.abs(driveDouble - lft) / resultant;
             timeArray.add(lftTime);
-        Double lbtTime = (driveDouble - lbt) / resultant;
+        Double lbtTime = Math.abs(driveDouble - lbt) / resultant;
             timeArray.add(lbtTime);
         
         return timeArray;
+    }
+
+    public double trenchApproachTimeListTraversal() {
+        ArrayList<Double> list = trenchApproachTimeList();
+        double lowestTime = 2 * (AutoAimConstants.HOOD_LOWER_TIME) + 0.01;
+        for (int i = 0; i < list.size(); i++){
+            if (lowestTime > list.get(i)){
+                lowestTime = list.get(i);
+            }
+        }
+        return lowestTime;
     }
 
     // Override for the hood that sets the hood safety to be on or off

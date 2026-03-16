@@ -8,11 +8,13 @@ import java.util.List;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
 import frc.robot.util.Elastic;
+import frc.robot.util.vision.VisionUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -74,6 +76,8 @@ public class RobotContainer {
     private final AutoChooser choreoAutoChooser;
     private final AutoCommands autos;
     private final Led leds;
+    private final ChassisSpeeds speeds;
+    private final VisionUtil visionUtil;
 
 
     public RobotContainer() {
@@ -140,7 +144,9 @@ public class RobotContainer {
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
         }
-        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
+        speeds = new ChassisSpeeds();
+        visionUtil = new VisionUtil();
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY, speeds, visionUtil);
 
         autos = new AutoCommands(drive, slapdown, hood, indexer, climb, flywheel, autoAim);
         leds = new Led(new LedIO());
