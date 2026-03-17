@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.AutoAimConstants;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.AutoCommands;
@@ -258,11 +259,13 @@ public class RobotContainer {
     public void autonomousInit() {
         //leds.autonomousInit();
         //Elastic.selectTab("Autonomous");
+        AutoAimConstants.PREPSHOT_OVERRIDE = true;
     }
 
     public void teleopInit() {
         //leds.teleopInit();
         //Elastic.selectTab("Teleoperated");
+        AutoAimConstants.PREPSHOT_OVERRIDE = false;
     }
 
     private static Trigger disabled() {
