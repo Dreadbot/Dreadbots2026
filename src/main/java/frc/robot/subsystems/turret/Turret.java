@@ -79,11 +79,14 @@ public class Turret extends SubsystemBase {
 
         if (!lock) {
             io.runTurretVoltage(voltage);
+        } else {
+            io.runTurretVoltage(0.0);
         }
 
-        Logger.recordOutput("Turret/SetpointRelativeRadians", wrappedSetpoint);
+        Logger.recordOutput("Turret/SetpointRelativeRadians", -(wrappedSetpoint + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
         // Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
-        // Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
+        Logger.recordOutput("Turret/GoalRotationRadians", -(wrapToLimits(goal.position) + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
+        Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
         Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
         Logger.recordOutput("Turret/Voltage", voltage);
         Logger.recordOutput("Turret/FieldPose", 

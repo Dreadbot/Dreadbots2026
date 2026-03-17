@@ -14,11 +14,11 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
 
     // Create flywheel PID and feedforward controllers to calculate voltage to run rpm
-    private double kP = 0.002;
-    private double kI = 0.0004;
+    private double kP = 0.0035;
+    private double kI = 0.0000;
     private double kD = 0.0;
     private double kS = 0.0;
-    private double kV = 0.00185;
+    private double kV = 0.001835;
     private double kA = 0.0;
     private Turret turret;
     private PIDController pid = new PIDController(kP, kI, kD);
@@ -49,7 +49,7 @@ public class Flywheel extends SubsystemBase {
         // io.setRPM(goalRPM); // For sparkflex PID system
         Logger.recordOutput("Flywheel/GoalRPM", goalRPM);
         Logger.recordOutput("Flywheel/atRPM", atRPM());
-        // Logger.recordOutput("Flywheel/PIDValue", pidValue);
+        Logger.recordOutput("Flywheel/Voltage", pidValue + feedforwardValue);
         // Logger.recordOutput("Flywheel/FeedforwardValue", feedforwardValue);
         Logger.recordOutput("Flywheel/ActualRPM", inputs.RPM);
         // Logger.recordOutput("Flywheel/System", system);

@@ -50,27 +50,43 @@ public class Slapdown extends SubsystemBase {
 
     public Command outtakeCommand() {
         return Commands.runEnd(
-                () -> io.runIntakeVoltage(-SlapdownConstants.INTAKE_VOLTAGE),
-                () -> io.runIntakeVoltage(0));
+            () -> {
+                if (canRunIntake()) {
+                    io.runIntakeVoltage(-SlapdownConstants.INTAKE_VOLTAGE);
+                }
+            },
+            () -> io.runIntakeVoltage(0.0)
+        );
     }
 
     public Command intakeCommand() {
         return Commands.runEnd(
-                () -> io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE),
-                () -> io.runIntakeVoltage(0));
+            () -> {
+                if (canRunIntake()) {
+                    io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE);
+                }
+            },
+            () -> io.runIntakeVoltage(0.0)
+        );
     }
 
     public Command stopIntakeCommand() {
         return Commands.runOnce(
-                () -> io.runIntakeVoltage(0));
+            () -> io.runIntakeVoltage(0.0)
+        );
     }
 
     // Double check with test
     public Command agitateCommand() {
         return intakeCommand().withTimeout(0.15).andThen(
-                Commands.repeatingSequence(
-                        outtakeCommand().withTimeout(0.05),
-                        intakeCommand().withTimeout(0.25)));
+            Commands.repeatingSequence(
+                outtakeCommand().withTimeout(0.1),
+                intakeCommand().withTimeout(0.25)
+            ));
+    }
+
+    private boolean canRunIntake() {
+        return inputs.absolutePosition > 90;
     }
 
     @Override
@@ -98,10 +114,10 @@ public class Slapdown extends SubsystemBase {
         TrapezoidProfile profile = new TrapezoidProfile(constraints);
         setpoint = profile.calculate(0.02, setpoint, goal);
         double voltage = pid.calculate(inputs.absolutePosition, setpoint.position);
-        // if (inputs.absolutePosition < 20 && voltage < -0.1) {
-        // voltage -= 3;
-        // }
-
+        if (inputs.absolutePosition < 20 && voltage > 0.6) {
+            voltage += 3;
+        }
+        
         double ffvoltage = feedforward.calculate(Units.degreesToRadians(setpoint.position - 90), setpoint.velocity);
 
         Logger.recordOutput("Slapdown/SetpointPosition", setpoint.position);
