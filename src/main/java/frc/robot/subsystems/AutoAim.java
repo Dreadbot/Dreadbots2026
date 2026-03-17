@@ -182,6 +182,9 @@ public class AutoAim extends SubsystemBase {
         if (primingShot) {
             hood.setSetpoint(firingValues.get(0, 0));
             flywheel.setRPM(firingValues.get(1, 0));
+        } else {
+            indexer.stopIndexing();
+            hood.setSetpoint(0.0);
         }
 
         Logger.recordOutput("AutoAim/DistanceToTarget", lookaheadTurretToTargetDistance);
