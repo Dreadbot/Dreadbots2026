@@ -203,46 +203,25 @@ public class AutoAim extends SubsystemBase {
                 new SimpleMatrix(3, 1, true, new double[] { hoodSetpoint, flywheelSetpoint, flightTimeSeconds }));
     }
 
-    //too clunky right now, will simplify to loops instead
     public ArrayList<Double> trenchApproachTimeList() {
         ArrayList<Double> timeArray = new ArrayList<>();
+        int[] idArray = {12, 1, 7, 6};
+        
         double xVelo = speeds.vxMetersPerSecond;
         double yVelo = speeds.vyMetersPerSecond;
         double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
+
         Pose2d drivePose = drive.getPose();
             Translation2d driveTranslation = drivePose.getTranslation();
-            double drivePrimative = driveTranslation.getDistance(driveTranslation);
-            Double driveDouble = drivePrimative;
-        Pose3d rightFrontTrenchPose = vision.getApriltagPose(12);
-            Translation3d rftTranslation3d = rightFrontTrenchPose.getTranslation();
-            Translation2d rftTranslation = rftTranslation3d.toTranslation2d();
-            double rftPrimative = rftTranslation.getDistance(driveTranslation);
-            Double rft = rftPrimative;
-        Pose3d rightBackTrenchPose = vision.getApriltagPose(1);
-            Translation3d rbtTranslation3d = rightBackTrenchPose.getTranslation();
-            Translation2d rbtTranslation = rbtTranslation3d.toTranslation2d();
-            double rbtPrimative = rbtTranslation.getDistance(driveTranslation);
-            Double rbt = rbtPrimative;
-        Pose3d leftFrontTrenchPose = vision.getApriltagPose(7);
-            Translation3d lftTranslation3d = leftFrontTrenchPose.getTranslation();
-            Translation2d lftTranslation = lftTranslation3d.toTranslation2d();
-            double lftPrimative = lftTranslation.getDistance(driveTranslation);
-            Double lft = lftPrimative;
-        Pose3d leftBackTrenchPose = vision.getApriltagPose(6);
-            Translation3d lbtTranslation3d = leftBackTrenchPose.getTranslation();
-            Translation2d lbtTranslation = lbtTranslation3d.toTranslation2d();
-            double lbtPrimative = lbtTranslation.getDistance(driveTranslation);
-            Double lbt = lbtPrimative;
-        
-        Double rftTime = Math.abs(driveDouble - rft) / resultant;
-            timeArray.add(rftTime);
-        Double rbtTime = Math.abs(driveDouble - rbt) / resultant;
-            timeArray.add(rbtTime);
-        Double lftTime = Math.abs(driveDouble - lft) / resultant;
-            timeArray.add(lftTime);
-        Double lbtTime = Math.abs(driveDouble - lbt) / resultant;
-            timeArray.add(lbtTime);
-        
+            Double driveDouble = (Double) driveTranslation.getDistance(driveTranslation);
+
+        for (int i = 0; i < idArray.length; i++) {
+            Pose3d currentPose = vision.getApriltagPose(idArray[i]);
+            Translation2d translation = currentPose.getTranslation().toTranslation2d();
+            Double value = (Double) translation.getDistance(driveTranslation);
+            Double time = Math.abs(driveDouble - value) / resultant;
+            timeArray.add(time);
+        }
         return timeArray;
     }
 
