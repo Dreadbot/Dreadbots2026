@@ -28,8 +28,6 @@ public class Led extends SubsystemBase{
 
     private boolean warning = false;
     private boolean gotGameData = false;
-    private String gameData = "";
-    private boolean teleop = false;
 
 
     public Led(LedIO io) {
@@ -38,24 +36,25 @@ public class Led extends SubsystemBase{
 
     @Override
     public void periodic() {
-        if (allianceColor.equals(Color.kWhite)) {
-            updateAllianceColor();
-            setPattern(LEDPattern.solid(allianceColor).breathe(Seconds.of(2)).atBrightness(Percent.of(50)));
-        }
         io.updateInputs(inputs);
         if (enabled) {
             io.periodic();
         }
-        if (!gotGameData) {
-            String data = DriverStation.getGameSpecificMessage();
-            if (data.length() > 0) {
-                gameData = data;
+        if (allianceColor.equals(Color.kWhite)) {
+            updateAllianceColor();
+            if (!gotGameData) {
+                setPattern(LEDPattern.solid(allianceColor).breathe(Seconds.of(2)).atBrightness(Percent.of(50)));
+            }
+        }
+        if (DriverStation.isTeleopEnabled() && !gotGameData) {
+            String gameData = DriverStation.getGameSpecificMessage();
+            Logger.recordOutput("gameData", gameData);
+            if (gameData.length() > 0) {
+                scheduleMatch(gameData);
                 gotGameData = true;
             }
         }
-        if (teleop) {
-            Logger.recordOutput("TimeLeftInPeriod", (DriverStation.getMatchTime() - 30) % 25);
-        }
+        Logger.recordOutput("TimeLeftInPeriod", (DriverStation.getMatchTime() - 30) % 25);
         Logger.processInputs("LEDs", inputs);
     }
 
@@ -74,13 +73,10 @@ public class Led extends SubsystemBase{
     }
 
     public void autonomousInit() {
-        teleop = false;
         CommandScheduler.getInstance().schedule(auton());
     }
 
-    public void teleopInit() {
-        teleop = true;
-        updateAllianceColor();
+    public void scheduleMatch(String gameData) {
         boolean wonAuton = false;
         if(gameData.length() > 0) {
             switch (gameData.charAt(0)){
@@ -109,6 +105,7 @@ public class Led extends SubsystemBase{
                 .andThen(endgame())
                 );
         }
+        Logger.recordOutput("LEDs/WonAuton", wonAuton);
     }
 
     public Command wonAuton() {

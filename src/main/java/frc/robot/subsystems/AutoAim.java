@@ -101,14 +101,8 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Command prepShot() {
-        Boolean should_prime_shot;
-        if (Constants.AutoAimConstants.PREPSHOT_OVERRIDE || trenchApproachTimeListTraversal() > (2 * AutoAimConstants.HOOD_LOWER_TIME)) {
-            should_prime_shot = true;
-        } else {
-            should_prime_shot = false;
-        }
         return Commands.run(
-                () -> setSetpoints(should_prime_shot),
+                () -> setSetpoints(true),
                 turret,
                 hood,
                 flywheel,
@@ -202,46 +196,46 @@ public class AutoAim extends SubsystemBase {
                 new SimpleMatrix(3, 1, true, new double[] { hoodSetpoint, flywheelSetpoint, flightTimeSeconds }));
     }
 
-    public ArrayList<Double> trenchApproachTimeList() {
-        ArrayList<Double> timeArray = new ArrayList<>();
-        //id for each trench tag
-        int[] idArray = {12, 1, 7, 6};
+    // public ArrayList<Double> trenchApproachTimeList() {
+    //     ArrayList<Double> timeArray = new ArrayList<>();
+    //     //id for each trench tag
+    //     int[] idArray = {12, 1, 7, 6};
         
-        double xVelo = speeds.vxMetersPerSecond;
-        double yVelo = speeds.vyMetersPerSecond;
-        double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
+    //     double xVelo = speeds.vxMetersPerSecond;
+    //     double yVelo = speeds.vyMetersPerSecond;
+    //     double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
 
-        Pose2d drivePose = drive.getPose();
-            Translation2d driveTranslation = drivePose.getTranslation();
-            Double driveDouble = (Double) driveTranslation.getDistance(driveTranslation);
+    //     Pose2d drivePose = drive.getPose();
+    //         Translation2d driveTranslation = drivePose.getTranslation();
+    //         Double driveDouble = (Double) driveTranslation.getDistance(driveTranslation);
 
-        for (int i = 0; i < idArray.length; i++) {
-            Pose3d currentPose = vision.getApriltagPose(idArray[i]);
-            Translation2d translation = currentPose.getTranslation().toTranslation2d();
-            Double value = (Double) translation.getDistance(driveTranslation);
-            Double time = Math.abs(driveDouble - value) / resultant;
-            timeArray.add(time);
-        }
-        return timeArray;
-    }
+    //     for (int i = 0; i < idArray.length; i++) {
+    //         Pose3d currentPose = vision.getApriltagPose(idArray[i]);
+    //         Translation2d translation = currentPose.getTranslation().toTranslation2d();
+    //         Double value = (Double) translation.getDistance(driveTranslation);
+    //         Double time = Math.abs(driveDouble - value) / resultant;
+    //         timeArray.add(time);
+    //     }
+    //     return timeArray;
+    // }
 
-    public double trenchApproachTimeListTraversal() {
-        ArrayList<Double> list = trenchApproachTimeList();
-        double lowestTime = 2 * (AutoAimConstants.HOOD_LOWER_TIME) + 0.01;
-        for (int i = 0; i < list.size(); i++){
-            if (lowestTime > list.get(i)){
-                lowestTime = list.get(i);
-            }
-        }
-        return lowestTime;
-    }
+    // public double trenchApproachTimeListTraversal() {
+    //     ArrayList<Double> list = trenchApproachTimeList();
+    //     double lowestTime = 2 * (AutoAimConstants.HOOD_LOWER_TIME) + 0.01;
+    //     for (int i = 0; i < list.size(); i++){
+    //         if (lowestTime > list.get(i)){
+    //             lowestTime = list.get(i);
+    //         }
+    //     }
+    //     return lowestTime;
+    // }
 
     // Override for the hood that sets the hood safety to be on or off
-    public void overridePrepshotTrue() {
-        Constants.AutoAimConstants.PREPSHOT_OVERRIDE = true;
-    }
+    // public void overridePrepshotTrue() {
+    //     Constants.AutoAimConstants.PREPSHOT_OVERRIDE = true;
+    // }
 
-    public void overridePrepshotFalse() {
-        Constants.AutoAimConstants.PREPSHOT_OVERRIDE = false;
-    }
+    // public void overridePrepshotFalse() {
+    //     Constants.AutoAimConstants.PREPSHOT_OVERRIDE = false;
+    // }
 }

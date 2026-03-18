@@ -257,15 +257,14 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-        //leds.autonomousInit();
+        leds.autonomousInit();
         //Elastic.selectTab("Autonomous");
-        AutoAimConstants.PREPSHOT_OVERRIDE = true;
+        //AutoAimConstants.PREPSHOT_OVERRIDE = true;
     }
 
     public void teleopInit() {
-        //leds.teleopInit();
         //Elastic.selectTab("Teleoperated");
-        AutoAimConstants.PREPSHOT_OVERRIDE = false;
+        //AutoAimConstants.PREPSHOT_OVERRIDE = false;
     }
 
     private static Trigger disabled() {
