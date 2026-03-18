@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.SlapdownConstants;
 
 public class Slapdown extends SubsystemBase {
@@ -78,11 +79,18 @@ public class Slapdown extends SubsystemBase {
 
     // Double check with test
     public Command agitateCommand() {
-        return intakeCommand().withTimeout(0.15).andThen(
+        return intakeCommand().withTimeout(0.25).andThen(
             Commands.repeatingSequence(
-                outtakeCommand().withTimeout(0.1),
-                intakeCommand().withTimeout(0.25)
-            ));
+                outtakeCommand().withTimeout(0.075),
+                intakeCommand().withTimeout(0.25),
+                Commands.waitSeconds(0.1)
+            // ).alongWith(Commands.repeatingSequence(
+            //     setAngleDegrees(105),
+            //     Commands.waitSeconds(0.5),
+            //     goToIntakeCommand(),
+            //     Commands.waitSeconds(0.5)
+            // )
+        )).finallyDo(interrupted -> goToIntakeCommand());
     }
 
     private boolean canRunIntake() {

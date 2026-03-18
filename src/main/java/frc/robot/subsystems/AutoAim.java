@@ -66,8 +66,10 @@ public class AutoAim extends SubsystemBase {
         // Distance (m)
         double flywheel_tuning = 0; //-125;
         firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.1));
-        firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2));
+        //firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2)); // Home
+        firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2)); // Chelsea
         firingTable.put(5.87, getMatrix(8.0, 3750 + flywheel_tuning, 1.4));
+        firingTable.put(12.0, getMatrix(10.5, 5500 + flywheel_tuning, 2.0));
     }
 
     public Command targetPassing() {

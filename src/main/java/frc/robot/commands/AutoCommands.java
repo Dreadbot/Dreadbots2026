@@ -42,23 +42,23 @@ public class AutoCommands {
         factory
             .bind("intake", slapdown.intakeCommand())
             .bind("stopIntake", slapdown.stopIntakeCommand())
-            .bind("slapdown", slapdown.goToIntakeCommand())
-            .bind("slapup", slapdown.goToHomeCommand());
+            .bind("slapdown", slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()))
+            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
     }
 
     public AutoRoutine leftDouble() {
         AutoRoutine routine = factory.newRoutine("leftDouble");
-        AutoTrajectory LCProtect = routine.trajectory("LCProtect");
+        AutoTrajectory LCOutside = routine.trajectory("LCOutside");
         AutoTrajectory LCInside = routine.trajectory("LCInside");
 
         routine.active().onTrue(
                 Commands.sequence(
-                    LCProtect.resetOdometry(),
-                    LCProtect.cmd(),
+                    LCOutside.resetOdometry(),
+                    Commands.deadline(LCOutside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
                     aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
                     Commands.runOnce(() -> hood.setSetpoint(0.0)),
-                    LCInside.cmd(),
+                    Commands.deadline(LCInside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
                     aim.shoot().alongWith(slapdown.agitateCommand())
             )
@@ -75,11 +75,11 @@ public class AutoCommands {
         routine.active().onTrue(
                 Commands.sequence(
                     RCOutside.resetOdometry(),
-                    RCOutside.cmd(),
+                    Commands.deadline(RCOutside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
                     aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
                     Commands.runOnce(() -> hood.setSetpoint(0.0)),
-                    RCInside.cmd(),
+                    Commands.deadline(RCInside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
                     aim.shoot().alongWith(slapdown.agitateCommand())
             )

@@ -43,6 +43,7 @@ public class Hood extends SubsystemBase {
                 goalRotations = 0.0;
                 calibrating = false;
                 io.setVoltage(0);
+                return;
             }
             io.setVoltage(-1.5);
             return;

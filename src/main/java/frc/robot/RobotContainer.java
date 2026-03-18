@@ -215,13 +215,14 @@ public class RobotContainer {
         driver.rightTrigger().whileTrue(autoAim.shoot());
         driver.rightBumper().whileTrue(autoAim.prepShot());
 
-        //hood.setDefaultCommand(hood.run(() -> hood.setSetpoint(0)));
+        hood.setDefaultCommand(hood.run(() -> hood.setSetpoint(0)));
 
         // Final Operator Controls
         operator.rightBumper().onTrue(slapdown.goToIntakeCommand());
         operator.leftBumper().onTrue(slapdown.goToHomeCommand());
-        //operator.leftTrigger().whileTrue(hood.run(() -> hood.setSetpoint(0)));
+        operator.leftTrigger().whileTrue(slapdown.outtakeCommand());
         operator.rightTrigger().whileTrue(slapdown.agitateCommand());
+        operator.rightTrigger().onFalse(slapdown.goToIntakeCommand());
 
         operator.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onTrue(Commands.runOnce(() -> indexer.startIndexing()));
@@ -230,12 +231,12 @@ public class RobotContainer {
         operator.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
                 .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         operator.start().onTrue(Commands.runOnce(() -> hood.calibrate()));
-        // operator.povUp().onTrue(turret.toggleLock());
+        operator.povUp().onTrue(turret.toggleLock());
 
-        // operator.a().onTrue(autoAim.targetPassing());
-        // operator.b().onTrue(autoAim.targetHub());
-        //operator.y().onTrue(climb.raiseRobotLevelOne());
-        operator.y().onTrue(climb.lowerClimbArm());
+        operator.a().onTrue(autoAim.targetPassing());
+        operator.b().onTrue(autoAim.targetHub());
+        operator.y().onTrue(climb.raiseRobotLevelOne());
+        operator.x().onTrue(climb.lowerClimbArm());
 
         // Turret Presets
         // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
@@ -243,12 +244,12 @@ public class RobotContainer {
         // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
 
         // Tuning Operator Controls
-        operator.povUp().onTrue(hood.changeRotations(0.5));
-        operator.povDown().onTrue(hood.changeRotations(-0.5));
-        //operator.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
-        operator.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
-        operator.b().onTrue(flywheel.changeRPM(100));
-        operator.x().onTrue(flywheel.changeRPM(-100));
+        // operator.povUp().onTrue(hood.changeRotations(0.5));
+        // operator.povDown().onTrue(hood.changeRotations(-0.5));
+        // //operator.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));
+        // operator.a().onTrue(Commands.runOnce(() -> flywheel.setRPM(0)));
+        // operator.b().onTrue(flywheel.changeRPM(100));
+        // operator.x().onTrue(flywheel.changeRPM(-100));
     }
 
     public Command getAutonomousCommand() {

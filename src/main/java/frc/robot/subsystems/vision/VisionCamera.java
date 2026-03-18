@@ -60,18 +60,18 @@ public class VisionCamera {
 			Pose3d tagPose = VisionUtil.getApriltagPose(detection.id());
 			double tagDist = tagPose.toPose2d().getTranslation().getDistance(detection.pose().getTranslation());
 			boolean shouldRejectTag =
-				tagDist > 5.0
+				tagDist > 4.0
 				|| detection.pose().getX() < 0.0
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
-				|| Math.abs(detection.pose().getRotation().minus(supplier.getPose().getRotation()).getDegrees()) > 30;
+				|| Math.abs(detection.pose().getRotation().minus(supplier.getPose().getRotation()).getDegrees()) > 90;
 			
 			if (shouldRejectTag) {
 				rejectedPoses.add(detection.pose());
 				continue;
 			}
-			double stdDevFactor = Math.pow(tagDist, 1.2);
+			double stdDevFactor = Math.pow(tagDist, 2);
 
 			tagPoses.add(tagPose);
 
