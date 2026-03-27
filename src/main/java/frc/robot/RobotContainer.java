@@ -99,7 +99,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                slapdown = new Slapdown(new SlapdownIOSparkFlex());
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
             case SIM:
@@ -141,7 +141,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex());
-                slapdown = new Slapdown(new SlapdownIOSparkMax());
+                slapdown = new Slapdown(new SlapdownIOSparkFlex());
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
         }
