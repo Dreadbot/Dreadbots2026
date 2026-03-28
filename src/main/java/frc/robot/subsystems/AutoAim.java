@@ -108,8 +108,8 @@ public class AutoAim extends SubsystemBase {
                 turret,
                 hood,
                 flywheel,
-                this);
-
+                this
+                ).finallyDo(interrupted -> stopShooting());
     }
 
     public void startFeeding() {
