@@ -2,7 +2,6 @@ package frc.robot.subsystems.slapdown;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -15,17 +14,17 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.SlapdownConstants;
 
 
-public class SlapdownIOSparkMax implements SlapdownIO {
+public class SlapdownIOSparkFlex implements SlapdownIO {
 
     private final SparkBase intakeMotor;
     private final SparkBase pivotMotor;
     private final DutyCycleEncoder absoluteEncoder;
 
-    public SlapdownIOSparkMax() {
+    public SlapdownIOSparkFlex() {
         this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownConstants.SLAPDOWN_DUTY_CYCLE_ENCODER), 360.0, 0.0); //Update code with the 0 and max angle
         absoluteEncoder.setAssumedFrequency(SlapdownConstants.ENCODER_FREQUENCY);
         absoluteEncoder.setInverted(true);
-        this.intakeMotor = new SparkMax(SlapdownConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+        this.intakeMotor = new SparkFlex(SlapdownConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
         this.pivotMotor = new SparkFlex(SlapdownConstants.PIVOT_MOTOR_ID, MotorType.kBrushless);
         SparkMaxConfig intakeConfig = new SparkMaxConfig();
         SparkMaxConfig pivotConfig = new SparkMaxConfig();

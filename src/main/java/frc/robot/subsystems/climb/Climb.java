@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.subsystems.slapdown.Slapdown;
 import frc.robot.subsystems.slapdown.SlapdownIO;
-import frc.robot.subsystems.slapdown.SlapdownIOSparkMax;
+import frc.robot.subsystems.slapdown.SlapdownIOSparkFlex;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;

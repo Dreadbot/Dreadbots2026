@@ -9,7 +9,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.subsystems.slapdown.Slapdown;
-import frc.robot.subsystems.slapdown.SlapdownIOSparkMax;
+import frc.robot.subsystems.slapdown.SlapdownIOSparkFlex;
 
 public class ClimbIOSparkFlex implements ClimbIO {
     private SparkFlex motor;

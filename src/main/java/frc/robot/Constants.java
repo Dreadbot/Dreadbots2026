@@ -79,7 +79,7 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = 0.323;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = 0.24;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 12.0;
