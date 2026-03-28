@@ -6,8 +6,6 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.ctre.phoenix6.configs.LEDConfigs;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;

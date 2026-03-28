@@ -4,8 +4,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 
 import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.concurrent.TimeUnit;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Time;
@@ -58,7 +56,7 @@ public class Constants {
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
     public static final double HOOD_KP = 0.85;
-    public static final double MAX_VOLTAGE = 2.0;
+    public static final double MAX_VOLTAGE = 3.0;
     public static final double MAX_ROTATIONS = 10.8;
     public static final double HOOD_KS = 0.50;
     public static final double HOOD_KI = 0.0;
@@ -79,8 +77,8 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = 0.24;//Math.PI;
-    public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
+    public static final double TURRET_ENCODER_OFFSET_RAD = 0.232;//Math.PI;
+    public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.8; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 12.0;
     public static final double TURRET_MOI = 0.0366;
@@ -100,7 +98,7 @@ public class Constants {
   }
 
   public static class AutoAimConstants {
-    public static final double PHASE_DELAY = 0.02;
+    public static final double PHASE_DELAY = 0.11;
     //public static boolean PREPSHOT_OVERRIDE = false;
     public static final double HOOD_LOWER_TIME = 1.0;
   }

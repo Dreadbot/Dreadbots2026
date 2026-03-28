@@ -5,24 +5,14 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.List;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
-import frc.robot.util.Elastic;
 import frc.robot.util.vision.VisionUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Pose2d;
-import frc.robot.Constants.AutoAimConstants;
-import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IndexerConstants;
 import frc.robot.commands.AutoCommands;
 import frc.robot.commands.DriveCommands;
@@ -31,13 +21,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DriveCommands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.AutoAim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
-import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.flywheel.Flywheel;
@@ -47,18 +34,13 @@ import frc.robot.subsystems.LEDs.*;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionCamera;
 import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOCamera;
 import frc.robot.subsystems.vision.VisionIOSim;
-
-import frc.robot.subsystems.flywheel.*;
 import frc.robot.subsystems.turret.*;
 import frc.robot.subsystems.slapdown.*;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.indexer.*;
-import frc.robot.subsystems.vision.*;
-import choreo.auto.AutoChooser.*;
 
 public class RobotContainer {
 
@@ -96,7 +78,7 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
-                flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
+                flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex(), operator);
                 slapdown = new Slapdown(new SlapdownIOSparkFlex());
@@ -117,7 +99,7 @@ public class RobotContainer {
 
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSim(), drive);
-                flywheel = new Flywheel(new FlywheelIOSim(), turret);
+                flywheel = new Flywheel(new FlywheelIOSim());
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim(), operator);
                 slapdown = new Slapdown(new SlapdownIOSim());
@@ -137,7 +119,7 @@ public class RobotContainer {
                         new VisionCamera(new VisionIOCamera(VisionConstants.backCameraName), 2));
                 vision = new Vision(cameras, drive::addVisionMeasurement, drive::getPose);
                 turret = new Turret(new TurretIOSparkMax(), drive);
-                flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
+                flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex(), operator);
                 slapdown = new Slapdown(new SlapdownIOSparkFlex());
@@ -227,11 +209,11 @@ public class RobotContainer {
         operator.rightTrigger().onFalse(slapdown.goToIntakeCommand());
 
         operator.axisGreaterThan(4, IndexerConstants.DEAD_BAND)
-                .onTrue(Commands.runOnce(() -> indexer.startIndexing()));
+                .whileTrue(Commands.runEnd(() -> indexer.startIndexing(), () -> indexer.stopIndexing()));
         operator.axisLessThan(4, -IndexerConstants.DEAD_BAND)
-                .onTrue(Commands.runOnce(() -> indexer.startReverseIndexing()));
-        operator.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
-                .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
+                .whileTrue(Commands.runEnd(() -> indexer.startReverseIndexing(), () -> indexer.stopIndexing()));
+        // operator.axisMagnitudeGreaterThan(4, IndexerConstants.DEAD_BAND)
+        //         .onFalse(Commands.runOnce(() -> indexer.stopIndexing()));
         operator.start().onTrue(Commands.runOnce(() -> hood.calibrate()));
         operator.povUp().onTrue(turret.toggleLock());
 

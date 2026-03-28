@@ -8,12 +8,9 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.subsystems.slapdown.Slapdown;
-import frc.robot.subsystems.slapdown.SlapdownIOSparkFlex;
 
 public class ClimbIOSparkFlex implements ClimbIO {
     private SparkFlex motor;
-    private Slapdown slapdown;
 
     public ClimbIOSparkFlex() {
         motor = new SparkFlex(ClimbConstants.MOTOR_ID, MotorType.kBrushless);

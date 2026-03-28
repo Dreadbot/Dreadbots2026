@@ -1,9 +1,5 @@
 package frc.robot.subsystems;
 
-import static frc.robot.subsystems.drive.DriveConstants.turnEncoderInverted;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import org.ejml.simple.SimpleMatrix;
@@ -11,30 +7,23 @@ import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.Constants;
 import frc.robot.Constants.AutoAimConstants;
-import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.turret.Turret;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.misc.AimUtil;
 import frc.robot.util.vision.VisionUtil;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -65,11 +54,11 @@ public class AutoAim extends SubsystemBase {
         this.vision = vision;
         // Distance (m)
         double flywheel_tuning = 0; //-125;
-        firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.1));
+        firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.1 - AutoAimConstants.PHASE_DELAY));
         //firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2)); // Home
-        firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2)); // Chelsea
-        firingTable.put(5.87, getMatrix(8.0, 3750 + flywheel_tuning, 1.4));
-        firingTable.put(12.0, getMatrix(10.5, 5500 + flywheel_tuning, 2.0));
+        firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea
+        firingTable.put(5.87, getMatrix(8.0, 3750 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY));
+        firingTable.put(12.0, getMatrix(10.5, 5500 + flywheel_tuning, 2.0 - AutoAimConstants.PHASE_DELAY));
     }
 
     public Command targetPassing() {
