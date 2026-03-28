@@ -88,6 +88,69 @@ public class AutoCommands {
         return routine;
     }
 
+    public AutoRoutine rightDoubleSafe() {
+        AutoRoutine routine = factory.newRoutine("rightDoubleSafe");
+        AutoTrajectory RCOutside = routine.trajectory("RCOutsideSafe");
+        AutoTrajectory RCInside = routine.trajectory("RCInsideSafe");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    RCOutside.resetOdometry(),
+                    Commands.deadline(RCOutside.cmd(), aim.trackTarget()),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    Commands.runOnce(() -> hood.setSetpoint(0.0)),
+                    Commands.deadline(RCInside.cmd(), aim.trackTarget()),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine rightDoubleSweep() {
+        AutoRoutine routine = factory.newRoutine("rightDoubleSweep");
+        AutoTrajectory RCOutside = routine.trajectory("RCOutsideSafe");
+        AutoTrajectory RCInside = routine.trajectory("RCInsideSweepSafe");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    RCOutside.resetOdometry(),
+                    Commands.deadline(RCOutside.cmd(), aim.trackTarget()),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    Commands.runOnce(() -> hood.setSetpoint(0.0)),
+                    Commands.deadline(RCInside.cmd(), aim.trackTarget()),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine leftDoubleSafe() {
+        AutoRoutine routine = factory.newRoutine("leftDoubleSafe");
+        AutoTrajectory LCOutside = routine.trajectory("LCOutsideSafe");
+        AutoTrajectory LCInside = routine.trajectory("LCInsideSafe");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    LCOutside.resetOdometry(),
+                    Commands.deadline(LCOutside.cmd(), aim.trackTarget()),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    Commands.runOnce(() -> hood.setSetpoint(0.0)),
+                    Commands.deadline(LCInside.cmd(), aim.trackTarget()),
+                    drive.stopDrive(),
+                    aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
     public AutoRoutine RCOutpost() {
         AutoRoutine routine = factory.newRoutine("CenterOutpost");
         AutoTrajectory RCOutpost = routine.trajectory("RCOutpost");

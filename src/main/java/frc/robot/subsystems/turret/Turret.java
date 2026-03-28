@@ -42,7 +42,8 @@ public class Turret extends SubsystemBase {
         pid.setTolerance(Units.degreesToRadians(3));
         this.drive = drive;
         //setCorrectAngleRad(0.0);
-        setpointRelativeRad = 0;
+        setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
+        goal = setpoint;
     }
 
     @Override
@@ -54,8 +55,8 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Turret/CurrentTurretRotationRadians", -(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
 
         if (DriverStation.isDisabled()) {
-            setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
-            goal = setpoint;
+            // setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
+            // goal = setpoint;
             io.runTurretVoltage(0.0);
             return;
         }
@@ -114,6 +115,13 @@ public class Turret extends SubsystemBase {
             }, this);
     }
 
+    public Command setZero() {
+        return Commands.runOnce(
+            () -> {
+                io.setZero();
+            }, this).ignoringDisable(true);
+    }
+
     public void setCorrectAngleRad(double angleRad) {
         double currentPositionWrapped = MathUtil.angleModulus(inputs.turretRotationRad);
         double delta = MathUtil.angleModulus(MathUtil.angleModulus(angleRad) - currentPositionWrapped);
@@ -136,7 +144,9 @@ public class Turret extends SubsystemBase {
     }
 
     public boolean atSetpoint() {
-        return pid.atSetpoint();
+        boolean atSetpoint = pid.atSetpoint();
+        boolean closeToGoal = Math.abs(goal.position - setpoint.position) < TurretConstants.GOAL_TOLERANCE;
+        return atSetpoint && closeToGoal;
     }
 
     public void setSetpointFromTurretPose(Pose2d turretPose, Translation2d target) {

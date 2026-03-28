@@ -49,7 +49,7 @@ public class Constants {
       public static final Time BLINK_FREQUENCY = Seconds.of(0.1);
       public static final Time BREATHE_FREQUENCY = Seconds.of(0.5);
       public static final double WARN_TIME = 3.0;
-      public static final double SHOOT_SIGNAL_TIME = 2.0;
+      public static final double SHOOT_SIGNAL_TIME = 2.5;
   }
 
   public static class HoodConstants {
@@ -79,11 +79,12 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = -2.772;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = 0.323;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.76; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 150.0;
     public static final double MAX_VOLTAGE = 12.0;
     public static final double TURRET_MOI = 0.0366;
+    public static final double GOAL_TOLERANCE = Units.degreesToRadians(90);
 
 
     public static final Translation2d TURRET_OFFSET = new Translation2d(-0.1518, -0.210);     // +X = -Y in CAD +Y = +X in CAD (offset from center)

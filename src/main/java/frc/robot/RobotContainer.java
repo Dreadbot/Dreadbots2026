@@ -98,7 +98,7 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
-                indexer = new Indexer(new IndexerIOSparkFlex());
+                indexer = new Indexer(new IndexerIOSparkFlex(), operator);
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
@@ -119,10 +119,9 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSim(), drive);
                 flywheel = new Flywheel(new FlywheelIOSim(), turret);
                 hood = new Hood(new HoodIOSim());
-                indexer = new Indexer(new IndexerIOSim());
+                indexer = new Indexer(new IndexerIOSim(), operator);
                 slapdown = new Slapdown(new SlapdownIOSim());
                 climb = new Climb(new ClimbIOSim(), slapdown);
-                
 
                 break;
             default:
@@ -140,7 +139,7 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
-                indexer = new Indexer(new IndexerIOSparkFlex());
+                indexer = new Indexer(new IndexerIOSparkFlex(), operator);
                 slapdown = new Slapdown(new SlapdownIOSparkMax());
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
@@ -156,9 +155,12 @@ public class RobotContainer {
         
         choreoAutoChooser.addRoutine("Left Double", autos::leftDouble);
         choreoAutoChooser.addRoutine("Right Double", autos::rightDouble);
-        choreoAutoChooser.addRoutine("Right Center-Outpost", autos::RCOutpost);
+        choreoAutoChooser.addRoutine("Right Double Safe", autos::rightDoubleSafe);
+        choreoAutoChooser.addRoutine("Right Double Sweep", autos::rightDoubleSweep);
+        choreoAutoChooser.addRoutine("Left Double Safe", autos::leftDoubleSafe);
+        //choreoAutoChooser.addRoutine("Right Center-Outpost", autos::RCOutpost);
         // 1
-        choreoAutoChooser.addRoutine("Wheel Radius LT to Center", autos::wheelRadius);
+        //choreoAutoChooser.addRoutine("Wheel Radius LT to Center", autos::wheelRadius);
         // // 2
         // choreoAutoChooser.addRoutine("Left Center Sweep", autos::leftCenter);
         // 3
@@ -238,6 +240,26 @@ public class RobotContainer {
         operator.y().onTrue(climb.raiseRobotLevelOne());
         operator.x().onTrue(climb.lowerClimbArm());
 
+        operator.back().onTrue(turret.setZero());
+
+        operator.povLeft().onTrue(
+            Commands.runOnce(() ->
+                {
+                    hood.setSetpoint(0);
+                    flywheel.setRPM(2650);
+                }));
+        operator.povDown().onTrue(
+            Commands.runOnce(() ->
+                {
+                    hood.setSetpoint(4.39);
+                    flywheel.setRPM(3130);
+                }));
+        operator.povRight().onTrue(
+            Commands.runOnce(() ->
+                {
+                    hood.setSetpoint(8.0);
+                    flywheel.setRPM(3750);
+                }));
         // Turret Presets
         // secondaryController.povDown().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE1));
         // secondaryController.povRight().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));

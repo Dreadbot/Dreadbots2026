@@ -22,5 +22,7 @@ public interface TurretIO {
     public default void updateInputs(TurretIOInputs inputs) {};
 
     public default void runTurretVoltage(double volts) {};
+
+    public default void setZero() {};
    
 }

@@ -25,7 +25,7 @@ public class IndexerIOSparkFlex implements IndexerIO {
         indexerConfig
             .idleMode(IdleMode.kCoast)
             .smartCurrentLimit(50)
-            .inverted(true);
+            .inverted(false);
         kickerConfig
             .idleMode(IdleMode.kCoast)
             .smartCurrentLimit(50)

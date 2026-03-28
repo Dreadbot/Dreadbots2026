@@ -10,10 +10,12 @@ import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 public class Indexer extends SubsystemBase {
     
@@ -26,10 +28,12 @@ public class Indexer extends SubsystemBase {
     private IndexerIO io;
     private double kickerTargetRPM = 0;
     private boolean isFeeding = false;
+    private CommandXboxController operator;
 
     // gets io from IndexerIO.java
-    public Indexer(IndexerIO io) {
+    public Indexer(IndexerIO io, CommandXboxController operator) {
         this.io = io;
+        this.operator = operator;
         SmartDashboard.putData("KickerPID", pid);
     }
 
@@ -63,6 +67,7 @@ public class Indexer extends SubsystemBase {
         //io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE);
         kickerTargetRPM = IndexerConstants.KICKER_RPM;
         isFeeding = true;
+        operator.setRumble(RumbleType.kBothRumble, 0.5);
     }
 
     public void startReverseIndexing() {
@@ -70,6 +75,7 @@ public class Indexer extends SubsystemBase {
         kickerTargetRPM = -IndexerConstants.KICKER_RPM;
         //io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE * -1);
         isFeeding = false;
+        operator.setRumble(RumbleType.kBothRumble, 0.0);
     }
 
     public void stopIndexing() {
@@ -77,6 +83,7 @@ public class Indexer extends SubsystemBase {
         //io.runKickerVoltage(0.0);
         kickerTargetRPM = 0.0;
         isFeeding = false;
+        operator.setRumble(RumbleType.kBothRumble, 0.0);
     }
 
     public Command conditionalFeed(BooleanSupplier supplier) {

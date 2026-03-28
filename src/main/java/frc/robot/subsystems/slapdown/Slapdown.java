@@ -94,7 +94,7 @@ public class Slapdown extends SubsystemBase {
     }
 
     private boolean canRunIntake() {
-        return inputs.absolutePosition > 90;
+        return inputs.absolutePosition > 105;
     }
 
     @Override
