@@ -1,7 +1,5 @@
 package frc.robot.subsystems.turret;
 
-import java.util.function.BooleanSupplier;
-
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
-    private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, 0, TurretConstants.TURRET_Kd);
+    private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, TurretConstants.TURRET_Ki, TurretConstants.TURRET_Kd);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(TurretConstants.MAX_VELOCITY, TurretConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
@@ -39,7 +37,7 @@ public class Turret extends SubsystemBase {
         this.io = io;
         this.voltage = 0;
         io.updateInputs(inputs);
-        pid.setTolerance(Units.degreesToRadians(3));
+        pid.setTolerance(Units.degreesToRadians(10));
         this.drive = drive;
         //setCorrectAngleRad(0.0);
         setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
@@ -55,8 +53,8 @@ public class Turret extends SubsystemBase {
         Logger.recordOutput("Turret/CurrentTurretRotationRadians", -(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
 
         if (DriverStation.isDisabled()) {
-            // setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
-            // goal = setpoint;
+            setpoint = new TrapezoidProfile.State(MathUtil.clamp(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD), 0);
+            goal = setpoint;
             io.runTurretVoltage(0.0);
             return;
         }
@@ -66,7 +64,11 @@ public class Turret extends SubsystemBase {
         
         
         voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
-        if (Math.abs(voltage) > 1e-1) {
+        if (Math.abs(voltage) > 0.15) {
+            //if under lots of tension, add power to pull against it
+            // if (-(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE) > 1.2 && voltage < 0.75) {
+            //     voltage -= 0.6;
+            // }
             voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
         }
         

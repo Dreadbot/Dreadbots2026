@@ -12,8 +12,8 @@ public class SlapdownIOSim implements SlapdownIO {
     private final SingleJointedArmSim slapdown;
     private final DCMotorSim intakeMotor;
 
-    private double pivotVolts;
-    private double intakeVolts;
+    // private double pivotVolts;
+    // private double intakeVolts;
 
 
     public SlapdownIOSim() {
@@ -31,9 +31,8 @@ public class SlapdownIOSim implements SlapdownIO {
             LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), SlapdownConstants.SIM_INTAKE_MOI, SlapdownConstants.INTAKE_GEARING), 
             DCMotor.getNEO(1)
         );
-        pivotVolts = 0.0;
-        intakeVolts = 0.0;
-
+        // pivotVolts = 0.0;
+        // intakeVolts = 0.0;
     }
 
     @Override
@@ -41,8 +40,8 @@ public class SlapdownIOSim implements SlapdownIO {
         slapdown.update(0.02);
         intakeMotor.update(0.02);
 
-        inputs.pivotAppliedVolts = pivotVolts;
-        //inputs.intakeAppliedVolts = intakeVolts;
+        // inputs.pivotAppliedVolts = pivotVolts;
+        // inputs.intakeAppliedVolts = intakeVolts;
 
         inputs.absolutePosition = Units.radiansToDegrees(slapdown.getAngleRads());
 
@@ -52,12 +51,12 @@ public class SlapdownIOSim implements SlapdownIO {
     @Override
     public void runPivotVoltage(double volts) {
         slapdown.setInputVoltage(volts);
-        this.pivotVolts = volts;
+        //this.pivotVolts = volts;
     }
     @Override
     public void runIntakeVoltage(double volts) {
         intakeMotor.setInputVoltage(volts);
-        this.intakeVolts = volts;
+        //this.intakeVolts = volts;
     }
 
 }

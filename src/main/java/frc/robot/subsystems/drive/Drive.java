@@ -241,7 +241,7 @@ public class Drive extends SubsystemBase {
     runVelocity(speeds, new ChassisAcceleration(0, 0, 0));
   }
 
-  public void logTrajectory(Trajectory trajectory, boolean startOrEnd) {
+  public void logTrajectory(Trajectory<SwerveSample> trajectory, boolean startOrEnd) {
     Logger.recordOutput("Odometry/Trajectory", trajectory.getPoses());
   }
 

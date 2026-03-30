@@ -77,24 +77,24 @@ public class Constants {
   public static class TurretConstants {
     public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
     public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = 0.232;//Math.PI;
+    public static final double TURRET_ENCODER_OFFSET_RAD = 0.229;//Math.PI;
     public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.8; //Math.PI / 2.0;
-    public static final double GEAR_REDUCTION = 150.0;
+    public static final double GEAR_REDUCTION = 75.0;
     public static final double MAX_VOLTAGE = 12.0;
     public static final double TURRET_MOI = 0.0366;
-    public static final double GOAL_TOLERANCE = Units.degreesToRadians(90);
-
+    public static final double GOAL_TOLERANCE = Units.degreesToRadians(30);
 
     public static final Translation2d TURRET_OFFSET = new Translation2d(-0.1518, -0.210);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
 
     public static final double MAX_ANGLE_RAD = Units.degreesToRadians(181);
     public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(181);
 
-    public static final double TURRET_Kp = 13.0;
+    public static final double TURRET_Kp = 15.0;
+    public static final double TURRET_Ki = 0.0;
     public static final double TURRET_Kd = 0.0;
     public static final double TURRET_Ks = 0.2465;
-    public static final double MAX_ACCELERATION = 30;
-    public static final double MAX_VELOCITY = 10;
+    public static final double MAX_ACCELERATION = 45;
+    public static final double MAX_VELOCITY = 30;
   }
 
   public static class AutoAimConstants {
