@@ -98,6 +98,7 @@ public class Constants {
   }
 
   public static class AutoAimConstants {
+    public static boolean PREPSHOT_OVERRIDE = false;
     public static final double PHASE_DELAY = 0.07;
     //public static boolean PREPSHOT_OVERRIDE = false;
     public static final double HOOD_LOWER_TIME = 1.0;

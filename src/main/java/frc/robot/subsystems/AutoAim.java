@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import org.ejml.simple.SimpleMatrix;
@@ -7,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
+import frc.robot.Constants;
 import frc.robot.Constants.AutoAimConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.flywheel.Flywheel;
@@ -16,6 +18,7 @@ import frc.robot.util.vision.VisionUtil;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -92,8 +95,14 @@ public class AutoAim extends SubsystemBase {
     }
 
     public Command prepShot() {
+        Boolean should_prime_shot;
+        if (Constants.AutoAimConstants.PREPSHOT_OVERRIDE || trenchApproachTimeListTraversal() > (2 * AutoAimConstants.HOOD_LOWER_TIME)) {
+            should_prime_shot = true;
+        } else {
+            should_prime_shot = false;
+        }
         return Commands.run(
-                () -> setSetpoints(true),
+                () -> setSetpoints(should_prime_shot),
                 turret,
                 hood,
                 flywheel,
@@ -187,46 +196,46 @@ public class AutoAim extends SubsystemBase {
                 new SimpleMatrix(3, 1, true, new double[] { hoodSetpoint, flywheelSetpoint, flightTimeSeconds }));
     }
 
-    // public ArrayList<Double> trenchApproachTimeList() {
-    //     ArrayList<Double> timeArray = new ArrayList<>();
-    //     //id for each trench tag
-    //     int[] idArray = {12, 1, 7, 6};
+    public ArrayList<Double> trenchApproachTimeList() {
+        ArrayList<Double> timeArray = new ArrayList<>();
+        //id for each trench tag
+        int[] idArray = {12, 1, 7, 6};
         
-    //     double xVelo = speeds.vxMetersPerSecond;
-    //     double yVelo = speeds.vyMetersPerSecond;
-    //     double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
+        double xVelo = speeds.vxMetersPerSecond;
+        double yVelo = speeds.vyMetersPerSecond;
+        double resultant = Math.sqrt(Math.pow(xVelo, 2) + Math.pow(yVelo, 2));
 
-    //     Pose2d drivePose = drive.getPose();
-    //         Translation2d driveTranslation = drivePose.getTranslation();
-    //         Double driveDouble = (Double) driveTranslation.getDistance(driveTranslation);
+        Pose2d drivePose = drive.getPose();
+            Translation2d driveTranslation = drivePose.getTranslation();
+            Double driveDouble = (Double) driveTranslation.getDistance(driveTranslation);
 
-    //     for (int i = 0; i < idArray.length; i++) {
-    //         Pose3d currentPose = vision.getApriltagPose(idArray[i]);
-    //         Translation2d translation = currentPose.getTranslation().toTranslation2d();
-    //         Double value = (Double) translation.getDistance(driveTranslation);
-    //         Double time = Math.abs(driveDouble - value) / resultant;
-    //         timeArray.add(time);
-    //     }
-    //     return timeArray;
-    // }
+        for (int i = 0; i < idArray.length; i++) {
+            Pose3d currentPose = vision.getApriltagPose(idArray[i]);
+            Translation2d translation = currentPose.getTranslation().toTranslation2d();
+            Double value = (Double) translation.getDistance(driveTranslation);
+            Double time = Math.abs(driveDouble - value) / resultant;
+            timeArray.add(time);
+        }
+        return timeArray;
+    }
 
-    // public double trenchApproachTimeListTraversal() {
-    //     ArrayList<Double> list = trenchApproachTimeList();
-    //     double lowestTime = 2 * (AutoAimConstants.HOOD_LOWER_TIME) + 0.01;
-    //     for (int i = 0; i < list.size(); i++){
-    //         if (lowestTime > list.get(i)){
-    //             lowestTime = list.get(i);
-    //         }
-    //     }
-    //     return lowestTime;
-    // }
+    public double trenchApproachTimeListTraversal() {
+        ArrayList<Double> list = trenchApproachTimeList();
+        double lowestTime = 2 * (AutoAimConstants.HOOD_LOWER_TIME) + 0.01;
+        for (int i = 0; i < list.size(); i++){
+            if (lowestTime > list.get(i)){
+                lowestTime = list.get(i);
+            }
+        }
+        return lowestTime;
+    }
 
-    // Override for the hood that sets the hood safety to be on or off
-    // public void overridePrepshotTrue() {
-    //     Constants.AutoAimConstants.PREPSHOT_OVERRIDE = true;
-    // }
+    //Override for the hood that sets the hood safety to be on or off
+    public void overridePrepshotTrue() {
+        Constants.AutoAimConstants.PREPSHOT_OVERRIDE = true;
+    }
 
-    // public void overridePrepshotFalse() {
-    //     Constants.AutoAimConstants.PREPSHOT_OVERRIDE = false;
-    // }
+    public void overridePrepshotFalse() {
+        Constants.AutoAimConstants.PREPSHOT_OVERRIDE = false;
+    }
 }
