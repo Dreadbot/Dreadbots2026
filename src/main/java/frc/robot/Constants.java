@@ -98,7 +98,7 @@ public class Constants {
   }
 
   public static class AutoAimConstants {
-    public static final double PHASE_DELAY = 0.11;
+    public static final double PHASE_DELAY = 0.07;
     //public static boolean PREPSHOT_OVERRIDE = false;
     public static final double HOOD_LOWER_TIME = 1.0;
   }
@@ -132,7 +132,7 @@ public class Constants {
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 12;
+    public static final double INTAKE_VOLTAGE = 6;
     public static final double KP = 0.05;
     public static final double KI = 0.01;
     public static final double KD = 0;
