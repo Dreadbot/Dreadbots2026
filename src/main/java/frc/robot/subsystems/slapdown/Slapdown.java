@@ -4,6 +4,8 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -12,8 +14,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownConstants;
+import frc.robot.subsystems.drive.DriveConstants;
 
 public class Slapdown extends SubsystemBase {
+    Twist2d positions = new Twist2d();
+    ChassisSpeeds speeds = new ChassisSpeeds();
 
     private final SlapdownIOInputsAutoLogged inputs = new SlapdownIOInputsAutoLogged();
     private final SlapdownIO io;
@@ -63,7 +68,7 @@ public class Slapdown extends SubsystemBase {
         return Commands.runEnd(
             () -> {
                 if (canRunIntake()) {
-                    io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE);
+                    io.runIntakeVoltage(relativeIntakeSpeed());
                 }
             },
             () -> io.runIntakeVoltage(0.0)
@@ -142,4 +147,33 @@ public class Slapdown extends SubsystemBase {
     public double getAngle() {
         return inputs.absolutePosition;
     }
-}
+
+    public double getDotProduct() {
+        double headingAngle = positions.dtheta;
+        double xVelo = speeds.vxMetersPerSecond;
+        double yVelo = speeds.vyMetersPerSecond;
+
+        double dotProduct = Math.cos(headingAngle) * xVelo + Math.sin(headingAngle) * yVelo;
+        return dotProduct;
+    }
+
+    public double relativeIntakeSpeed() {
+        // i is the intake voltage
+        // v is the dot product range
+        double dotProduct = getDotProduct();
+        double iMin = SlapdownConstants.INTAKE_VOLTAGE/2;
+        double iMax = SlapdownConstants.INTAKE_VOLTAGE;
+        double vMin = 0;
+        double vMax = DriveConstants.maxSpeedMetersPerSec;;
+        double i;
+
+        if (dotProduct < vMin){
+            i = iMin;
+        } else if (dotProduct > vMax) {
+            i = iMax;
+        } else {
+            i = ((dotProduct - vMin)/(vMax - vMin))*(iMax - iMin) + iMin;
+        }
+        return i;
+    }
+    }
