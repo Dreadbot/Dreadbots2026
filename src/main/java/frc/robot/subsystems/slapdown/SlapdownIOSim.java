@@ -28,8 +28,8 @@ public class SlapdownIOSim implements SlapdownIO {
             Units.degreesToRadians(0)
             );
         this.intakeMotor = new DCMotorSim(
-            LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), SlapdownConstants.SIM_INTAKE_MOI, SlapdownConstants.INTAKE_GEARING), 
-            DCMotor.getNEO(1)
+            LinearSystemId.createDCMotorSystem(DCMotor.getKrakenX60Foc(1), SlapdownConstants.SIM_INTAKE_MOI, SlapdownConstants.INTAKE_GEARING), 
+            DCMotor.getKrakenX60Foc(1)
         );
         pivotVolts = 0.0;
         intakeVolts = 0.0;

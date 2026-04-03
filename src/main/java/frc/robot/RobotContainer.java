@@ -99,7 +99,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex(), operator);
-                slapdown = new Slapdown(new SlapdownIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkFlex(), drive::getChassisSpeeds);
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
             case SIM:
@@ -120,7 +120,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSim(), turret);
                 hood = new Hood(new HoodIOSim());
                 indexer = new Indexer(new IndexerIOSim(), operator);
-                slapdown = new Slapdown(new SlapdownIOSim());
+                slapdown = new Slapdown(new SlapdownIOSim(), drive::getChassisSpeeds);
                 climb = new Climb(new ClimbIOSim(), slapdown);
 
                 break;
@@ -140,7 +140,7 @@ public class RobotContainer {
                 flywheel = new Flywheel(new FlywheelIOSparkFlex(), turret);
                 hood = new Hood(new HoodIOSparkMax());
                 indexer = new Indexer(new IndexerIOSparkFlex(), operator);
-                slapdown = new Slapdown(new SlapdownIOSparkFlex());
+                slapdown = new Slapdown(new SlapdownIOSparkFlex(), drive::getChassisSpeeds);
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
         }

@@ -143,8 +143,8 @@ public class Constants {
     public static final double KG = 0.0;
     public static final double MAX_VELOCITY = 540;
     public static final double MAX_ACCELERATION = 540;
-    public static final int SLAPDOWN_GEARING = 1;
-    public static final int INTAKE_GEARING = 1;
+    public static final int SLAPDOWN_GEARING = 27;
+    public static final double INTAKE_GEARING = 1.4;
     public static final double ARM_LENGTH = Units.inchesToMeters(11.75);
     public static final double MIN_ANGLE_RAD = Units.degreesToRadians(-20);
     public static final double MAX_ANGLE_RAD = Units.degreesToRadians(131.5);

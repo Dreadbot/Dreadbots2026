@@ -1,9 +1,15 @@
 package frc.robot.subsystems.slapdown;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
+import org.opencv.core.RotatedRect;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -18,9 +24,6 @@ import frc.robot.Constants.SlapdownConstants;
 import frc.robot.subsystems.drive.DriveConstants;
 
 public class Slapdown extends SubsystemBase {
-    Twist2d positions = new Twist2d();
-    ChassisSpeeds speeds = new ChassisSpeeds();
-
     private final SlapdownIOInputsAutoLogged inputs = new SlapdownIOInputsAutoLogged();
     private final SlapdownIO io;
     public final PIDController pid = new PIDController(SlapdownConstants.KP, SlapdownConstants.KI,
@@ -39,8 +42,11 @@ public class Slapdown extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    public Slapdown(SlapdownIO io) {
+    private final Supplier<ChassisSpeeds> speedsSupplier;
+
+    public Slapdown(SlapdownIO io, Supplier<ChassisSpeeds> speedsSupplier) {
         this.io = io;
+        this.speedsSupplier = speedsSupplier;
         SmartDashboard.putData("SlapdownPID", pid);
     }
 
@@ -150,11 +156,12 @@ public class Slapdown extends SubsystemBase {
     }
 
     public double getDotProduct() {
-        double headingAngle = positions.dtheta;
+        ChassisSpeeds speeds = speedsSupplier.get();
+
         double xVelo = speeds.vxMetersPerSecond;
         double yVelo = speeds.vyMetersPerSecond;
 
-        double dotProduct = Math.cos(headingAngle) * xVelo + Math.sin(headingAngle) * yVelo;
+        double dotProduct = xVelo + 0.5 * Math.abs(yVelo);
         return dotProduct;
     }
 
@@ -175,6 +182,7 @@ public class Slapdown extends SubsystemBase {
         } else {
             i = ((dotProduct - vMin)/(vMax - vMin))*(iMax - iMin) + iMin;
         }
+        Logger.recordOutput("Intake/relativeVoltage", i);
         return i;
     }
-    }
+}
