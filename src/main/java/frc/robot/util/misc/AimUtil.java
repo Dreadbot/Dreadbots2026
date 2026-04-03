@@ -48,17 +48,19 @@ public class AimUtil {
         double x;
         double y;
         boolean rightSide = pose2d.getY() < 4.02;
+        double xOffset = 1.0;
+        double yOffset = 2.0;
 
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            x = 2.0;
+            x = xOffset;
         } else {
-            x = 14.5;
+            x = 16.5 - xOffset;
         }
         
         if (rightSide) {
-            y = 2.0;
+            y = yOffset;
         } else {
-            y = 6.04;
+            y = 8.04 - yOffset;
         }
 
         Translation2d passTranslation = new Translation2d(x, y);

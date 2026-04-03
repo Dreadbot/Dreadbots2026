@@ -59,8 +59,7 @@ public class RobotContainer {
     private final AutoChooser choreoAutoChooser;
     private final AutoCommands autos;
     private final Led leds;
-    private final ChassisSpeeds speeds;
-    private final VisionUtil visionUtil;
+    //private final ChassisSpeeds speeds;
 
 
     public RobotContainer() {
@@ -126,9 +125,7 @@ public class RobotContainer {
                 climb = new Climb(new ClimbIOSparkFlex(), slapdown);
                 break;
         }
-        speeds = new ChassisSpeeds();
-        visionUtil = new VisionUtil();
-        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY, speeds, visionUtil);
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
 
         autos = new AutoCommands(drive, slapdown, hood, indexer, climb, flywheel, autoAim);
         leds = new Led(new LedIO());
@@ -247,7 +244,7 @@ public class RobotContainer {
         // secondaryController.povRight().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE2));
         // secondaryController.povUp().onTrue(turret.setAngleRad(Constants.TurretConstants.TURRET_PRESET_ANGLE3));
 
-        // Tuning Operator Controls
+        // // Tuning Operator Controls
         // operator.povUp().onTrue(hood.changeRotations(0.5));
         // operator.povDown().onTrue(hood.changeRotations(-0.5));
         // //operator.y().onTrue(Commands.runOnce(() -> flywheel.setRPM(3000)));

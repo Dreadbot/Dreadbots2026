@@ -15,5 +15,5 @@ public final class VisionConstants {
     public static final double frontLeftCameraAngularStdDevs = Units.degreesToRadians(100_000);
     public static final double frontRightCameraAngularStdDevs = Units.degreesToRadians(100_000);
 
-    public static final double DELAY_OFFSET = 0.10;
+    public static final double DELAY_OFFSET = 0.1;
 }
