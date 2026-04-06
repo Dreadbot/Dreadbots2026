@@ -11,12 +11,10 @@ public interface TurretIO {
         //Current
         public double turretCurrentAmps = 0.0;
 
-        //Rotating By Degrees
+        //Angle
         public double turretRotationRad = 0.0;
-        
-        public double absolutePosition = 0.0;
-
-        public double turretVelocityRadPerSec = 0.0;
+        public double absoluteEncoder1 = 0.0;
+        public double absoluteEncoder2 = 0.0;
     }
 
     public default void updateInputs(TurretIOInputs inputs) {};

@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
 import java.util.function.DoubleSupplier;
 
 import org.ejml.simple.SimpleMatrix;
@@ -8,17 +7,14 @@ import org.littletonrobotics.junction.Logger;
 
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.Constants;
 import frc.robot.Constants.AutoAimConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.util.misc.AimUtil;
-import frc.robot.util.vision.VisionUtil;
 import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;

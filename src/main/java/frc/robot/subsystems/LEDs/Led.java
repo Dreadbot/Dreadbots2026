@@ -24,7 +24,7 @@ public class Led extends SubsystemBase{
     private Color allianceColor = Color.kWhite;
     private final LedIOInputsAutoLogged inputs = new LedIOInputsAutoLogged();
 
-    private boolean warning = false;
+    public boolean warning = false;
     private boolean gotGameData = false;
 
 

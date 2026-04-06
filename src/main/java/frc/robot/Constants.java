@@ -75,24 +75,36 @@ public class Constants {
   }
 
   public static class TurretConstants {
-    public static final int TURRET_DUTY_CYCLE_ENCODER = 0;
-    public static final int TURRET_MOTOR_ID = 16;
-    public static final double TURRET_ENCODER_OFFSET_RAD = 0.095;//Math.PI;
-    public static final double TURRET_ZERO_ROBOT_RELATIVE = 0.8; //Math.PI / 2.0;
-    public static final double GEAR_REDUCTION = 75.0;
+    public static final int ENCODER_1_PORT = 0;
+    public static final double ENCODER_1_ZERO = 0;
+    public static final boolean ENCODER_1_INVERTED = false;
+    public static final int ENCODER_1_TEETH = 21;
+
+    public static final int ENCODER_2_PORT = 0;
+    public static final double ENCODER_2_ZERO = 0;
+    public static final boolean ENCODER_2_INVERTED = false;
+    public static final int ENCODER_2_TEETH = 13;
+
+    public static final double MECH_TO_DRIVE = 1.0;
+    public static final int DRIVE_GEAR_TEETH = 84;
+
+    public static final int MOTOR_ID = 16;
+    public static final double ENCODER_OFFSET_RAD = 0.095;//Math.PI;
+    public static final double ZERO_ROBOT_RELATIVE = 0.8; //Math.PI / 2.0;
+    public static final double GEAR_REDUCTION = 80.0;
     public static final double MAX_VOLTAGE = 12.0;
-    public static final double TURRET_MOI = 0.0366;
+    public static final double MOI = 0.0366;
     public static final double GOAL_TOLERANCE = Units.degreesToRadians(30);
 
-    public static final Translation2d TURRET_OFFSET = new Translation2d(-0.1518, -0.210);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
+    public static final Translation2d OFFSET = new Translation2d(-0.1518, -0.1619);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
 
     public static final double MAX_ANGLE_RAD = Units.degreesToRadians(181);
     public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(181);
 
-    public static final double TURRET_Kp = 15.0;
-    public static final double TURRET_Ki = 0.0;
-    public static final double TURRET_Kd = 0.0;
-    public static final double TURRET_Ks = 0.2465;
+    public static final double Kp = 15.0;
+    public static final double Ki = 0.0;
+    public static final double Kd = 0.0;
+    public static final double Ks = 0.2465;
     public static final double MAX_ACCELERATION = 45;
     public static final double MAX_VELOCITY = 30;
   }

@@ -1,9 +1,12 @@
 package frc.robot.subsystems.slapdown;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -12,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SlapdownConstants;
+import frc.robot.subsystems.drive.DriveConstants;
 
 public class Slapdown extends SubsystemBase {
 
@@ -33,8 +37,11 @@ public class Slapdown extends SubsystemBase {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    public Slapdown(SlapdownIO io) {
+    private final Supplier<ChassisSpeeds> speedsSupplier;
+
+    public Slapdown(SlapdownIO io, Supplier<ChassisSpeeds> speedSupplier) {
         this.io = io;
+        this.speedsSupplier = speedSupplier;
         SmartDashboard.putData("SlapdownPID", pid);
     }
 
@@ -63,7 +70,7 @@ public class Slapdown extends SubsystemBase {
         return Commands.runEnd(
             () -> {
                 if (canRunIntake()) {
-                    io.runIntakeVoltage(SlapdownConstants.INTAKE_VOLTAGE);
+                    io.runIntakeVoltage(relativeIntakeSpeed());
                 }
             },
             () -> io.runIntakeVoltage(0.0)
@@ -141,5 +148,34 @@ public class Slapdown extends SubsystemBase {
 
     public double getAngle() {
         return inputs.absolutePosition;
+    }
+
+    public double getDotProduct() {
+        ChassisSpeeds speeds = speedsSupplier.get();
+
+        double xVelocity = speeds.vxMetersPerSecond;
+        double yVelocity = speeds.vyMetersPerSecond;
+
+        // only add half of y so we dont give too much weight to side to side velocity
+        double dotProduct = xVelocity + 0.5 * Math.abs(yVelocity);
+        return dotProduct;
+    }
+
+    public double relativeIntakeSpeed() {
+        double dotProduct = getDotProduct();
+        double minIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE/2;
+        double maxIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE;
+        double minVelocity = 0;
+        double maxVelocity = DriveConstants.maxSpeedMetersPerSec;;
+        double intakeSpeed;
+
+        if (dotProduct < minVelocity){
+            intakeSpeed = minIntakeSpeed;
+        } else if (dotProduct > maxVelocity) {
+            intakeSpeed = maxIntakeSpeed;
+        } else {
+            intakeSpeed = ((dotProduct - minVelocity)/(maxVelocity - minVelocity))*(maxIntakeSpeed - minIntakeSpeed) + minIntakeSpeed;
+        }
+        return intakeSpeed;
     }
 }

@@ -26,7 +26,7 @@ public class AimUtil {
         Translation2d robotTranslation = robotPose.getTranslation();
         Rotation2d robotRotation = robotPose.getRotation();
 
-        Translation2d offset = TurretConstants.TURRET_OFFSET.rotateBy(robotRotation);
+        Translation2d offset = TurretConstants.OFFSET.rotateBy(robotRotation);
 
         return robotTranslation.plus(offset);
     }

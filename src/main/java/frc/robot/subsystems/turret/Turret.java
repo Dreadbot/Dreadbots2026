@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Turret extends SubsystemBase {
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
     private final TurretIO io;
-    private final PIDController pid = new PIDController(TurretConstants.TURRET_Kp, TurretConstants.TURRET_Ki, TurretConstants.TURRET_Kd);
+    private final PIDController pid = new PIDController(TurretConstants.Kp, TurretConstants.Ki, TurretConstants.Kd);
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(TurretConstants.MAX_VELOCITY, TurretConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
@@ -40,7 +40,7 @@ public class Turret extends SubsystemBase {
         pid.setTolerance(Units.degreesToRadians(10));
         this.drive = drive;
         //setCorrectAngleRad(0.0);
-        setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, 0);
+        setpoint = new TrapezoidProfile.State(inputs.turretRotationRad - TurretConstants.ZERO_ROBOT_RELATIVE, 0);
         goal = setpoint;
     }
 
@@ -49,11 +49,11 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
 
-        double turretRotationRelative = inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE;
-        Logger.recordOutput("Turret/CurrentTurretRotationRadians", -(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
+        double turretRotationRelative = inputs.turretRotationRad - TurretConstants.ZERO_ROBOT_RELATIVE;
+        Logger.recordOutput("Turret/CurrentTurretRotationRadians", -(turretRotationRelative + TurretConstants.ZERO_ROBOT_RELATIVE));
 
         if (DriverStation.isDisabled()) {
-            setpoint = new TrapezoidProfile.State(MathUtil.clamp(inputs.turretRotationRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD), 0);
+            setpoint = new TrapezoidProfile.State(MathUtil.clamp(inputs.turretRotationRad - TurretConstants.ZERO_ROBOT_RELATIVE, TurretConstants.MIN_ANGLE_RAD, TurretConstants.MAX_ANGLE_RAD), 0);
             goal = setpoint;
             io.runTurretVoltage(0.0);
             return;
@@ -69,7 +69,7 @@ public class Turret extends SubsystemBase {
             // if (-(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE) > 1.2 && voltage < 0.75) {
             //     voltage -= 0.6;
             // }
-            voltage += Math.copySign(TurretConstants.TURRET_Ks, voltage);
+            voltage += Math.copySign(TurretConstants.Ks, voltage);
         }
         
         if (turretRotationRelative >= TurretConstants.MAX_ANGLE_RAD && voltage > 0) {
@@ -86,9 +86,9 @@ public class Turret extends SubsystemBase {
             io.runTurretVoltage(0.0);
         }
 
-        Logger.recordOutput("Turret/SetpointRelativeRadians", -(wrappedSetpoint + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
+        Logger.recordOutput("Turret/SetpointRelativeRadians", -(wrappedSetpoint + TurretConstants.ZERO_ROBOT_RELATIVE));
         // Logger.recordOutput("Turret/CurrentFieldRotationRadians", inputs.turretRotationRad);
-        Logger.recordOutput("Turret/GoalRotationRadians", -(wrapToLimits(goal.position) + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE));
+        Logger.recordOutput("Turret/GoalRotationRadians", -(wrapToLimits(goal.position) + TurretConstants.ZERO_ROBOT_RELATIVE));
         Logger.recordOutput("Turret/Delta", MathUtil.angleModulus(wrappedSetpoint - turretRotationRelative));
         Logger.recordOutput("Turret/AtSetpoint", atSetpoint());
         Logger.recordOutput("Turret/Voltage", voltage);
@@ -132,7 +132,7 @@ public class Turret extends SubsystemBase {
     }
 
     public double robotRelativeToTurretRelative(double angleRad) {
-        return MathUtil.angleModulus(angleRad - TurretConstants.TURRET_ZERO_ROBOT_RELATIVE);
+        return MathUtil.angleModulus(angleRad - TurretConstants.ZERO_ROBOT_RELATIVE);
     }
 
     public static double wrapToLimits(double angleRad) {
