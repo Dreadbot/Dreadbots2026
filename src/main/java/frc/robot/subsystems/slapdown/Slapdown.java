@@ -163,10 +163,10 @@ public class Slapdown extends SubsystemBase {
 
     public double relativeIntakeSpeed() {
         double dotProduct = getDotProduct();
-        double minIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE/2;
+        double minIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE/1.5;
         double maxIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE;
         double minVelocity = 0;
-        double maxVelocity = DriveConstants.maxSpeedMetersPerSec;;
+        double maxVelocity = DriveConstants.maxSpeedMetersPerSec / 2;
         double intakeSpeed;
 
         if (dotProduct < minVelocity){

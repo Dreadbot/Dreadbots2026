@@ -184,7 +184,7 @@ public class RobotContainer {
         
         driver.b().whileTrue(turret.setAngleRad(0 * Math.PI));
         driver.a().whileTrue(drive.brace());
-        // driver.y().whileTrue(climb.testRaise());
+        driver.y().whileTrue(climb.testRaise());
         driver.x().whileTrue(climb.testLower());
 
         

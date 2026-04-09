@@ -151,7 +151,7 @@ public class AutoAim extends SubsystemBase {
         Pose2d lookaheadPose = drive.getPose();
         double lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(estimatedPose);
 
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 20; i++) {
             timeOfFlight = firingTable.get(lookaheadTurretToTargetDistance).get(2, 0);
             ChassisSpeeds robotDelta = robotRelativeVelocity.times(timeOfFlight);
             lookaheadPose = estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond,

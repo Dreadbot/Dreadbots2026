@@ -64,7 +64,7 @@ public class Turret extends SubsystemBase {
         
         
         voltage = pid.calculate(turretRotationRelative, wrappedSetpoint);
-        if (Math.abs(voltage) > 0.15) {
+        if (Math.abs(voltage) > 0.1) {
             //if under lots of tension, add power to pull against it
             // if (-(turretRotationRelative + TurretConstants.TURRET_ZERO_ROBOT_RELATIVE) > 1.2 && voltage < 0.75) {
             //     voltage -= 0.6;

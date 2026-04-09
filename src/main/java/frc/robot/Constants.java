@@ -25,7 +25,7 @@ public class Constants {
     public static final double KICKER_VOLTAGE = 8.0;
     public static final int SPINDEXER_MOTOR_ID = 11;
     public static final double KICKER_RPM = 3000.0;
-    public static final double KICKER_KP = 0.002;
+    public static final double KICKER_KP = 0.005;
     public static final double KICKER_KI = 0.0;
     public static final double KICKER_KD = 0.0;
     public static final double KICKER_KS = 0.0;
@@ -52,7 +52,7 @@ public class Constants {
 
   public static class HoodConstants {
     public static final int MOTOR_ID = 15;
-    public static final int LOWER_LIMIT_SWITCH_ID = 3;
+    public static final int LOWER_LIMIT_SWITCH_ID = 2;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
     public static final double HOOD_KP = 0.85;
@@ -76,12 +76,12 @@ public class Constants {
 
   public static class TurretConstants {
     public static final int ENCODER_1_PORT = 0;
-    public static final double ENCODER_1_ZERO = 0;
-    public static final boolean ENCODER_1_INVERTED = false;
+    public static final double ENCODER_1_ZERO = 0.834;
+    public static final boolean ENCODER_1_INVERTED = true;
     public static final int ENCODER_1_TEETH = 21;
 
-    public static final int ENCODER_2_PORT = 0;
-    public static final double ENCODER_2_ZERO = 0;
+    public static final int ENCODER_2_PORT = 1;
+    public static final double ENCODER_2_ZERO = 0.0546;
     public static final boolean ENCODER_2_INVERTED = false;
     public static final int ENCODER_2_TEETH = 13;
 
@@ -90,7 +90,7 @@ public class Constants {
 
     public static final int MOTOR_ID = 16;
     public static final double ENCODER_OFFSET_RAD = 0.095;//Math.PI;
-    public static final double ZERO_ROBOT_RELATIVE = 0.8; //Math.PI / 2.0;
+    public static final double ZERO_ROBOT_RELATIVE = 0.0; //Math.PI / 2.0;
     public static final double GEAR_REDUCTION = 80.0;
     public static final double MAX_VOLTAGE = 12.0;
     public static final double MOI = 0.0366;
@@ -98,13 +98,13 @@ public class Constants {
 
     public static final Translation2d OFFSET = new Translation2d(-0.1518, -0.1619);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
 
-    public static final double MAX_ANGLE_RAD = Units.degreesToRadians(181);
-    public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(181);
+    public static final double MAX_ANGLE_RAD = Units.degreesToRadians(180);
+    public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(250);
 
-    public static final double Kp = 15.0;
+    public static final double Kp = 12.0;
     public static final double Ki = 0.0;
     public static final double Kd = 0.0;
-    public static final double Ks = 0.2465;
+    public static final double Ks = 0.25;
     public static final double MAX_ACCELERATION = 45;
     public static final double MAX_VELOCITY = 30;
   }
@@ -138,10 +138,10 @@ public class Constants {
 
   public static class SlapdownConstants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
-    public static final double ENCODER_OFFSET = 60;
+    public static final double ENCODER_OFFSET = 238.4;
     public static final double HOME_ANGLE_DEGREES = 0.0;
-    public static final double INTAKE_ANGLE_DEGREES = 129.9;
-    public static final double MAX_ANGLE_DEGREES =  130;
+    public static final double INTAKE_ANGLE_DEGREES = 136;
+    public static final double MAX_ANGLE_DEGREES =  140;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;

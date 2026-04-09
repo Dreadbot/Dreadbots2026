@@ -2,6 +2,7 @@ package frc.robot.subsystems.slapdown;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,7 +27,7 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
     private final DutyCycleEncoder absoluteEncoder;
 
     public SlapdownIOSparkFlex() {
-        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownConstants.SLAPDOWN_DUTY_CYCLE_ENCODER), 360.0, 0.0); //Update code with the 0 and max angle
+        this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownConstants.SLAPDOWN_DUTY_CYCLE_ENCODER), 360.0, -SlapdownConstants.ENCODER_OFFSET); //Update code with the 0 and max angle
         absoluteEncoder.setAssumedFrequency(SlapdownConstants.ENCODER_FREQUENCY);
         absoluteEncoder.setInverted(true);
         this.intakeMotor = new TalonFX(SlapdownConstants.INTAKE_MOTOR_ID);
@@ -49,7 +50,7 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
 
         @Override
         public void updateInputs(SlapdownIOInputs inputs) {
-            inputs.absolutePosition = absoluteEncoder.get() - SlapdownConstants.ENCODER_OFFSET;
+            inputs.absolutePosition = absoluteEncoder.get();// - SlapdownConstants.ENCODER_OFFSET;
             inputs.intakeRPM = intakeMotor.getVelocity().getValueAsDouble();
 
             inputs.pivotAppliedVolts = pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage();

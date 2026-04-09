@@ -32,13 +32,13 @@ public class TurretIOSparkMax implements TurretIO {
                 new DigitalInput(ENCODER_1_PORT),
                 1.0, 
                 0.0);
-            absoluteEncoder1.setInverted(ENCODER_1_INVERTED);
+            absoluteEncoder1.setInverted(false);
             absoluteEncoder1.setAssumedFrequency(975.6);
         this.absoluteEncoder2 = new DutyCycleEncoder(
                 new DigitalInput(ENCODER_2_PORT),
                 1.0, 
                 0.0);
-            absoluteEncoder2.setInverted(ENCODER_2_INVERTED);
+            absoluteEncoder2.setInverted(false);
             absoluteEncoder2.setAssumedFrequency(975.6);
         
         SparkMaxConfig config = new SparkMaxConfig();
@@ -55,7 +55,7 @@ public class TurretIOSparkMax implements TurretIO {
                     /* encoder2Pinion */ ENCODER_2_TEETH)
                 .withAbsoluteEncoderOffsets(Rotations.of(-ENCODER_1_ZERO), Rotations.of(-ENCODER_2_ZERO)) // set after mechanical zero
                 .withMechanismRange(Rotations.of(-2.0), Rotations.of(2.0))
-                .withMatchTolerance(Rotations.of(0.06)) // ~1.08 deg at encoder2 for the example ratio
+                .withMatchTolerance(Rotations.of(0.3)) // ~1.08 deg at encoder2 for the example ratio
                 .withAbsoluteEncoderInversions(ENCODER_1_INVERTED, ENCODER_2_INVERTED)
                 .withCrtGearRecommendationConstraints(
                     /* coverageMargin */ 1.2,
@@ -97,13 +97,13 @@ public class TurretIOSparkMax implements TurretIO {
         inputs.turretCurrentAmps = turretMotor.getOutputCurrent();
         inputs.turretRotationRad = Units.rotationsToRadians(turretMotor.getEncoder().getPosition()) / GEAR_REDUCTION;
         inputs.absoluteEncoder1 = absoluteEncoder1.get();
-        inputs.absoluteEncoder2 = absoluteEncoder1.get();
+        inputs.absoluteEncoder2 = absoluteEncoder2.get();
         
-        solveAngle().ifPresentOrElse(angle -> {
-            System.out.println("Solved Angle: " + angle);
-        }, () -> {
-            System.out.println("CRT Could not solve");
-        });
+        // solveAngle().ifPresentOrElse(angle -> {
+        //     System.out.println("Solved Angle: " + angle.in(Rotations));
+        // }, () -> {
+        //     System.out.println("CRT Could not solve");
+        // });
     }
 
     @Override
