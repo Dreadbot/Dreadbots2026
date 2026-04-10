@@ -70,7 +70,7 @@ public class Slapdown extends SubsystemBase {
         return Commands.runEnd(
             () -> {
                 if (canRunIntake()) {
-                    io.runIntakeVoltage(relativeIntakeSpeed());
+                    io.runIntakeRPM(relativeIntakeSpeed());
                 }
             },
             () -> io.runIntakeVoltage(0.0)
@@ -163,8 +163,8 @@ public class Slapdown extends SubsystemBase {
 
     public double relativeIntakeSpeed() {
         double dotProduct = getDotProduct();
-        double minIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE;
-        double maxIntakeSpeed = SlapdownConstants.INTAKE_VOLTAGE;
+        double minIntakeSpeed = SlapdownConstants.INTAKE_RPM_MAX;
+        double maxIntakeSpeed = SlapdownConstants.INTAKE_RPM_MAX;
         double minVelocity = 0;
         double maxVelocity = DriveConstants.maxSpeedMetersPerSec / 2;
         double intakeSpeed;

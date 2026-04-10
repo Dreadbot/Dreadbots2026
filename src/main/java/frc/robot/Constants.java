@@ -147,6 +147,7 @@ public class Constants {
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
     public static final double INTAKE_VOLTAGE = 12;
+    public static final double INTAKE_RPM_MAX = 3500;
     public static final double KP = 0.05;
     public static final double KI = 0.01;
     public static final double KD = 0;

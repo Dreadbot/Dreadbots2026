@@ -28,4 +28,6 @@ public interface SlapdownIO {
     public default void setIdleMode(IdleMode pivotIdleMode, IdleMode intakeIdleMode) {};
 
     public default void stopMotors() {};
+
+    public default void runIntakeRPM(double rpm) {};
 }

@@ -2,8 +2,9 @@ package frc.robot.subsystems.slapdown;
 
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkFlex;
-
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -25,6 +26,8 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
     private final SparkBase pivotMotor;
     private final VoltageOut voltageOut;
     private final DutyCycleEncoder absoluteEncoder;
+    final VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
+
 
     public SlapdownIOSparkFlex() {
         this.absoluteEncoder = new DutyCycleEncoder(new DigitalInput(SlapdownConstants.SLAPDOWN_DUTY_CYCLE_ENCODER), 360.0, -SlapdownConstants.ENCODER_OFFSET); //Update code with the 0 and max angle
@@ -46,6 +49,16 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
             .idleMode(IdleMode.kBrake)
             .inverted(false);
         pivotMotor.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        // in init function, set slot 0 gains
+        var slot0Configs = new Slot0Configs();
+        slot0Configs.kS = 0.1; // Add 0.1 V output to overcome static friction
+        slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+        slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+        slot0Configs.kI = 0; // no output for integrated error
+        slot0Configs.kD = 0; // no output for error derivative
+
+        intakeMotor.getConfigurator().apply(slot0Configs);
     }
 
         @Override
@@ -59,6 +72,11 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
         @Override
         public void runIntakeVoltage(double voltage) {
             intakeMotor.setControl(voltageOut.withOutput(voltage).withEnableFOC(true));
+        }
+
+        @Override
+        public void runIntakeRPM(double rpm) {
+            intakeMotor.setControl(velocityVoltage.withVelocity(rpm).withFeedForward(0.5));
         }
 
         @Override
