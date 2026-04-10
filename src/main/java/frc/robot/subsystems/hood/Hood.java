@@ -14,7 +14,7 @@ public class Hood extends SubsystemBase {
     // sets up private variables
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
-    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, 0);
+    private final PIDController pid = new PIDController(HoodConstants.HOOD_KP, HoodConstants.HOOD_KI, HoodConstants.HOOD_KD);
     
     // sets up goal rotations and calibrating boolean
     private double goalRotations = 0.0;

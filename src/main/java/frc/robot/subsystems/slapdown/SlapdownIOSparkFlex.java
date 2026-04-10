@@ -37,8 +37,8 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
         SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
         intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        intakeConfig.CurrentLimits.StatorCurrentLimit = 40;
-        intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        // intakeConfig.CurrentLimits.StatorCurrentLimit = 80;
+        // intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         intakeConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         intakeMotor.getConfigurator().apply(intakeConfig);
 

@@ -53,7 +53,7 @@ public class Indexer extends SubsystemBase {
         double voltage = pidOutput + feedforwardOutput;
         Logger.recordOutput("Kicker/Voltage", voltage);
         if (kickerTargetRPM > 0) {
-            io.runKickerVoltage(8.0);//voltage);
+            io.runKickerVoltage(voltage);
         } else {
             io.runKickerVoltage(0.0);
             pid.reset(); 

@@ -53,8 +53,8 @@ public class AutoAim extends SubsystemBase {
         firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.05 - AutoAimConstants.PHASE_DELAY));
         //firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2)); // Home
         firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea
-        firingTable.put(5.87, getMatrix(8.0, 3750 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY));
-        firingTable.put(7.0, getMatrix(8.45, 4050 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
+        firingTable.put(5.87, getMatrix(8.5, 3750 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY));
+        firingTable.put(7.0, getMatrix(9.0, 4050 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
         firingTable.put(12.0, getMatrix(10.5, 6300 + flywheel_tuning, 2.0 - AutoAimConstants.PHASE_DELAY));
     }
 
