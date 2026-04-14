@@ -77,12 +77,12 @@ public class Constants {
 
   public static class TurretConstants {
     public static final int ENCODER_1_PORT = 0;
-    public static final double ENCODER_1_ZERO = 0.834;
+    public static final double ENCODER_1_ZERO = 0.848;
     public static final boolean ENCODER_1_INVERTED = true;
     public static final int ENCODER_1_TEETH = 21;
 
     public static final int ENCODER_2_PORT = 1;
-    public static final double ENCODER_2_ZERO = 0.0546;
+    public static final double ENCODER_2_ZERO = 0.039;
     public static final boolean ENCODER_2_INVERTED = false;
     public static final int ENCODER_2_TEETH = 13;
 
@@ -112,7 +112,7 @@ public class Constants {
 
   public static class AutoAimConstants {
     public static boolean PREPSHOT_OVERRIDE = false;
-    public static final double PHASE_DELAY = 0.05;
+    public static final double PHASE_DELAY = 0.07;
     //public static boolean PREPSHOT_OVERRIDE = false;
     public static final double HOOD_LOWER_TIME = 1.0;
   }
@@ -120,9 +120,9 @@ public class Constants {
   public static class ClimbConstants {
     public static final double RAISE_VOLTAGE = 6;
     public static final double LOWER_VOLTAGE = -6;
-    public static final double LEVEL_ONE_CLIMB_POSITION = 109.0; // Placeholder value, should be calibrated based on the actual climb mechanism
+    public static final double LEVEL_ONE_CLIMB_POSITION = 74; // Placeholder value, should be calibrated based on the actual climb mechanism
     public static final double STOW_POSITION = 0.0;
-    public static final double CLIMB_POSITION = 50; // Value where the hooks go in
+    public static final double CLIMB_POSITION = 25; // Value where the hooks go in
     public static final int MOTOR_ID = 17;
     public static final int LOWER_LIMIT_SWITCH_ID = 7;
     public static final int UPPER_LIMIT_SWITCH_ID = 6;
@@ -146,7 +146,7 @@ public class Constants {
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 12;
+    public static final double INTAKE_VOLTAGE = 8;
     public static final double KP = 0.05;
     public static final double KI = 0.01;
     public static final double KD = 0;

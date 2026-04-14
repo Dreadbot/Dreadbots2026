@@ -63,7 +63,7 @@ public class VisionCamera {
 				|| detection.pose().getX() > VisionUtil.FIELD_LAYOUT.getFieldLength()
 				|| detection.pose().getY() < 0.0
 				|| detection.pose().getY() > VisionUtil.FIELD_LAYOUT.getFieldWidth()
-				|| Math.abs(detection.pose().getRotation().minus(supplier.getPose().getRotation()).getDegrees()) > 90;
+				|| Math.abs(detection.pose().getRotation().minus(supplier.getPose().getRotation()).getDegrees()) > 45;
 			
 			if (shouldRejectTag) {
 				rejectedPoses.add(detection.pose());

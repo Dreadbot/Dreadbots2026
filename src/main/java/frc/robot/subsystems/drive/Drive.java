@@ -374,8 +374,8 @@ public class Drive extends SubsystemBase {
   public Twist2d getFieldVelocity() {
     ChassisSpeeds chassisSpeeds = getChassisSpeeds();
     Translation2d linearFieldVelocity =
-      new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond);
-        //.rotateBy(getRotation());
+      new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+        .rotateBy(getRotation());
     return
       new Twist2d(
           linearFieldVelocity.getX(),

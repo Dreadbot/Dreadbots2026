@@ -52,9 +52,9 @@ public class AutoAim extends SubsystemBase {
         double flywheel_tuning = 0; //-125;
         firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.05 - AutoAimConstants.PHASE_DELAY));
         //firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2)); // Home
-        firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea
-        firingTable.put(5.87, getMatrix(8.5, 3750 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY));
-        firingTable.put(7.0, getMatrix(9.0, 4050 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
+        firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea //1.2
+        firingTable.put(5.87, getMatrix(8.5, 3950 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY)); //1.4
+        firingTable.put(7.0, getMatrix(10, 4050 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
         firingTable.put(12.0, getMatrix(10.5, 6300 + flywheel_tuning, 2.0 - AutoAimConstants.PHASE_DELAY));
     }
 
@@ -78,8 +78,10 @@ public class AutoAim extends SubsystemBase {
                         flywheel, turret, hood, this),
 
                 prepShot().alongWith(
+                    // Commands.deadline(
                         Commands.waitUntil(this::isReady)
-                                .andThen(Commands.runOnce(this::startFeeding, indexer)))
+                        // Commands.run(() -> indexer.startReverseIndexing()))
+                    .andThen(indexer.conditionalFeed(turret::atSetpoint)))
 
         ).finallyDo(interrupted -> stopShooting());
     }
@@ -137,13 +139,15 @@ public class AutoAim extends SubsystemBase {
         double phaseDelay = AutoAimConstants.PHASE_DELAY;
 
         Pose2d estimatedPose = drive.getPose();
-        ChassisSpeeds robotRelativeVelocity = drive.getChassisSpeeds();
+        Twist2d fieldRelativeVelocity = drive.getFieldVelocity();
+
+        double dtheta = drive.getChassisSpeeds().omegaRadiansPerSecond;
 
         estimatedPose = estimatedPose.exp(
                 new Twist2d(
-                        robotRelativeVelocity.vxMetersPerSecond * phaseDelay,
-                        robotRelativeVelocity.vyMetersPerSecond * phaseDelay,
-                        robotRelativeVelocity.omegaRadiansPerSecond * phaseDelay));
+                        fieldRelativeVelocity.dx * phaseDelay,
+                        fieldRelativeVelocity.dy * phaseDelay,
+                        dtheta * phaseDelay));
 
         Translation2d target = getTargetTranslation();
 
@@ -153,9 +157,24 @@ public class AutoAim extends SubsystemBase {
 
         for (int i = 0; i < 20; i++) {
             timeOfFlight = firingTable.get(lookaheadTurretToTargetDistance).get(2, 0);
-            ChassisSpeeds robotDelta = robotRelativeVelocity.times(timeOfFlight);
-            lookaheadPose = estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond,
-                    robotDelta.vyMetersPerSecond, new Rotation2d(robotDelta.omegaRadiansPerSecond)));
+
+            Translation2d newTranslation = 
+                new Translation2d(
+                        fieldRelativeVelocity.dx,
+                        fieldRelativeVelocity.dy)
+                    .times(timeOfFlight)
+                    .plus(estimatedPose.getTranslation());
+
+            Rotation2d newRotation = 
+                new Rotation2d(
+                        dtheta)
+                    .times(timeOfFlight)
+                    .plus(estimatedPose.getRotation());
+            
+            lookaheadPose = new Pose2d(newTranslation, newRotation);
+            // ChassisSpeeds robotDelta = drive.getChassisSpeeds().times(timeOfFlight);
+            // lookaheadPose = estimatedPose.plus(new Transform2d(robotDelta.vxMetersPerSecond,
+            //         robotDelta.vyMetersPerSecond, new Rotation2d(robotDelta.omegaRadiansPerSecond)));
             lookaheadTurretToTargetDistance = getDistanceToTargetFromRobotPose(lookaheadPose);
         }
 
@@ -176,9 +195,9 @@ public class AutoAim extends SubsystemBase {
         }
 
         Logger.recordOutput("AutoAim/DistanceToTarget", lookaheadTurretToTargetDistance);
-        // Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
-        // Logger.recordOutput("AutoAim/TurretPose", turretPose);
-        // Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
+        Logger.recordOutput("AutoAim/LookaheadPose", lookaheadPose);
+        Logger.recordOutput("AutoAim/TurretPose", turretPose);
+        Logger.recordOutput("AutoAim/TimeOfFlight", timeOfFlight);
     }
 
     public Matrix<N3, N1> getFiringTableValues(double distance) {

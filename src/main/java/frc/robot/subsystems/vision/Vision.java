@@ -15,7 +15,7 @@ public class Vision extends SubsystemBase {
 
 	public Vision(List<VisionCamera> cameras, VisionConsumer consumer, PoseSupplier supplier) {
 		this.cameras = cameras;
-		this.lastVisionDetection = new VisionDetection(new Pose2d(), 0, 0.0);;
+		this.lastVisionDetection = new VisionDetection(new Pose2d(), 0, 0.0);
 		for (VisionCamera camera : cameras) {
 			camera.setConsumer(consumer);
 			camera.setSupplier(supplier);

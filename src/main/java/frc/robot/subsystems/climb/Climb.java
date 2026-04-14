@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
-import frc.robot.subsystems.slapdown.Slapdown;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -42,7 +41,7 @@ public class Climb extends SubsystemBase {
     public boolean loweringArm = false;
     public boolean climbing = false;
 
-    public Climb(ClimbIO io, Slapdown slapdown) {
+    public Climb(ClimbIO io) {
         this.io = io;
     }
 
@@ -204,6 +203,6 @@ public class Climb extends SubsystemBase {
         // io.runVoltage(ClimbConstants.LOWER_VOLTAGE);
         // return;
         // }
-        //io.runVoltage(voltage);
+        io.runVoltage(voltage);
     }
 }

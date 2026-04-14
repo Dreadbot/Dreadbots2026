@@ -21,7 +21,7 @@ public class HoodIOSparkMax implements HoodIO {
         lowerLimitSwitch = new DigitalInput(HoodConstants.LOWER_LIMIT_SWITCH_ID);
         SparkMaxConfig config = new SparkMaxConfig();
         config
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .inverted(true)
             .smartCurrentLimit(50);
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

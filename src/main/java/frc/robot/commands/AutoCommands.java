@@ -43,7 +43,9 @@ public class AutoCommands {
             .bind("intake", slapdown.intakeCommand())
             .bind("stopIntake", slapdown.stopIntakeCommand())
             .bind("slapdown", slapdown.goToIntakeCommand().alongWith(slapdown.intakeCommand()))
-            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()));
+            .bind("slapup", slapdown.goToHomeCommand().alongWith(slapdown.stopIntakeCommand()))
+            .bind("prepClimb", climb.raiseRobotLevelOne())
+            .bind("climb", climb.climb());
     }
 
     public AutoRoutine leftDouble() {
@@ -124,6 +126,32 @@ public class AutoCommands {
                     Commands.deadline(RCInside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
                     aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine rightDoubleClimb() {
+        AutoRoutine routine = factory.newRoutine("rightDoubleClimb");
+        AutoTrajectory RCOutside = routine.trajectory("RCOutsideSafe");
+        AutoTrajectory RCInside = routine.trajectory("RCInsideSweepSafe");
+        AutoTrajectory RClimb = routine.trajectory("RClimb");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    RCOutside.resetOdometry(),
+                    slapdown.goToIntakeCommand(),
+                    Commands.deadline(RCOutside.cmd(), aim.trackTarget().alongWith(slapdown.intakeCommand())),
+                    drive.stopDrive(),
+                    aim.shoot()
+                        .alongWith(slapdown.agitateCommand()).withTimeout(4.0),
+                    Commands.runOnce(() -> hood.setSetpoint(0.0)),
+                    Commands.deadline(RCInside.cmd(), aim.trackTarget()),
+                    RClimb.cmd()
+                        .alongWith(aim.shoot().alongWith(slapdown.agitateCommand()))
+                        .alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
+                    drive.stopDrive()
             )
         );
 

@@ -26,12 +26,12 @@ public class Indexer extends SubsystemBase {
     private IndexerIO io;
     private double kickerTargetRPM = 0;
     private boolean isFeeding = false;
-    private CommandXboxController operator;
+    private CommandXboxController controller;
 
     // gets io from IndexerIO.java
-    public Indexer(IndexerIO io, CommandXboxController operator) {
+    public Indexer(IndexerIO io, CommandXboxController controller) {
         this.io = io;
-        this.operator = operator;
+        this.controller = controller;
         SmartDashboard.putData("KickerPID", pid);
     }
 
@@ -65,7 +65,7 @@ public class Indexer extends SubsystemBase {
         //io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE);
         kickerTargetRPM = IndexerConstants.KICKER_RPM;
         isFeeding = true;
-        operator.setRumble(RumbleType.kBothRumble, 0.5);
+        controller.setRumble(RumbleType.kBothRumble, 0.5);
     }
 
     public void startReverseIndexing() {
@@ -73,7 +73,7 @@ public class Indexer extends SubsystemBase {
         kickerTargetRPM = -IndexerConstants.KICKER_RPM;
         //io.runKickerVoltage(IndexerConstants.KICKER_VOLTAGE * -1);
         isFeeding = false;
-        operator.setRumble(RumbleType.kBothRumble, 0.0);
+        controller.setRumble(RumbleType.kBothRumble, 0.0);
     }
 
     public void stopIndexing() {
@@ -81,7 +81,7 @@ public class Indexer extends SubsystemBase {
         //io.runKickerVoltage(0.0);
         kickerTargetRPM = 0.0;
         isFeeding = false;
-        operator.setRumble(RumbleType.kBothRumble, 0.0);
+        controller.setRumble(RumbleType.kBothRumble, 0.0);
     }
 
     public Command conditionalFeed(BooleanSupplier supplier) {

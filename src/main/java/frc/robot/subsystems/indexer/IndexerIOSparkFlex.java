@@ -23,7 +23,7 @@ public class IndexerIOSparkFlex implements IndexerIO {
         SparkFlexConfig indexerConfig = new SparkFlexConfig();
         SparkFlexConfig kickerConfig = new SparkFlexConfig();
         indexerConfig
-            .idleMode(IdleMode.kCoast)
+            .idleMode(IdleMode.kBrake)
             .smartCurrentLimit(50)
             .inverted(false);
         kickerConfig

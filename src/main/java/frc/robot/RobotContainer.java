@@ -77,9 +77,9 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
-                indexer = new Indexer(new IndexerIOSparkFlex(), operator);
+                indexer = new Indexer(new IndexerIOSparkFlex(), driver);
                 slapdown = new Slapdown(new SlapdownIOSparkFlex(), drive::getChassisSpeeds);
-                climb = new Climb(new ClimbIOSparkFlex(), slapdown);
+                climb = new Climb(new ClimbIOSparkFlex());
                 break;
             case SIM:
                 drive = new Drive(
@@ -98,9 +98,9 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSim(), drive);
                 flywheel = new Flywheel(new FlywheelIOSim());
                 hood = new Hood(new HoodIOSim());
-                indexer = new Indexer(new IndexerIOSim(), operator);
+                indexer = new Indexer(new IndexerIOSim(), driver);
                 slapdown = new Slapdown(new SlapdownIOSim(), drive::getChassisSpeeds);
-                climb = new Climb(new ClimbIOSim(), slapdown);
+                climb = new Climb(new ClimbIOSim());
 
                 break;
             default:
@@ -118,9 +118,9 @@ public class RobotContainer {
                 turret = new Turret(new TurretIOSparkMax(), drive);
                 flywheel = new Flywheel(new FlywheelIOSparkFlex());
                 hood = new Hood(new HoodIOSparkMax());
-                indexer = new Indexer(new IndexerIOSparkFlex(), operator);
+                indexer = new Indexer(new IndexerIOSparkFlex(), driver);
                 slapdown = new Slapdown(new SlapdownIOSparkFlex(), drive::getChassisSpeeds);
-                climb = new Climb(new ClimbIOSparkFlex(), slapdown);
+                climb = new Climb(new ClimbIOSparkFlex());
                 break;
         }
         autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
@@ -134,6 +134,7 @@ public class RobotContainer {
         choreoAutoChooser.addRoutine("Right Double", autos::rightDouble);
         choreoAutoChooser.addRoutine("Right Double Safe", autos::rightDoubleSafe);
         choreoAutoChooser.addRoutine("Right Double Sweep", autos::rightDoubleSweep);
+        choreoAutoChooser.addRoutine("Right Double Climb", autos::rightDoubleClimb);
         choreoAutoChooser.addRoutine("Left Double Safe", autos::leftDoubleSafe);
         //choreoAutoChooser.addRoutine("Right Center-Outpost", autos::RCOutpost);
         // 1

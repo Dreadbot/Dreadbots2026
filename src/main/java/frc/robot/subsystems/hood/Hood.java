@@ -45,7 +45,7 @@ public class Hood extends SubsystemBase {
                 io.setVoltage(0);
                 return;
             }
-            io.setVoltage(-1.5);
+            io.setVoltage(-2);
             return;
         }
 
