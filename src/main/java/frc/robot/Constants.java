@@ -141,12 +141,12 @@ public class Constants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
     public static final double ENCODER_OFFSET = 238.4;
     public static final double HOME_ANGLE_DEGREES = 0.0;
-    public static final double INTAKE_ANGLE_DEGREES = 136;
+    public static final double INTAKE_ANGLE_DEGREES = 138.6;
     public static final double MAX_ANGLE_DEGREES =  140;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;
     public static final int PIVOT_MOTOR_ID = 9;
-    public static final double INTAKE_VOLTAGE = 8;
+    public static final double INTAKE_VOLTAGE = 10;
     public static final double KP = 0.05;
     public static final double KI = 0.01;
     public static final double KD = 0;

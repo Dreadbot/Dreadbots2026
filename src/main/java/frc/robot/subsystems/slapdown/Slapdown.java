@@ -127,6 +127,7 @@ public class Slapdown extends SubsystemBase {
 
         TrapezoidProfile profile = new TrapezoidProfile(constraints);
         setpoint = profile.calculate(0.02, setpoint, goal);
+        
         double voltage = pid.calculate(inputs.absolutePosition, setpoint.position);
         if (inputs.absolutePosition < 20 && voltage > 0.6) {
             voltage += 3;

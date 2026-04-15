@@ -16,10 +16,8 @@ import edu.wpi.first.math.InterpolatingMatrixTreeMap;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -52,9 +50,9 @@ public class AutoAim extends SubsystemBase {
         double flywheel_tuning = 0; //-125;
         firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.05 - AutoAimConstants.PHASE_DELAY));
         //firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2)); // Home
-        firingTable.put(3.23, getMatrix(4.39, 3130 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea //1.2
-        firingTable.put(5.87, getMatrix(8.5, 3950 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY)); //1.4
-        firingTable.put(7.0, getMatrix(10, 4050 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
+        firingTable.put(3.23, getMatrix(5.39, 3130 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea //1.2
+        firingTable.put(5.7, getMatrix(9.5, 4200 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY)); //1.4
+        firingTable.put(7.0, getMatrix(10.5, 4100 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
         firingTable.put(12.0, getMatrix(10.5, 6300 + flywheel_tuning, 2.0 - AutoAimConstants.PHASE_DELAY));
     }
 

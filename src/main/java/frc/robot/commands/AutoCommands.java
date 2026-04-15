@@ -135,7 +135,7 @@ public class AutoCommands {
     public AutoRoutine rightDoubleClimb() {
         AutoRoutine routine = factory.newRoutine("rightDoubleClimb");
         AutoTrajectory RCOutside = routine.trajectory("RCOutsideSafe");
-        AutoTrajectory RCInside = routine.trajectory("RCInsideSweepSafe");
+        AutoTrajectory RCInside = routine.trajectory("RCInsideSweepSafeNoStop");
         AutoTrajectory RClimb = routine.trajectory("RClimb");
 
         routine.active().onTrue(
