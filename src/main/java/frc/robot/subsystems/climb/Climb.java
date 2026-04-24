@@ -192,6 +192,7 @@ public class Climb extends SubsystemBase {
                 voltage = 0;
             }
             io.setPosition(0);
+            pid.reset();
             // goal = new TrapezoidProfile.State(setpoint.position, 0);
         }
 

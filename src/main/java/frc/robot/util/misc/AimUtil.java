@@ -31,17 +31,18 @@ public class AimUtil {
         return robotTranslation.plus(offset);
     }
 
-    public static Translation2d getFieldShiftFromJoystick(DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
+    public static double getDistanceShiftFromJoystick(DoubleSupplier ySupplier) {
         double y = ySupplier.getAsDouble();
-        double x = xSupplier.getAsDouble();
-        if (x == 0 && y == 0) {
-            return Translation2d.kZero;
-        }
-        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            return new Translation2d(-y * 3, -x * 3);
-        } else {
-            return new Translation2d(y * 3, x * 3);
-        }
+        //double x = xSupplier.getAsDouble();
+        // if (x == 0 && y == 0) {
+        //     return Translation2d.kZero;
+        // }
+        // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+        //     return new Translation2d(-y * 1, -x * 1);
+        // } else {
+        //     return new Translation2d(y * 1, x * 1);
+        // }
+        return -0.5 * y;
     }
 
     public static Translation2d getPassTranslation(Pose2d pose2d) {

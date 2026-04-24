@@ -45,7 +45,7 @@ public class Hood extends SubsystemBase {
                 io.setVoltage(0);
                 return;
             }
-            io.setVoltage(-2);
+            io.setVoltage(-4);
             return;
         }
 
@@ -56,7 +56,7 @@ public class Hood extends SubsystemBase {
             pidVoltage = 0;
         }
         // Add feedforward voltage to overcome static friction, only if the PID output is significant to avoid adding feedforward when the error is very small
-        if (Math.abs(pidVoltage) > 1e-1) {
+        if (Math.abs(pidVoltage) > 0.15) {
             pidVoltage += Math.copySign(HoodConstants.HOOD_KS, pidVoltage);
         }
         // Clamp voltage to maximum limits

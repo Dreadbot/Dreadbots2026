@@ -55,10 +55,10 @@ public class Constants {
     public static final int LOWER_LIMIT_SWITCH_ID = 2;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
-    public static final double HOOD_KP = 0.65;
-    public static final double MAX_VOLTAGE = 3.0;
+    public static final double HOOD_KP = 0.45;
+    public static final double MAX_VOLTAGE = 4.5;
     public static final double MAX_ROTATIONS = 10.8;
-    public static final double HOOD_KS = 0.50;
+    public static final double HOOD_KS = 1.7;
     public static final double HOOD_KI = 0.0;
     public static final double HOOD_KD = 0.01;
   }
@@ -77,12 +77,12 @@ public class Constants {
 
   public static class TurretConstants {
     public static final int ENCODER_1_PORT = 0;
-    public static final double ENCODER_1_ZERO = 0.848;
+    public static final double ENCODER_1_ZERO = 0.759;
     public static final boolean ENCODER_1_INVERTED = true;
     public static final int ENCODER_1_TEETH = 21;
 
     public static final int ENCODER_2_PORT = 1;
-    public static final double ENCODER_2_ZERO = 0.039;
+    public static final double ENCODER_2_ZERO = 0.184;
     public static final boolean ENCODER_2_INVERTED = false;
     public static final int ENCODER_2_TEETH = 13;
 
@@ -139,9 +139,10 @@ public class Constants {
 
   public static class SlapdownConstants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
-    public static final double ENCODER_OFFSET = 238.4;
+    public static final double ENCODER_ZERO = 180;
+    public static final double ENCODER_OFFSET = 166.7;
     public static final double HOME_ANGLE_DEGREES = 0.0;
-    public static final double INTAKE_ANGLE_DEGREES = 138.6;
+    public static final double INTAKE_ANGLE_DEGREES = 130;
     public static final double MAX_ANGLE_DEGREES =  140;
     public static final double ENCODER_FREQUENCY = 975.6;
     public static final int INTAKE_MOTOR_ID = 10;

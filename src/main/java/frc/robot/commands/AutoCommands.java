@@ -121,11 +121,15 @@ public class AutoCommands {
                     RCOutside.resetOdometry(),
                     Commands.deadline(RCOutside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
-                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    aim.shoot()
+                        .alongWith(slapdown.agitateCommand()).withTimeout(4.5),
+                        //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
                     Commands.runOnce(() -> hood.setSetpoint(0.0)),
                     Commands.deadline(RCInside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
-                    aim.shoot().alongWith(slapdown.agitateCommand())
+                    aim.shoot()
+                        .alongWith(slapdown.agitateCommand())
+                        //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25))
             )
         );
 
@@ -146,11 +150,12 @@ public class AutoCommands {
                     drive.stopDrive(),
                     aim.shoot()
                         .alongWith(slapdown.agitateCommand()).withTimeout(4.0),
+                        //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
                     Commands.runOnce(() -> hood.setSetpoint(0.0)),
                     Commands.deadline(RCInside.cmd(), aim.trackTarget()),
                     RClimb.cmd()
-                        .alongWith(aim.shoot().alongWith(slapdown.agitateCommand()))
-                        .alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
+                        .alongWith(aim.shoot().alongWith(slapdown.agitateCommand())),
+                        //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
                     drive.stopDrive()
             )
         );
@@ -168,11 +173,15 @@ public class AutoCommands {
                     LCOutside.resetOdometry(),
                     Commands.deadline(LCOutside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
-                    aim.shoot().alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                    aim.shoot()
+                        .alongWith(slapdown.agitateCommand()).withTimeout(5.0),
+                        //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
                     Commands.runOnce(() -> hood.setSetpoint(0.0)),
                     Commands.deadline(LCInside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
-                    aim.shoot().alongWith(slapdown.agitateCommand())
+                    aim.shoot()
+                        .alongWith(slapdown.agitateCommand())
+                        //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25))
             )
         );
 
@@ -189,6 +198,27 @@ public class AutoCommands {
                     RCOutpost.cmd(),
                     drive.stopDrive(),
                     aim.shoot().alongWith(slapdown.agitateCommand())
+            )
+        );
+
+        return routine;
+    }
+
+    public AutoRoutine depotClimb() {
+        AutoRoutine routine = factory.newRoutine("DepotClimb");
+        AutoTrajectory Depot = routine.trajectory("Depot");
+        AutoTrajectory Climb = routine.trajectory("DepotClimb");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    Depot.resetOdometry(),
+                    Depot.cmd(),
+                    drive.stopDrive(),
+                    aim.shoot()
+                        .alongWith(slapdown.agitateCommand()).withTimeout(7)
+                        .alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
+                    Climb.cmd(),
+                    drive.stopDrive()
             )
         );
 
@@ -226,18 +256,18 @@ public class AutoCommands {
     }
 
     //number 2
-    public AutoRoutine depotClimb() {
-        AutoRoutine routine = factory.newRoutine("DepotClimb");
-        AutoTrajectory depotClimb = routine.trajectory("depotClimbOutline");
+    // public AutoRoutine depotClimb() {
+    //     AutoRoutine routine = factory.newRoutine("DepotClimb");
+    //     AutoTrajectory depotClimb = routine.trajectory("depotClimbOutline");
         
-        routine.active().onTrue(
-                Commands.sequence(
-                    depotClimb.resetOdometry(),
-                    depotClimb.cmd()
-            )
-        );
-        return routine;
-    }
+    //     routine.active().onTrue(
+    //             Commands.sequence(
+    //                 depotClimb.resetOdometry(),
+    //                 depotClimb.cmd()
+    //         )
+    //     );
+    //     return routine;
+    // }
 
 
     //number 3 
