@@ -131,6 +131,7 @@ public class RobotContainer {
         choreoAutoChooser = new AutoChooser();
         
         choreoAutoChooser.addRoutine("Left Double", autos::leftDouble);
+        choreoAutoChooser.addRoutine("Right Bump Loop Depot Climb", autos::RBLoop);
         choreoAutoChooser.addRoutine("Right Double", autos::rightDouble);
         choreoAutoChooser.addRoutine("Depot Climb", autos::depotClimb);
         choreoAutoChooser.addRoutine("Right Double Safe", autos::rightDoubleSafe);

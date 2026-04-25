@@ -55,12 +55,12 @@ public class Constants {
     public static final int LOWER_LIMIT_SWITCH_ID = 2;
     // Conversion value for the motor's number of total rotations to the hood's angle in radians
     // This number should be calibrated based on the gear ratio between the motor and the hood
-    public static final double HOOD_KP = 0.45;
+    public static final double HOOD_KP = 0.4;
     public static final double MAX_VOLTAGE = 4.5;
-    public static final double MAX_ROTATIONS = 10.8;
-    public static final double HOOD_KS = 1.7;
+    public static final double MAX_ROTATIONS = 10.6;
+    public static final double HOOD_KS = 0.35;
     public static final double HOOD_KI = 0.0;
-    public static final double HOOD_KD = 0.01;
+    public static final double HOOD_KD = 0.0;
   }
 
   public static final class AutoAlignConstants {
@@ -99,8 +99,8 @@ public class Constants {
 
     public static final Translation2d OFFSET = new Translation2d(-0.1518, -0.1619);     // +X = -Y in CAD +Y = +X in CAD (offset from center)
 
-    public static final double MAX_ANGLE_RAD = Units.degreesToRadians(180);
-    public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(250);
+    public static final double MAX_ANGLE_RAD = Units.degreesToRadians(205);
+    public static final double MIN_ANGLE_RAD = -Units.degreesToRadians(270);
 
     public static final double Kp = 12.0;
     public static final double Ki = 0.0;
@@ -141,7 +141,7 @@ public class Constants {
     public static final int SLAPDOWN_DUTY_CYCLE_ENCODER = 5;
     public static final double ENCODER_ZERO = 180;
     public static final double ENCODER_OFFSET = 166.7;
-    public static final double HOME_ANGLE_DEGREES = 0.0;
+    public static final double HOME_ANGLE_DEGREES = -6;
     public static final double INTAKE_ANGLE_DEGREES = 130;
     public static final double MAX_ANGLE_DEGREES =  140;
     public static final double ENCODER_FREQUENCY = 975.6;

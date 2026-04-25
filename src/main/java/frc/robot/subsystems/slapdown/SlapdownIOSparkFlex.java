@@ -58,7 +58,7 @@ public class SlapdownIOSparkFlex implements SlapdownIO {
 
         @Override
         public void runIntakeVoltage(double voltage) {
-            intakeMotor.setControl(voltageOut.withOutput(voltage).withEnableFOC(true));
+            intakeMotor.setControl(voltageOut.withOutput(voltage).withEnableFOC(false));
         }
 
         @Override

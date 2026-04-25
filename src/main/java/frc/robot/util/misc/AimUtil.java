@@ -49,7 +49,7 @@ public class AimUtil {
         double x;
         double y;
         boolean rightSide = pose2d.getY() < 4.02;
-        double xOffset = 1.0;
+        double xOffset = 2.0;
         double yOffset = 2.0;
 
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {

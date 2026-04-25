@@ -50,9 +50,11 @@ public class AutoAim extends SubsystemBase {
         double flywheel_tuning = -50; //-125;
         firingTable.put(1.30, getMatrix(0.0, 2650 + flywheel_tuning, 1.05 - AutoAimConstants.PHASE_DELAY));
         //firingTable.put(3.23, getMatrix(4.39, 3215 + flywheel_tuning, 1.2)); // Home
-        firingTable.put(3.23, getMatrix(4.89, 3230 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea //1.2 //5.39 //3130
-        firingTable.put(4.0, getMatrix(6.5, 3400 + flywheel_tuning, 1.25 - AutoAimConstants.PHASE_DELAY));
-        firingTable.put(5.7, getMatrix(9.3, 3950 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY)); //1.4
+        // firingTable.put(3.23, getMatrix(4.89, 3230 + flywheel_tuning, 1.2 - AutoAimConstants.PHASE_DELAY)); // Chelsea //1.2 //5.39 //3130
+        firingTable.put(2.6, getMatrix(4.8, 2900 + flywheel_tuning, 1.15 - AutoAimConstants.PHASE_DELAY)); //shallow shot
+        firingTable.put(3.2, getMatrix(6.13, 3000 + flywheel_tuning, 1.25 - AutoAimConstants.PHASE_DELAY)); // shallow shot
+        firingTable.put(4.0, getMatrix(6.5, 3400 + flywheel_tuning, 1.3 - AutoAimConstants.PHASE_DELAY));
+        firingTable.put(5.7, getMatrix(9.5, 3800 + flywheel_tuning, 1.4 - AutoAimConstants.PHASE_DELAY)); //1.4
         firingTable.put(7.0, getMatrix(10.5, 4400 + flywheel_tuning, 1.5 - AutoAimConstants.PHASE_DELAY));
         firingTable.put(12.0, getMatrix(10.5, 6300 + flywheel_tuning, 2.0 - AutoAimConstants.PHASE_DELAY));
     }

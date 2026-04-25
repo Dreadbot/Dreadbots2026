@@ -48,6 +48,27 @@ public class AutoCommands {
             .bind("climb", climb.climb());
     }
 
+    public AutoRoutine RBLoop() {
+        AutoRoutine routine = factory.newRoutine("RBLoopDepotClimb");
+        AutoTrajectory RBLoop = routine.trajectory("RBLoop");
+        AutoTrajectory LBDepot = routine.trajectory("LBDepot");
+        AutoTrajectory Climb = routine.trajectory("DepotClimb");
+
+        routine.active().onTrue(
+                Commands.sequence(
+                    RBLoop.resetOdometry(),
+                    aim.shoot().withTimeout(2.0),
+                    Commands.deadline(RBLoop.cmd(), aim.trackTarget()),
+                    Commands.deadline(LBDepot.cmd(), aim.shoot()),
+                    drive.stopDrive(),
+                    Climb.cmd().alongWith(aim.shoot().withTimeout(3)),
+                    drive.stopDrive()
+            )
+        );
+
+        return routine;
+    }
+
     public AutoRoutine leftDouble() {
         AutoRoutine routine = factory.newRoutine("leftDouble");
         AutoTrajectory LCOutside = routine.trajectory("LCOutside");
