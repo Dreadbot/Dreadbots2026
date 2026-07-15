@@ -24,6 +24,7 @@ public class Turret extends SubsystemBase {
     private final TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(TurretConstants.MAX_VELOCITY, TurretConstants.MAX_ACCELERATION));
     private TrapezoidProfile.State goal = new TrapezoidProfile.State(0, 0);
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+     
 
     private final Drive drive;
 
@@ -31,6 +32,8 @@ public class Turret extends SubsystemBase {
     public double voltage;
     private boolean lock = false;
     
+    //Rotation Offset in Radians. If need quick change edit here.
+    private double rotationOffset = 3.14;
 
     public Turret(TurretIO io, Drive drive) {
         SmartDashboard.putData("TurretPID", pid);
@@ -106,7 +109,7 @@ public class Turret extends SubsystemBase {
     public Command setAngleRad(double angleRad) {
         return run(
             () -> {
-                setCorrectAngleRad(angleRad); 
+                setCorrectAngleRad(angleRad + rotationOffset); 
             } );
     }
 
