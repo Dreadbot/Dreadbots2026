@@ -7,6 +7,7 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import choreo.auto.AutoChooser;
@@ -40,6 +41,9 @@ import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.indexer.*;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import frc.robot.util.vision.VisionUtil;
+
 public class RobotContainer {
 
     private final CommandXboxController driver = new CommandXboxController(0);
@@ -57,7 +61,8 @@ public class RobotContainer {
     private final AutoChooser choreoAutoChooser;
     private final AutoCommands autos;
     private final Led leds;
-    //private final ChassisSpeeds speeds;
+    private final ChassisSpeeds speeds;
+    private final VisionUtil visionUtil;
 
 
     public RobotContainer() {
@@ -123,7 +128,9 @@ public class RobotContainer {
                 climb = new Climb(new ClimbIOSparkFlex());
                 break;
         }
-        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY);
+        speeds = new ChassisSpeeds();
+        visionUtil = new VisionUtil();
+        autoAim = new AutoAim(turret, hood, flywheel, indexer, drive, operator::getLeftX, operator::getLeftY, speeds, visionUtil);
 
         autos = new AutoCommands(drive, slapdown, hood, indexer, climb, flywheel, autoAim);
         leds = new Led(new LedIO());
