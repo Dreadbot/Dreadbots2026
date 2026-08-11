@@ -225,7 +225,7 @@ public class RobotContainer {
         operator.povLeft().onTrue(
             Commands.runOnce(() ->
                 {
-                    hood.setSetpoint(0);
+                    hood.setSetpoint(4.39);
                     flywheel.setRPM(2650);
                 }));
         operator.povDown().onTrue(

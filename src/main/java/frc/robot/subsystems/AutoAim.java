@@ -31,20 +31,19 @@ public class AutoAim extends SubsystemBase {
     private final Turret turret;
     private final Indexer indexer;
     private final Drive drive;
-    private final DoubleSupplier xSupplier;
+    //private final DoubleSupplier xSupplier; commented out because all uses are commented out
     private final DoubleSupplier ySupplier;
     //private final ChassisSpeeds speeds;
 
     private boolean passing = false;
 
-    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier,
-            DoubleSupplier ySupplier) {
+    public AutoAim(Turret turret, Hood hood, Flywheel flywheel, Indexer indexer, Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier) {
         this.turret = turret;
         this.hood = hood;
         this.flywheel = flywheel;
         this.indexer = indexer;
         this.drive = drive;
-        this.xSupplier = xSupplier;
+        //this.xSupplier = xSupplier; commented out because all uses are commented out
         this.ySupplier = ySupplier;
         // Distance (m)
         double flywheel_tuning = -50; //-125;
@@ -88,7 +87,7 @@ public class AutoAim extends SubsystemBase {
     }
 
     public boolean isReady() {
-        return flywheel.atRPM() && turret.atSetpoint() && hood.atSetpoint();
+        return flywheel.atRPM() && turret.atSetpoint() && hood.atSetpoint(); //hood motor fixed
     }
 
     public Command prepShot() {
@@ -137,6 +136,24 @@ public class AutoAim extends SubsystemBase {
     }
 
     public void setSetpoints(boolean primingShot) {
+        // OUTREACH
+
+        // Setpoints for outreach
+        // if (true) {
+        //     if (primingShot){ 
+        //         flywheel.setRPM(2500); // Flywheel Speed - Min of 0, Max of ~6500
+        //         hood.setSetpoint(1.0); // Hood Setpoint - Min of 0, Max of ~10.5
+        //     }
+        //     else {
+        //         flywheel.setRPM(0);
+        //         indexer.stopIndexing();
+        //     }
+        //     turret.setCorrectAngleRad(0); //Turret Offset (In radians)            
+        //     return;
+        // }
+
+        // END OUTREACH
+
         double phaseDelay = AutoAimConstants.PHASE_DELAY;
 
         Pose2d estimatedPose = drive.getPose();

@@ -10,9 +10,9 @@ public class HoodIOSim implements HoodIO {
     public HoodIOSim() {
         hood = new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                DCMotor.getNEO(1),
-                0.0366,
-                150.0
+                DCMotor.getNeo550(1),
+                0.00001,
+                1.0
             ),
             DCMotor.getNeo550(1)
         );
@@ -23,6 +23,7 @@ public class HoodIOSim implements HoodIO {
         hood.update(0.02);
         inputs.appliedVolts = hood.getInputVoltage();
         inputs.rotations = hood.getAngularPositionRotations();
+        inputs.lowerSwitch = inputs.rotations <= 0;
     }
 
     @Override 

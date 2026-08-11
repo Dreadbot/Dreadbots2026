@@ -58,7 +58,7 @@ public class Constants {
     public static final double HOOD_KP = 0.4;
     public static final double MAX_VOLTAGE = 4.5;
     public static final double MAX_ROTATIONS = 10.6;
-    public static final double HOOD_KS = 0.35;
+    public static final double HOOD_KS = 0.55;
     public static final double HOOD_KI = 0.0;
     public static final double HOOD_KD = 0.0;
   }
@@ -77,12 +77,12 @@ public class Constants {
 
   public static class TurretConstants {
     public static final int ENCODER_1_PORT = 0;
-    public static final double ENCODER_1_ZERO = 0.759;
+    public static final double ENCODER_1_ZERO = 0.800;
     public static final boolean ENCODER_1_INVERTED = true;
     public static final int ENCODER_1_TEETH = 21;
 
     public static final int ENCODER_2_PORT = 1;
-    public static final double ENCODER_2_ZERO = 0.184;
+    public static final double ENCODER_2_ZERO = 0.210;
     public static final boolean ENCODER_2_INVERTED = false;
     public static final int ENCODER_2_TEETH = 13;
 
@@ -112,7 +112,7 @@ public class Constants {
 
   public static class AutoAimConstants {
     public static boolean PREPSHOT_OVERRIDE = false;
-    public static final double PHASE_DELAY = 0.07;
+    public static final double PHASE_DELAY = 0.09;
     //public static boolean PREPSHOT_OVERRIDE = false;
     public static final double HOOD_LOWER_TIME = 1.0;
   }
@@ -149,7 +149,7 @@ public class Constants {
     public static final int PIVOT_MOTOR_ID = 9;
     public static final double INTAKE_VOLTAGE = 10;
     public static final double KP = 0.05;
-    public static final double KI = 0.01;
+    public static final double KI = 0.0;
     public static final double KD = 0;
     public static final double KS = 1.5;
     public static final double KV = 0.0;

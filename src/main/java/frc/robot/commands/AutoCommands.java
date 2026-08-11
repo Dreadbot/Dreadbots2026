@@ -143,7 +143,7 @@ public class AutoCommands {
                     Commands.deadline(RCOutside.cmd(), aim.trackTarget()),
                     drive.stopDrive(),
                     aim.shoot()
-                        .alongWith(slapdown.agitateCommand()).withTimeout(4.5),
+                        .alongWith(slapdown.agitateCommand()).withTimeout(5),
                         //.alongWith(Commands.run(() -> indexer.startReverseIndexing()).withTimeout(0.25)),
                     Commands.runOnce(() -> hood.setSetpoint(0.0)),
                     Commands.deadline(RCInside.cmd(), aim.trackTarget()),
